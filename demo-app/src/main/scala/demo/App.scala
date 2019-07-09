@@ -2,9 +2,10 @@ package demo
 
 import demo.model.TodoList.actions._
 import demo.model._
+import earlyeffect.impl.Preact
 import org.scalajs.dom
 import org.scalajs.dom.raw.HTMLInputElement
-import earlyeffect.core._
+import earlyeffect._
 
 object App {
 

@@ -2,9 +2,8 @@ package demo
 
 import demo.model.TodoList.actions.Update
 import demo.model.{ModelCircuit, Todo}
-import earlyeffect.Component
+import earlyeffect._
 import org.scalajs.dom.raw.HTMLInputElement
-import earlyeffect.core.{A, E, VirtualNode}
 
 case class TodoEditor(todo: Todo) extends Component[TodoEditor] {
   override def render(props: TodoEditor): VirtualNode =
