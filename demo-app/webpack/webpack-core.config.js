@@ -1,0 +1,41 @@
+var path = require("path");
+var CopyWebpackPlugin = require("copy-webpack-plugin");
+var HtmlWebpackPlugin = require("html-webpack-plugin");
+
+module.exports = {
+  devServer: {
+    compress: true,
+    disableHostCheck: true,
+    historyApiFallback: true,
+    host: "0.0.0.0",
+  },
+  mode: "development",
+  resolve: {
+    alias: {
+      js: path.resolve(__dirname, "../../../../src/main/js"),
+      scalajs: path.resolve(__dirname, "./scalajs-entry.js")
+    },
+    modules: [path.resolve(__dirname, "node_modules")]
+  },
+  plugins: [
+    new CopyWebpackPlugin([
+      {from: path.resolve(__dirname, "../../../../public")}
+    ]),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, "../../../../public/index.html")
+    })
+  ],
+  output: {
+    devtoolModuleFilenameTemplate: f => {
+      if (
+        f.resourcePath.startsWith("http://") ||
+        f.resourcePath.startsWith("https://") ||
+        f.resourcePath.startsWith("file://")
+      ) {
+        return f.resourcePath;
+      } else {
+        return "webpack://" + f.namespace + "/" + f.resourcePath;
+      }
+    }
+  }
+};

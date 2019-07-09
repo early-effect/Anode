@@ -1,0 +1,45 @@
+package demo.model
+
+import diode.{Action, ActionHandler, ActionResult, ModelRW}
+
+case class TodoList(todos: Seq[Todo], filter: Filter) {
+  def delete(todo: Todo): TodoList       = copy(todos = todos.filter(_.key != todo.key))
+  def add(todo: Todo): TodoList          = copy(todos = todos :+ todo)
+  def update(todo: Todo): TodoList       = copy(todos = todos.updated(todos.indexWhere(_.key == todo.key), todo))
+  def clearCompleted: TodoList           = copy(todos = todos.filterNot(_.complete))
+  def setAll(comlete: Boolean): TodoList = copy(todos = todos.map(x => x.copy(complete = comlete)))
+
+  def filtered: Seq[Todo] = filter match {
+    case All       => todos
+    case Completed => todos.filter(_.complete)
+    case Active    => todos.filterNot(_.complete)
+  }
+}
+
+sealed trait Filter
+case object All       extends Filter
+case object Completed extends Filter
+case object Active    extends Filter
+
+object TodoList {
+  case class Handler(m: ModelRW[Root, TodoList]) extends ActionHandler(m) {
+    import actions._
+    override protected def handle: PartialFunction[Any, ActionResult[Root]] = {
+      case Add(todo)        => updated(value.add(todo))
+      case Delete(todo)     => updated(value.delete(todo))
+      case Update(todo)     => updated(value.update(todo))
+      case ApplyFilter(f)   => updated(value.copy(filter = f))
+      case ClearCompleted   => updated(value.clearCompleted)
+      case SetAll(complete) => updated(value.setAll(complete))
+    }
+  }
+
+  object actions {
+    final case class Add(todo: Todo)             extends Action
+    final case class Delete(todo: Todo)          extends Action
+    final case class Update(todo: Todo)          extends Action
+    final case class ApplyFilter(filter: Filter) extends Action
+    final case object ClearCompleted             extends Action
+    final case class SetAll(boolean: Boolean)    extends Action
+  }
+}
