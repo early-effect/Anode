@@ -1,6 +1,10 @@
 # Early-Effect
 A Scala.JS facade for Preact with emphasis on stateless components.
 
+To run the demo:
+- `sbt dev`
+- then open [http://localhost:8080](http://localhost:8080)
+
 Copyright 2019 Russ White
 
 Licensed under the Apache License, Version 2.0 (the "License");
