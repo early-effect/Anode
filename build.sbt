@@ -11,8 +11,8 @@ val baseSettings = Seq(
   scalaVersion := "2.12.8",
   scalacOptions += "-P:scalajs:sjsDefinedByDefault",
   libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "0.9.7",
-    "org.scalatest" %%% "scalatest" % "3.0.8" % Test
+    "org.scala-js"  %%% "scalajs-dom" % "0.9.7",
+    "org.scalatest" %%% "scalatest"   % "3.0.8" % Test
   ),
   requireJsDomEnv in Test := true,
   version in installJsdom := "15.1.1",
@@ -31,7 +31,7 @@ lazy val core = project
     name := "core",
     webpackEmitSourceMaps in Compile := true,
     npmDependencies in Compile ++= Seq(
-      "preact" -> "10.0.0-beta.3",
+      "preact"       -> "10.0.0-beta.3",
       "autoprefixer" -> "9.6.1"
     )
   )
@@ -55,10 +55,10 @@ lazy val demo = project
     name := "demo-app",
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",
     // webpack stuff
-    npmDevDependencies in Compile += "webpack-merge" -> "4.1.2",
+    npmDevDependencies in Compile += "webpack-merge"       -> "4.1.2",
     npmDevDependencies in Compile += "html-webpack-plugin" -> "3.2.0",
     npmDevDependencies in Compile += "copy-webpack-plugin" -> "4.5.1",
-    npmDevDependencies in Compile += "crypto-js" -> "3.1.8",
+    npmDevDependencies in Compile += "crypto-js"           -> "3.1.8",
     requiresDOM in Test := true,
     webpackResources := baseDirectory.value / "webpack" * "*",
     webpackBundlingMode in fastOptJS := BundlingMode.LibraryOnly(),

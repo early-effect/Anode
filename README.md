@@ -2,7 +2,7 @@
 A Scala.JS facade for Preact with emphasis on stateless components.
 
 To run the demo:
-- `sbt dev`
+- `sbt demo`
 - then open [http://localhost:8080](http://localhost:8080)
 
 Copyright 2019 Russ White
