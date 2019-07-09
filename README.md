@@ -1,4 +1,4 @@
-# Early-Effect
+# [Early-Effect](https://github.com/russwyte/Early-Effect/)
 A Scala.JS facade for Preact with emphasis on stateless components.
 
 To run the demo:
