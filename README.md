@@ -4,7 +4,7 @@ A Scala.JS facade for Preact with emphasis on stateless components.
 Copyright 2019 Russ White
 
 Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this repository except in compliance with the License.
+you may not use the source code within repository except in compliance with the License.
 You may obtain a copy of the License at [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 Unless required by applicable law or agreed to in writing, software
