@@ -51,7 +51,8 @@ lazy val demoModel = project
     publish := {},
     publishLocal := {},
     scalaJSModuleKind in Test := ModuleKind.CommonJSModule,
-    libraryDependencies += "io.suzaku" %%% "diode" % "1.1.5"
+    libraryDependencies += "io.suzaku" %%% "diode" % "1.1.5",
+    test := {}
   )
 lazy val demo = project
   .in(file("demo-app"))
@@ -85,9 +86,7 @@ lazy val demo = project
       "demo",
       ";demo/fastOptJS::startWebpackDevServer;~demo/fastOptJS"
     ),
-    test := {
-      println("No tests - it just packages. :)")
-    },
+    test := {},
     publish := {},
     publishLocal := {}
   )
