@@ -1,13 +1,18 @@
 enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
 
-version := "0.0.1"
-
 lazy val root = project
   .in(file("."))
   .aggregate(core, demo, demoModel)
-  .settings(name := "root", publish := {}, publishLocal := {})
+  .settings(
+    name := "root",
+    publish := {},
+    publishLocal := {}
+  )
 
 val baseSettings = Seq(
+  licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
+  version := "0.0.1",
+  organization := "earlyeffect.rocks",
   scalaVersion := "2.12.8",
   scalacOptions += "-P:scalajs:sjsDefinedByDefault",
   libraryDependencies ++= Seq(
@@ -43,6 +48,8 @@ lazy val demoModel = project
   .settings(
     baseSettings,
     name := "demo-model",
+    publish := {},
+    publishLocal := {},
     scalaJSModuleKind in Test := ModuleKind.CommonJSModule,
     libraryDependencies += "io.suzaku" %%% "diode" % "1.1.5"
   )
@@ -80,5 +87,7 @@ lazy val demo = project
     ),
     test := {
       println("No tests - it just packages. :)")
-    }
+    },
+    publish := {},
+    publishLocal := {}
   )
