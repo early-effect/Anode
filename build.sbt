@@ -11,8 +11,9 @@ lazy val root = project
 
 val baseSettings = Seq(
   licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
-  version := "0.0.1",
-  organization := "earlyeffect.rocks",
+  version := "0.0.1-SNAPSHOT",
+  bintrayRepository := "maven",
+  organization := "rocks.earlyeffect",
   scalaVersion := "2.12.8",
   scalacOptions += "-P:scalajs:sjsDefinedByDefault",
   libraryDependencies ++= Seq(
@@ -25,7 +26,17 @@ val baseSettings = Seq(
   scalaJSUseMainModuleInitializer := true,
   version in webpack := "4.35.2",
   webpackCliVersion := "3.3.5",
-  version in startWebpackDevServer := "3.7.2"
+  version in startWebpackDevServer := "3.7.2",
+  bintrayReleaseOnPublish := !isSnapshot.value,
+  publishMavenStyle := true,
+  publishTo := {
+    val pt = publishTo.value
+    if (isSnapshot.value) {
+      Some(
+        "Artifactory Realm" at "https://oss.jfrog.org/artifactory/oss-snapshot-local;build.timestamp=" + new java.util.Date().getTime
+      )
+    } else pt
+  }
 )
 
 lazy val core = project
@@ -50,6 +61,7 @@ lazy val demoModel = project
     name := "demo-model",
     publish := {},
     publishLocal := {},
+    skip in publish := true,
     scalaJSModuleKind in Test := ModuleKind.CommonJSModule,
     libraryDependencies += "io.suzaku" %%% "diode" % "1.1.5",
     test := {}
@@ -87,6 +99,8 @@ lazy val demo = project
       ";demo/fastOptJS::startWebpackDevServer;~demo/fastOptJS"
     ),
     test := {},
+    skip in publish := true,
     publish := {},
-    publishLocal := {}
+    publishLocal := {},
+    skip in publish := true
   )

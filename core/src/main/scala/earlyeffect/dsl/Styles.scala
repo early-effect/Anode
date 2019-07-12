@@ -3,15 +3,25 @@ package earlyeffect.dsl
 import earlyeffect.impl.Predicated
 
 import scala.language.implicitConversions
+import scala.scalajs.js
 
 object Styles {
 
   sealed trait DeclarationOrSelector {
-    def mkString: String
+    def mkString(className: String, keyFrames: js.Array[KeyFrames] = js.Array()): String
+
+    override def toString: String = mkString("")
+  }
+
+  private[dsl] case class KeyFrames(name: String, selectors: KeyframeSelector*) extends DeclarationOrSelector {
+    override def mkString(className: String, keyFrames: js.Array[KeyFrames]): String = {
+      keyFrames.push(this)
+      s"animation-name: $className-$name;"
+    }
   }
 
   private[dsl] case class Declaration(property: String, value: String) extends DeclarationOrSelector {
-    override def mkString: String = s"$property: $value;"
+    override def mkString(className: String, kf: js.Array[KeyFrames]): String = s"$property: $value;"
   }
 
   sealed abstract class DeclarationConstructor[T](property: String) {
@@ -32,11 +42,20 @@ object Styles {
   def apply(name: String, value: String)            = Declaration(name, value)
   def apply[T](name: String, value: T): Declaration = Declaration(name, value.toString)
 
+  case class KeyframeSelector(selector: String, members: Declaration*) extends DeclarationOrSelector {
+    override def mkString(className: String, keyFrames: js.Array[KeyFrames]): String =
+      s"$selector {\n${members.map("    " + _.mkString(className, keyFrames)).mkString("\n")}\n  }"
+  }
+
   class Selector private (val selector: String, val members: Seq[DeclarationOrSelector]) extends DeclarationOrSelector {
 
-    override def mkString: String = {
-      val ss = members.collect { case s: Selector => s }.map(s => s.mkString).mkString("\n")
-      s"$selector {\n${members.collect { case p: Declaration => p }.map("  " + _.mkString).mkString("\n")}\n}\n" + ss
+    override def mkString(className: String, ks: js.Array[KeyFrames]): String = {
+      val ss = members.collect { case s: Selector => s }.map(s => s.mkString(className, ks)).mkString("\n")
+      val inner = members
+        .collect { case p @ (_: Declaration | _: KeyFrames | _: KeyframeSelector) => p }
+        .map("  " + _.mkString(className, ks))
+        .mkString("\n")
+      s"$selector {\n$inner\n}\n" + ss
     }
 
     def prependAll(s: String): Selector =
@@ -141,8 +160,8 @@ object Styles {
   }
 
   trait Time extends DS {
-    def s(d: Double): Declaration  = apply(s"{$d}s")
-    def ms(d: Double): Declaration = apply(s"{$d}ms")
+    def s(d: Double): Declaration  = apply(s"${d}s")
+    def ms(d: Double): Declaration = apply(s"${d}ms")
   }
 
   trait LineWidth extends DS with Length {
@@ -233,15 +252,15 @@ object Styles {
     def larger: Declaration  = apply("larger")
   }
 
-  def animation               = Declaration("animation")
-  def animationDelay          = new DeclarationConstructor[String]("animation-delay") with Time {}
-  def animationDirection      = Declaration("animation-direction")
-  def animationDuration       = new DeclarationConstructor[String]("animation-duration") with Time {}
-  def animationFillMode       = Declaration("animation-fill-mode")
-  def animationIterationCount = Declaration("animation-iteration-count")
-  def animationName           = new DeclarationConstructor[String]("animation-name") with None {}
-  def animationPlayState      = Declaration("animation-play-state")
-  def animationTimingFunction = Declaration("animation-timing-function")
+  def animation: D[String]               = Declaration("animation")
+  def animationDelay                     = new DeclarationConstructor[String]("animation-delay") with Time {}
+  def animationDirection: D[String]      = Declaration("animation-direction")
+  def animationDuration                  = new DeclarationConstructor[String]("animation-duration") with Time {}
+  def animationFillMode: D[String]       = Declaration("animation-fill-mode")
+  def animationIterationCount: D[String] = Declaration("animation-iteration-count")
+  def animationName                      = new DeclarationConstructor[String]("animation-name") with None {}
+  def animationPlayState: D[String]      = Declaration("animation-play-state")
+  def animationTimingFunction: D[String] = Declaration("animation-timing-function")
 
   lazy val color: DS with Color = new DeclarationConstructor[String]("color") with Color {}
   lazy val zIndex: D[Int]       = Declaration("z-index")
@@ -311,5 +330,8 @@ object Styles {
     def apply(top: String, right: String, bottom: String, left: String): Declaration =
       apply(s"$top $right $bottom $left")
   }
+
+  def rgb(r: Int, g: Int, b: Int): String             = s"rgb($r,$g,$b)"
+  def rgba(r: Int, g: Int, b: Int, a: Double): String = s"rgb($r,$g,$b,$a)"
 
 }
