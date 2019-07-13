@@ -87,4 +87,9 @@ package object earlyeffect {
   }
 
   implicit def toChildrenAsAttributeOrChild(s: Seq[VirtualNode]): AttributeOrChild = Children(s)
+
+  implicit def optionOfAttrToNull(o: Option[Attribute]): AttributeOrChild = {
+    val att: AttributeOrChild = o.fold(null.asInstanceOf[Attribute])(x => x)
+    att
+  }
 }

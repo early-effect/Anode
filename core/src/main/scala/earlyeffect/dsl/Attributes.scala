@@ -204,6 +204,8 @@ object Attributes extends GlobalAttributes with EventListeners {
   def value: A[String]    = attribute[String](name = "value")
   def checked: A[Boolean] = attribute[Boolean](name = "checked")
 
+  def disabled: A[Boolean] = attribute[Boolean](name = "disabled")
+
   def placeholder: A[String] = attribute[String](name = "placeholder")
 
   def apply(name: String, any: Any) = Attribute(name, any.asInstanceOf[js.Any])

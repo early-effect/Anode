@@ -5,6 +5,8 @@ import org.scalajs.dom.html.Document
 import org.scalajs.dom.raw.Element
 import org.scalatest.{FlatSpec, Matchers}
 
+import scala.None
+
 class ElementSpecs extends FlatSpec with Matchers {
   import ElementSpecs._
   def check(s: String): Unit = div.children(0).outerHTML should be(s)
@@ -16,6 +18,17 @@ class ElementSpecs extends FlatSpec with Matchers {
     render(E.span(A.`class`("a"), A.id("foo")))
     check("""<span class="a" id="foo"></span>""")
   }
+  "Elements with None attributes but no children" should "render" in {
+    val a: Option[Attribute] = None
+    render(E.span(A.`class`("a"), A.id("foo"), a))
+    check("""<span class="a" id="foo"></span>""")
+  }
+  "Elements with Some(a) attributes but no children" should "render" in {
+    val a: Option[Attribute] = Some(A.id("foo"))
+    render(E.span(A.`class`("a"), a))
+    check("""<span class="a" id="foo"></span>""")
+  }
+
   "Elements with attributes and children" should "render" in {
     render(E.span(A.id("foo"), A.`class`("a"), E.button()))
     check("""<span class="a" id="foo"><button></button></span>""")
@@ -36,8 +49,8 @@ class ElementSpecs extends FlatSpec with Matchers {
 
 object ElementSpecs {
   def render(vn: VirtualNode): Unit = Preact.render(vn, div)
-  val doc: Document = dom.document
-  val div: Element = dom.document.createElement("div")
-  def replacedNode: Element = div.querySelector("span")
+  val doc: Document                 = dom.document
+  val div: Element                  = dom.document.createElement("div")
+  def replacedNode: Element         = div.querySelector("span")
   doc.documentElement.appendChild(div)
 }
