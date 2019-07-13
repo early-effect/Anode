@@ -6,7 +6,7 @@ import scala.scalajs.js.annotation.JSImport
 object AutoPrefixed {
 
   object Options extends js.Object {
-    def browsers = js.Array("last 2 versions", "> 5%")
+    def overrideBrowserslist = js.Array("last 2 versions", "> 5%")
   }
 
   val Processor = new PostCSS(js.Array(new AutoPrefixer(Options)))

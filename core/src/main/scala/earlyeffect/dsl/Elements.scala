@@ -2,7 +2,7 @@ package earlyeffect.dsl
 
 import earlyeffect.impl.Preact.{AttributeOrChild, Child, h}
 import earlyeffect.impl.VirtualNode
-import earlyeffect.{Attribute, Children}
+import earlyeffect.{Attribute, NodeArgs}
 import earlyeffect._
 import scala.scalajs.js
 
@@ -23,22 +23,8 @@ private[dsl] class ElementConstructor(name: String) {
     js.Dictionary(normalizeClasses(as).map(x => x.name -> x.value): _*)
 
   def apply(acs: AttributeOrChild*): VirtualNode = {
-    val children: Seq[Child] =
-      acs.foldLeft(js.Array[Child]()) {
-        case (as, a) =>
-          val x = a.merge
-          if (x.isInstanceOf[Attribute]) {
-            as
-          } else if (x.isInstanceOf[Children]) {
-            as.push(x.asInstanceOf[Children].nodes: _*)
-            as
-          } else {
-            as.push(x.asInstanceOf[Child])
-            as
-          }
-      }
-
-    h(name, attrDictionary(filterAttributes(acs)), children: _*)
+    val args = NodeArgs(acs)
+    h(name, attrDictionary(args.attributes), args.children: _*)
   }
 }
 

@@ -1,6 +1,6 @@
 package earlyeffect.impl
 
-import earlyeffect.{Attribute, Children}
+import earlyeffect.{Attribute, NodeArgs}
 import org.scalajs.dom
 
 import scala.scalajs.js
@@ -17,7 +17,7 @@ object Preact extends js.Object {
 
   type AnyDictionary = js.Dictionary[js.Any]
 
-  type AttributeOrChild = VirtualNode | Attribute | String | Int | Double | Children | js.Object
+  type AttributeOrChild = VirtualNode | Attribute | String | Int | Double | NodeArgs | js.Object
 
   type Child = VirtualNode | String
 
