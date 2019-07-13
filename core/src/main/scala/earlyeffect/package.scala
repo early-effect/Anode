@@ -86,7 +86,7 @@ package object earlyeffect {
     def em  = s"${n}em"
   }
 
-  implicit def seqToArgs(s: Seq[VirtualNode]): AttributeOrChild = NodeArgs(s)
+  implicit def seqToArgs(s: Seq[AttributeOrChild]): AttributeOrChild = NodeArgs(s)
 
   implicit def optionOfAttrToNull(o: Option[Attribute]): AttributeOrChild = {
     val att: AttributeOrChild = o.fold(null.asInstanceOf[Attribute])(x => x)
