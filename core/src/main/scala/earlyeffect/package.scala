@@ -86,10 +86,21 @@ package object earlyeffect {
     def em  = s"${n}em"
   }
 
-  implicit def seqToArgs(s: Seq[AttributeOrChild]): AttributeOrChild = NodeArgs(s)
+  implicit def seqToArgs[T: IsAttributeOrChild](s: Seq[T]): AttributeOrChild =
+    NodeArgs(s.map(_.asInstanceOf[AttributeOrChild]))
 
-  implicit def optionOfAttrToNull(o: Option[Attribute]): AttributeOrChild = {
-    val att: AttributeOrChild = o.fold(null.asInstanceOf[Attribute])(x => x)
-    att
+  sealed abstract class IsAttributeOrChild[T]
+
+  object IsAttributeOrChild {
+    implicit object NodeIs      extends IsAttributeOrChild[VirtualNode]
+    implicit object StringIs    extends IsAttributeOrChild[String]
+    implicit object AttributeIs extends IsAttributeOrChild[Attribute]
+    implicit object ArgsIs      extends IsAttributeOrChild[NodeArgs]
+    implicit object Is          extends IsAttributeOrChild[AttributeOrChild]
   }
+
+  implicit def optionOfAttrToNull[T: IsAttributeOrChild](o: Option[T]): AttributeOrChild =
+    o.fold[AttributeOrChild](null.asInstanceOf[AttributeOrChild])(x => x.asInstanceOf[AttributeOrChild])
+
+  def args(as: AttributeOrChild*) = NodeArgs(as)
 }

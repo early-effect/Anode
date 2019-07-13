@@ -1,5 +1,6 @@
 package earlyeffect
 
+import earlyeffect.impl.Preact.AttributeOrChild
 import org.scalajs.dom
 import org.scalajs.dom.html.Document
 import org.scalajs.dom.raw.Element
@@ -43,6 +44,18 @@ class ElementSpecs extends FlatSpec with Matchers {
     render(E.span(E.span("hello"), E.span("world")))
     check(
       """<span class="" id=""><span>hello</span><span>world</span></span>"""
+    )
+  }
+  "Elements with children as a sequence" should "render" in {
+    render(E.span(Seq(E.span("hello"), E.span("world"))))
+    check(
+      """<span class="" id=""><span>hello</span><span>world</span></span>"""
+    )
+  }
+  "Elements with a sequence of attributes and children" should "render" in {
+    render(E.span(A.`class`("bar"), args(A.id("foo"), E.span("hello"), E.span("world"))))
+    check(
+      """<span class="bar" id="foo"><span>hello</span><span>world</span></span>"""
     )
   }
 }
