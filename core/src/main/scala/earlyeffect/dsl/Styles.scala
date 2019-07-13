@@ -4,7 +4,6 @@ import earlyeffect.impl.Predicated
 
 import scala.language.implicitConversions
 import scala.scalajs.js
-import scala.scalajs.js.|
 
 object Styles {
 
@@ -166,36 +165,36 @@ object Styles {
   }
 
   trait LineWidth extends DS with Length {
-    def thin: Declaration   = apply("thin")
-    def medium: Declaration = apply("medium")
-    def thick: Declaration  = apply("thick")
+    val thin: Declaration   = apply("thin")
+    val medium: Declaration = apply("medium")
+    val thick: Declaration  = apply("thick")
   }
 
   trait Hidden extends DS {
-    def hidden: Declaration = apply("hidden")
+    val hidden: Declaration = apply("hidden")
   }
 
   trait Visible extends DS {
-    def visible: Declaration = apply("visible")
+    val visible: Declaration = apply("visible")
   }
 
   trait HiddenOrVisible extends Hidden with Visible
 
   trait LinStyle extends DS with None with Hidden {
-    def dotted: Declaration = apply("dotted")
-    def dashed: Declaration = apply("dashed")
-    def solid: Declaration  = apply("solid")
-    def double: Declaration = apply("double")
-    def groove: Declaration = apply("groove")
-    def ridge: Declaration  = apply("ridge")
-    def inset: Declaration  = apply("inset")
-    def outset: Declaration = apply("outset")
+    val dotted: Declaration = apply("dotted")
+    val dashed: Declaration = apply("dashed")
+    val solid: Declaration  = apply("solid")
+    val double: Declaration = apply("double")
+    val groove: Declaration = apply("groove")
+    val ridge: Declaration  = apply("ridge")
+    val inset: Declaration  = apply("inset")
+    val outset: Declaration = apply("outset")
   }
 
   trait LeaderType extends DS {
-    def dotted: Declaration = apply("dotted")
-    def solid: Declaration  = apply("solid")
-    def space: Declaration  = apply("space")
+    val dotted: Declaration = apply("dotted")
+    val solid: Declaration  = apply("solid")
+    val space: Declaration  = apply("space")
   }
 
   trait Leader extends DS with LeaderType {
@@ -205,106 +204,106 @@ object Styles {
   trait LengthPercentage extends Length with Percent
 
   trait Attachment extends DS {
-    def scroll: Declaration = apply("scroll")
-    def fixed: Declaration  = apply("fixed")
-    def local: Declaration  = apply("local")
+    val scroll: Declaration = apply("scroll")
+    val fixed: Declaration  = apply("fixed")
+    val local: Declaration  = apply("local")
   }
 
   trait BlendMode extends DS with Normal {
-    def multiply: Declaration   = apply("multiply")
-    def screen: Declaration     = apply("screen")
-    def overlay: Declaration    = apply("overlay")
-    def darken: Declaration     = apply("darken")
-    def lighten: Declaration    = apply("lighten")
-    def colorBurn: Declaration  = apply("color-burn")
-    def hardLight: Declaration  = apply("hard-light")
-    def softLight: Declaration  = apply("soft-light")
-    def difference: Declaration = apply("difference")
-    def exclusion: Declaration  = apply("exclusion")
-    def hue: Declaration        = apply("hue")
-    def saturation: Declaration = apply("saturation")
-    def color: Declaration      = apply("color")
-    def luminosity: Declaration = apply("luminosity")
+    val multiply: Declaration   = apply("multiply")
+    val screen: Declaration     = apply("screen")
+    val overlay: Declaration    = apply("overlay")
+    val darken: Declaration     = apply("darken")
+    val lighten: Declaration    = apply("lighten")
+    val colorBurn: Declaration  = apply("color-burn")
+    val hardLight: Declaration  = apply("hard-light")
+    val softLight: Declaration  = apply("soft-light")
+    val difference: Declaration = apply("difference")
+    val exclusion: Declaration  = apply("exclusion")
+    val hue: Declaration        = apply("hue")
+    val saturation: Declaration = apply("saturation")
+    val color: Declaration      = apply("color")
+    val luminosity: Declaration = apply("luminosity")
   }
 
   trait Box extends DS {
-    def borderBox: Declaration  = apply("border-box")
-    def paddingBox: Declaration = apply("padding-box")
-    def contentBox: Declaration = apply("content-box")
+    val borderBox: Declaration  = apply("border-box")
+    val paddingBox: Declaration = apply("padding-box")
+    val contentBox: Declaration = apply("content-box")
   }
 
   trait FontWeightAbsolute extends DS with Number {
-    def normal: Declaration = apply("normal")
-    def bold: Declaration   = apply("bold")
+    val normal: Declaration = apply("normal")
+    val bold: Declaration   = apply("bold")
   }
 
   trait AbsoluteSize extends DS {
-    def xxSmall: Declaration = apply("xx-small")
-    def xSmall: Declaration  = apply("x-small")
-    def small: Declaration   = apply("small")
-    def medium: Declaration  = apply("medium")
-    def large: Declaration   = apply("large")
-    def xLarge: Declaration  = apply("x-large")
-    def xxLarge: Declaration = apply("xx-large")
+    val xxSmall: Declaration = apply("xx-small")
+    val xSmall: Declaration  = apply("x-small")
+    val small: Declaration   = apply("small")
+    val medium: Declaration  = apply("medium")
+    val large: Declaration   = apply("large")
+    val xLarge: Declaration  = apply("x-large")
+    val xxLarge: Declaration = apply("xx-large")
   }
 
   trait RelativeSize extends DS {
-    def smaller: Declaration = apply("smaller")
-    def larger: Declaration  = apply("larger")
+    val smaller: Declaration = apply("smaller")
+    val larger: Declaration  = apply("larger")
   }
 
   trait DisplayOutside extends DS {
-    def block: Declaration  = apply("block")
-    def inline: Declaration = apply("inline")
-    def runIn: Declaration  = apply("run-in")
+    val block: Declaration  = apply("block")
+    val inline: Declaration = apply("inline")
+    val runIn: Declaration  = apply("run-in")
   }
 
   trait DisplayBox extends DS with None {
-    def contents: Declaration = apply("contents")
+    val contents: Declaration = apply("contents")
   }
 
   trait DisplayInside extends DS {
-    def flow: Declaration     = apply("flow")
-    def flowRoot: Declaration = apply("flow-root")
-    def table: Declaration    = apply("table")
-    def flex: Declaration     = apply("flex")
-    def grid: Declaration     = apply("grid")
-    def ruby: Declaration     = apply("ruby")
+    val flow: Declaration     = apply("flow")
+    val flowRoot: Declaration = apply("flow-root")
+    val table: Declaration    = apply("table")
+    val flex: Declaration     = apply("flex")
+    val grid: Declaration     = apply("grid")
+    val ruby: Declaration     = apply("ruby")
   }
 
   trait DisplayInternal extends DS {
-    def tableRowGroup: Declaration     = apply("table-row-group")
-    def tableHeaderGroup: Declaration  = apply("table-header-group")
-    def tableFooterGroup: Declaration  = apply("table-footer-group")
-    def tableRow: Declaration          = apply("table-row")
-    def tableCell: Declaration         = apply("table-cell")
-    def tableColumnGroup: Declaration  = apply("table-column-group")
-    def tableColumn: Declaration       = apply("table-column")
-    def tableCaption: Declaration      = apply("table-caption")
-    def rubyBase: Declaration          = apply("ruby-base")
-    def rubyText: Declaration          = apply("ruby-text")
-    def rubyBaseContainer: Declaration = apply("ruby-base-container")
-    def rubyTextContainer: Declaration = apply("ruby-text-container")
+    val tableRowGroup: Declaration     = apply("table-row-group")
+    val tableHeaderGroup: Declaration  = apply("table-header-group")
+    val tableFooterGroup: Declaration  = apply("table-footer-group")
+    val tableRow: Declaration          = apply("table-row")
+    val tableCell: Declaration         = apply("table-cell")
+    val tableColumnGroup: Declaration  = apply("table-column-group")
+    val tableColumn: Declaration       = apply("table-column")
+    val tableCaption: Declaration      = apply("table-caption")
+    val rubyBase: Declaration          = apply("ruby-base")
+    val rubyText: Declaration          = apply("ruby-text")
+    val rubyBaseContainer: Declaration = apply("ruby-base-container")
+    val rubyTextContainer: Declaration = apply("ruby-text-container")
   }
 
   trait DisplayLegacy extends DS {
-    def inlineBlock: Declaration    = apply("inline-block")
-    def inlineListItem: Declaration = apply("inline-list-item")
-    def inlineTable: Declaration    = apply("inline-table")
-    def inlineFlex: Declaration     = apply("inline-flex")
-    def inlineGrid: Declaration     = apply("inline-grid")
+    val inlineBlock: Declaration    = apply("inline-block")
+    val inlineListItem: Declaration = apply("inline-list-item")
+    val inlineTable: Declaration    = apply("inline-table")
+    val inlineFlex: Declaration     = apply("inline-flex")
+    val inlineGrid: Declaration     = apply("inline-grid")
   }
 
   trait DisplayListItem extends DS {
-    def block_listItem: Declaration           = apply("block list-item")
-    def block_flow_listItem: Declaration      = apply("block flow list-item")
-    def block_flowRoot_listItem: Declaration  = apply("block flow-root list-item")
-    def inline_listItem: Declaration          = apply("inline list-item")
-    def inline_flow_listItem: Declaration     = apply("inline flow list-item")
-    def inline_flowRoot_listItem: Declaration = apply("inline flow-root list-item")
-    def runIn_listItem: Declaration           = apply("run-in list-item")
-    def runIn_flow_listItem: Declaration      = apply("run-in flow list-item")
-    def runIn_flowRoot_listItem: Declaration  = apply("run-in flow-root list-item")
+    val block_listItem: Declaration           = apply("block list-item")
+    val block_flow_listItem: Declaration      = apply("block flow list-item")
+    val block_flowRoot_listItem: Declaration  = apply("block flow-root list-item")
+    val inline_listItem: Declaration          = apply("inline list-item")
+    val inline_flow_listItem: Declaration     = apply("inline flow list-item")
+    val inline_flowRoot_listItem: Declaration = apply("inline flow-root list-item")
+    val runIn_listItem: Declaration           = apply("run-in list-item")
+    val runIn_flow_listItem: Declaration      = apply("run-in flow list-item")
+    val runIn_flowRoot_listItem: Declaration  = apply("run-in flow-root list-item")
   }
 
   trait Display
@@ -328,28 +327,52 @@ object Styles {
   lazy val color: DS with Color = new DeclarationConstructor[String]("color") with Color {}
   lazy val zIndex: D[Int]       = Declaration("z-index")
   lazy val all: DS = new DeclarationConstructor[String]("all") {
-    def initial: Declaration = apply("initial")
-    def inherit: Declaration = apply("inherit")
-    def unset: Declaration   = apply("unset")
-    def revert: Declaration  = apply("revert")
+    val initial: Declaration = apply("initial")
+    val inherit: Declaration = apply("inherit")
+    val unset: Declaration   = apply("unset")
+    val revert: Declaration  = apply("revert")
   }
   def alignContent: DS = Declaration("align-content")
 
-  def alignItems: DS = Declaration("align-items")
+  trait BaselinePosition extends DS {
+    val firstBaseline: Declaration = apply("first baseline")
+    val lastBaseline: Declaration  = apply("last baseline")
+    val baseline: Declaration      = apply("baseline")
+  }
+
+  trait SelfPosition {
+    def apply(s: String): Declaration
+    val center: Declaration    = apply("center")
+    val start: Declaration     = apply("start")
+    val end: Declaration       = apply("end")
+    val selfStart: Declaration = apply("self-start")
+    val selfEnd: Declaration   = apply("self-end")
+    val flexStart: Declaration = apply("flex-start")
+    val flexEnd: Declaration   = apply("flex-end")
+  }
+  lazy val alignItems = new DeclarationConstructor[String]("align-items") with Normal with BaselinePosition
+  with SelfPosition { self =>
+    val stretch: Declaration = apply("stretch")
+    sealed class Prefixed(prefix: String) extends SelfPosition {
+      override def apply(s: String): Declaration = self.apply(s"$prefix $s")
+    }
+    val safe   = new Prefixed("safe")
+    val unsafe = new Prefixed("safe")
+  }
 
   def alignSelf: DS = Declaration("align-self")
 
   lazy val appearance = new DeclarationConstructor[String]("appearance") with None with Auto with Compat {
-    def button: Declaration    = apply("button")
-    def textfield: Declaration = apply("textfield")
+    val button: Declaration    = apply("button")
+    val textfield: Declaration = apply("textfield")
   }
   lazy val backfaceVisibility             = new DeclarationConstructor[String]("backface-visibility") with HiddenOrVisible {}
-  def background                          = Declaration("background")
+  def background: DS                      = Declaration("background")
   lazy val backgroundAttachment           = new DeclarationConstructor[String]("background-attachment") with Attachment {}
   lazy val backgroundBlendMode            = new DeclarationConstructor[String]("background-blend-mode") with BlendMode {}
   lazy val backgroundClip                 = new DeclarationConstructor[String]("background-clip") with Box {}
   lazy val backgroundColor: DS with Color = new DeclarationConstructor[String]("background-color") with Color {}
-  def backgroundImage                     = Declaration("background-image")
+  def backgroundImage: DS                 = Declaration("background-image")
   lazy val backgroundOrigin               = new DeclarationConstructor[String]("background-origin") with Box {}
   def backgroundPosition: DS              = Declaration("background-position")
   def backgroundRepeat: DS                = Declaration("background-repeat")
@@ -362,8 +385,8 @@ object Styles {
 
   //TODO:Incomplete
   lazy val justifyContent = new DeclarationConstructor[String]("justify-content") with Normal {
-    def left: Declaration  = apply("left")
-    def right: Declaration = apply("right")
+    val left: Declaration  = apply("left")
+    val right: Declaration = apply("right")
   }
 
   lazy val lineHeight = new DeclarationConstructor[String]("line-height") with Normal with LengthPercentage {
@@ -371,37 +394,50 @@ object Styles {
   }
 
   lazy val textAlign = new DeclarationConstructor[String]("text-align") {
-    def start: Declaration       = apply("start")
-    def send: Declaration        = apply("send")
-    def left: Declaration        = apply("left")
-    def right: Declaration       = apply("right")
-    def center: Declaration      = apply("center")
-    def justify: Declaration     = apply("justify")
-    def matchParent: Declaration = apply("match-parent")
+    val start: Declaration       = apply("start")
+    val send: Declaration        = apply("send")
+    val left: Declaration        = apply("left")
+    val right: Declaration       = apply("right")
+    val center: Declaration      = apply("center")
+    val justify: Declaration     = apply("justify")
+    val matchParent: Declaration = apply("match-parent")
   }
 
   lazy val textRendering = new DeclarationConstructor[String]("text-rendering") with Auto {
-    def optimizeSpeed: Declaration      = apply("optimizeSpeed")
-    def optimizeLegibility: Declaration = apply("optimizeLegibility")
-    def geometricPrecision: Declaration = apply("geometricPrecision")
+    val optimizeSpeed: Declaration      = apply("optimizeSpeed")
+    val optimizeLegibility: Declaration = apply("optimizeLegibility")
+    val geometricPrecision: Declaration = apply("geometricPrecision")
   }
 
   def textShadow: DS = Declaration("text-shadow")
 
   //TODO: This is not a complete type
   lazy val height = new DeclarationConstructor[String]("height") with Auto with LengthPercentage {
-    def available: Declaration  = apply("available")
-    def minContent: Declaration = apply("min-content")
-    def maxContent: Declaration = apply("max-content")
-    def fitContent: Declaration = apply("fit-content")
+    val available: Declaration  = apply("available")
+    val minContent: Declaration = apply("min-content")
+    val maxContent: Declaration = apply("max-content")
+    val fitContent: Declaration = apply("fit-content")
   }
   //TODO: This is not a complete type
   lazy val width = new DeclarationConstructor[String]("width") with Auto with LengthPercentage {
-    def available: Declaration  = apply("available")
-    def minContent: Declaration = apply("min-content")
-    def maxContent: Declaration = apply("max-content")
-    def fitContent: Declaration = apply("fit-content")
+    val available: Declaration  = apply("available")
+    val minContent: Declaration = apply("min-content")
+    val maxContent: Declaration = apply("max-content")
+    val fitContent: Declaration = apply("fit-content")
   }
+
+  trait MinMaxWidthHeight extends DS with LengthPercentage with None {
+    //"<length> | <percentage> | none | max-content | min-content | fit-content | fill-available",
+    val maxContent: Declaration    = apply("max-content")
+    val minContent: Declaration    = apply("min-content")
+    val fitContent: Declaration    = apply("fit-content")
+    val fillAvailable: Declaration = apply("fill-available")
+  }
+
+  lazy val minWidth: DS  = new DeclarationConstructor[String]("min-width") with MinMaxWidthHeight  {}
+  lazy val maxWidth: DS  = new DeclarationConstructor[String]("max-width") with MinMaxWidthHeight  {}
+  lazy val minHeight: DS = new DeclarationConstructor[String]("min-height") with MinMaxWidthHeight {}
+  lazy val maxHeight: DS = new DeclarationConstructor[String]("max-height") with MinMaxWidthHeight {}
 
   lazy val margin = new DeclarationConstructor[String]("margin") {
     def apply(vertical: String, horizontal: String): Declaration            = apply(s"$vertical $horizontal")
@@ -412,84 +448,84 @@ object Styles {
   }
 
   lazy val cursor = new DeclarationConstructor[String]("cursor") with Auto with None {
-    def default: Declaration      = apply("default")
-    def contextMenu: Declaration  = apply("context-menu")
-    def help: Declaration         = apply("help")
-    def pointer: Declaration      = apply("pointer")
-    def progress: Declaration     = apply("progress")
-    def waitCursor: Declaration   = apply("wait")
-    def cell: Declaration         = apply("cell")
-    def crosshair: Declaration    = apply("crosshair")
-    def text: Declaration         = apply("text")
-    def verticalText: Declaration = apply("vertical-text")
-    def alias: Declaration        = apply("alias")
-    def copy: Declaration         = apply("copy")
-    def move: Declaration         = apply("move")
-    def noDrop: Declaration       = apply("no-drop")
-    def notAllowed: Declaration   = apply("not-allowed")
-    def eResize: Declaration      = apply("e-resize")
-    def nResize: Declaration      = apply("n-resize")
-    def neResize: Declaration     = apply("ne-resize")
-    def nwResize: Declaration     = apply("nw-resize")
-    def sResize: Declaration      = apply("s-resize")
-    def seResize: Declaration     = apply("se-resize")
-    def swResize: Declaration     = apply("sw-resize")
-    def wResize: Declaration      = apply("w-resize")
-    def ewResize: Declaration     = apply("ew-resize")
-    def nsResize: Declaration     = apply("ns-resize")
-    def nsewResize: Declaration   = apply("nsew-resize")
-    def nwseResize: Declaration   = apply("nwse-resize")
-    def colResize: Declaration    = apply("col-resize")
-    def rowResize: Declaration    = apply("row-resize")
-    def allScroll: Declaration    = apply("all-scroll")
-    def zoomIn: Declaration       = apply("zoom-in")
-    def zoomOut: Declaration      = apply("zoom-out")
-    def grab: Declaration         = apply("grab")
-    def grabbing: Declaration     = apply("grabbing")
+    val default: Declaration      = apply("default")
+    val contextMenu: Declaration  = apply("context-menu")
+    val help: Declaration         = apply("help")
+    val pointer: Declaration      = apply("pointer")
+    val progress: Declaration     = apply("progress")
+    val waitCursor: Declaration   = apply("wait")
+    val cell: Declaration         = apply("cell")
+    val crosshair: Declaration    = apply("crosshair")
+    val text: Declaration         = apply("text")
+    val verticalText: Declaration = apply("vertical-text")
+    val alias: Declaration        = apply("alias")
+    val copy: Declaration         = apply("copy")
+    val move: Declaration         = apply("move")
+    val noDrop: Declaration       = apply("no-drop")
+    val notAllowed: Declaration   = apply("not-allowed")
+    val eResize: Declaration      = apply("e-resize")
+    val nResize: Declaration      = apply("n-resize")
+    val neResize: Declaration     = apply("ne-resize")
+    val nwResize: Declaration     = apply("nw-resize")
+    val sResize: Declaration      = apply("s-resize")
+    val seResize: Declaration     = apply("se-resize")
+    val swResize: Declaration     = apply("sw-resize")
+    val wResize: Declaration      = apply("w-resize")
+    val ewResize: Declaration     = apply("ew-resize")
+    val nsResize: Declaration     = apply("ns-resize")
+    val nsewResize: Declaration   = apply("nsew-resize")
+    val nwseResize: Declaration   = apply("nwse-resize")
+    val colResize: Declaration    = apply("col-resize")
+    val rowResize: Declaration    = apply("row-resize")
+    val allScroll: Declaration    = apply("all-scroll")
+    val zoomIn: Declaration       = apply("zoom-in")
+    val zoomOut: Declaration      = apply("zoom-out")
+    val grab: Declaration         = apply("grab")
+    val grabbing: Declaration     = apply("grabbing")
   }
 
-  def padding: DS = Declaration("padding")
+  val padding: DS = Declaration("padding")
 
   lazy val paddingLeft   = new DeclarationConstructor[String]("padding-left") with LengthPercentage   {}
   lazy val paddingRight  = new DeclarationConstructor[String]("padding-right") with LengthPercentage  {}
   lazy val paddingTop    = new DeclarationConstructor[String]("padding-top") with LengthPercentage    {}
   lazy val paddingBottom = new DeclarationConstructor[String]("padding-bottom") with LengthPercentage {}
 
-  def opacity: D[Double] = Declaration("opacity")
+  val opacity: D[Double] = Declaration("opacity")
 
   lazy val display = new DeclarationConstructor[String]("display") with Display {}
 
-  def flex: DS = Declaration("flex")
+  val flex: DS = Declaration("flex")
 
   def flexBasis: DS = Declaration("flex-basis")
 
   trait FlexDirection extends DS {
-    def row: Declaration           = apply("row")
-    def rowReverse: Declaration    = apply("row-reverse")
-    def column: Declaration        = apply("column")
-    def columnReverse: Declaration = apply("column-reverse")
+    val row: Declaration           = apply("row")
+    val rowReverse: Declaration    = apply("row-reverse")
+    val column: Declaration        = apply("column")
+    val columnReverse: Declaration = apply("column-reverse")
   }
 
   trait FlexWrap extends DS {
-    def nowrap: Declaration      = apply("nowrap")
-    def wrap: Declaration        = apply("wrap")
-    def wrapReverse: Declaration = apply("wrap-reverse")
+    val nowrap: Declaration      = apply("nowrap")
+    val wrap: Declaration        = apply("wrap")
+    val wrapReverse: Declaration = apply("wrap-reverse")
   }
 
   lazy val flexDirection = new DeclarationConstructor[String]("flex-direction") with FlexDirection          {}
   lazy val flexFlow      = new DeclarationConstructor[String]("flex-flow") with FlexDirection with FlexWrap {}
 
-  def flexGrow: D[Double] = Declaration("flex-grow")
+  val flexGrow: D[Double] = Declaration("flex-grow")
 
-  def flexShrink: D[Double] = Declaration("flex-shrink")
+  val flexShrink: D[Double] = Declaration("flex-shrink")
 
   lazy val flexWrap = new DeclarationConstructor[String]("flex-wrap") with FlexWrap {}
 
   lazy val float = new DeclarationConstructor[String]("float") with None {
-    def left: Declaration        = apply("left")
-    def right: Declaration       = apply("right")
-    def inlineStart: Declaration = apply("inline-start")
-    def inlineEnd: Declaration   = apply("inline-end")
+    val left: Declaration        = apply("left")
+    val right: Declaration       = apply("right")
+    val inlineStart: Declaration = apply("inline-start")
+    val inlineEnd: Declaration   = apply("inline-end")
   }
 
   def fontFamily: DS = Declaration("font-family")
@@ -510,20 +546,20 @@ object Styles {
   }
 
   trait FontStretchAbsolute extends Normal with Percent {
-    def ultraCondensed: Declaration = apply("ultra-condensed")
-    def extraCondensed: Declaration = apply("extra-condensed")
-    def condensed: Declaration      = apply("condensed")
-    def semCondensed: Declaration   = apply("sem-condensed")
-    def semiExpanded: Declaration   = apply("semi-expanded")
-    def expanded: Declaration       = apply("expanded")
-    def extraExpanded: Declaration  = apply("extra-expanded")
-    def ultraExpanded: Declaration  = apply("ultra-expanded")
+    val ultraCondensed: Declaration = apply("ultra-condensed")
+    val extraCondensed: Declaration = apply("extra-condensed")
+    val condensed: Declaration      = apply("condensed")
+    val semCondensed: Declaration   = apply("sem-condensed")
+    val semiExpanded: Declaration   = apply("semi-expanded")
+    val expanded: Declaration       = apply("expanded")
+    val extraExpanded: Declaration  = apply("extra-expanded")
+    val ultraExpanded: Declaration  = apply("ultra-expanded")
 
   }
   lazy val fontStretch = new DeclarationConstructor[String]("font-stretch") with FontStretchAbsolute {}
 
   lazy val fontStyle = new DeclarationConstructor[String]("font-style") with Normal {
-    def italic: Declaration = apply("italic")
+    val italic: Declaration = apply("italic")
     def oblique             = Oblique
 
     object Oblique {
@@ -536,8 +572,8 @@ object Styles {
   }
 
   lazy val fontSynthesis = new DeclarationConstructor[String]("font-synthesis") with None {
-    def weight: Declaration = apply("weight")
-    def style: Declaration  = apply("style")
+    val weight: Declaration = apply("weight")
+    val style: Declaration  = apply("style")
   }
 
   //TODO: this is incomplete - I think I could do this one
@@ -548,28 +584,40 @@ object Styles {
   with None {}
 
   lazy val fontVariantCaps = new DeclarationConstructor[String]("font-variant-caps") with Normal {
-    def smallCaps: Declaration     = apply("small-caps")
-    def allSmallCaps: Declaration  = apply("all-small-caps")
-    def petiteCaps: Declaration    = apply("petite-caps")
-    def allPetiteCaps: Declaration = apply("all-petite-caps")
-    def unicase: Declaration       = apply("unicase")
-    def titlingCaps: Declaration   = apply("titling-caps")
+    val smallCaps: Declaration     = apply("small-caps")
+    val allSmallCaps: Declaration  = apply("all-small-caps")
+    val petiteCaps: Declaration    = apply("petite-caps")
+    val allPetiteCaps: Declaration = apply("all-petite-caps")
+    val unicase: Declaration       = apply("unicase")
+    val titlingCaps: Declaration   = apply("titling-caps")
   }
 
   lazy val fontVariantPosition = new DeclarationConstructor[String]("font-variant-position") with Normal {
-    def sub: Declaration     = apply("sub")
-    def `super`: Declaration = apply("super")
+    val sub: Declaration     = apply("sub")
+    val `super`: Declaration = apply("super")
   }
 
   lazy val fontWeight = new DeclarationConstructor[String]("font-weight") with FontWeightAbsolute {
-    def bolder: Declaration  = apply("bolder")
-    def lighter: Declaration = apply("lighter")
+    val bolder: Declaration  = apply("bolder")
+    val lighter: Declaration = apply("lighter")
   }
 
   lazy val marginLeft   = new DeclarationConstructor[String]("margin-left") with Auto with LengthPercentage   {}
   lazy val marginRight  = new DeclarationConstructor[String]("margin-right") with Auto with LengthPercentage  {}
   lazy val marginTop    = new DeclarationConstructor[String]("margin-top") with Auto with LengthPercentage    {}
   lazy val marginBottom = new DeclarationConstructor[String]("margin-bottom") with Auto with LengthPercentage {}
+
+  lazy val textOverflow = new DeclarationConstructor[String]("text-overflow") {
+    val clip: Declaration     = apply("clip")
+    val ellipses: Declaration = apply("ellipses")
+  }
+
+  lazy val overflow = new DeclarationConstructor[String]("overflow") with Auto {
+    val visible: Declaration = apply("visible")
+    val hidden: Declaration  = apply("hidden")
+    val clip: Declaration    = apply("clip")
+    val scroll: Declaration  = apply("scroll")
+  }
 
   def rgb(r: Int, g: Int, b: Int): String             = s"rgb($r,$g,$b)"
   def rgba(r: Int, g: Int, b: Int, a: Double): String = s"rgb($r,$g,$b,$a)"
