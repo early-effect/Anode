@@ -25,6 +25,12 @@ object Styles {
   }
 
   sealed abstract class DeclarationConstructor[T](property: String) {
+    abstract class Prefixed(s: String) extends D[T](property) {
+      override def apply(value: T): Declaration = Declaration(property, s"$s ${value.toString}")
+    }
+    val inherit         = Declaration(property, "inherit")
+    val initial         = Declaration(property, "initial")
+    val unset           = Declaration(property, "unset")
     def apply(value: T) = Declaration(property, value.toString)
   }
 
@@ -327,10 +333,7 @@ object Styles {
   lazy val color: DS with Color = new DeclarationConstructor[String]("color") with Color {}
   lazy val zIndex: D[Int]       = Declaration("z-index")
   lazy val all: DS = new DeclarationConstructor[String]("all") {
-    val initial: Declaration = apply("initial")
-    val inherit: Declaration = apply("inherit")
-    val unset: Declaration   = apply("unset")
-    val revert: Declaration  = apply("revert")
+    val revert: Declaration = apply("revert")
   }
   def alignContent: DS = Declaration("align-content")
 
@@ -340,8 +343,7 @@ object Styles {
     val baseline: Declaration      = apply("baseline")
   }
 
-  trait SelfPosition {
-    def apply(s: String): Declaration
+  trait SelfPosition extends DS {
     val center: Declaration    = apply("center")
     val start: Declaration     = apply("start")
     val end: Declaration       = apply("end")
@@ -350,14 +352,17 @@ object Styles {
     val flexStart: Declaration = apply("flex-start")
     val flexEnd: Declaration   = apply("flex-end")
   }
+
+  trait LeftOrRight extends DS {
+    val left: Declaration  = apply("left")
+    val right: Declaration = apply("right")
+  }
+
   lazy val alignItems = new DeclarationConstructor[String]("align-items") with Normal with BaselinePosition
   with SelfPosition { self =>
     val stretch: Declaration = apply("stretch")
-    sealed class Prefixed(prefix: String) extends SelfPosition {
-      override def apply(s: String): Declaration = self.apply(s"$prefix $s")
-    }
-    val safe   = new Prefixed("safe")
-    val unsafe = new Prefixed("safe")
+    val safe                 = new Prefixed("safe") with SelfPosition {}
+    val unsafe               = new Prefixed("unsafe") with SelfPosition {}
   }
 
   def alignSelf: DS = Declaration("align-self")
@@ -381,12 +386,50 @@ object Styles {
   def border: DS                          = Declaration("border")
   def borderBlock: DS                     = Declaration("border-block")
 
+  trait LineStyle extends None {
+    val hidden: Declaration = apply("hidden")
+    val dotted: Declaration = apply("dotted")
+    val dashed: Declaration = apply("dashed")
+    val solid: Declaration  = apply("solid")
+    val double: Declaration = apply("double")
+    val groove: Declaration = apply("groove")
+    val ridge: Declaration  = apply("ridge")
+    val inset: Declaration  = apply("inset")
+    val outset: Declaration = apply("outset")
+  }
+  lazy val borderStyle  = new DeclarationConstructor[String]("border-style") with LineStyle         {}
+  lazy val borderColor  = new DeclarationConstructor[String]("border-color") with Color             {}
+  lazy val borderRadius = new DeclarationConstructor[String]("border-radius") with LengthPercentage {}
+
+  def boxShadow: DS = Declaration("box-shadow")
+
   def font: DS = Declaration("font")
 
-  //TODO:Incomplete
-  lazy val justifyContent = new DeclarationConstructor[String]("justify-content") with Normal {
-    val left: Declaration  = apply("left")
-    val right: Declaration = apply("right")
+  trait ContentDistribution extends DS {
+    val spaceBetween: Declaration = apply("space-between")
+    val spaceAround: Declaration  = apply("space-around")
+    val spaceEvenly: Declaration  = apply("space-evenly")
+    val stretch: Declaration      = apply("stretch")
+  }
+  lazy val justifyContent = new DeclarationConstructor[String]("justify-content") with Normal with ContentDistribution
+  with LeftOrRight {
+    val safe   = new Prefixed("safe") with ContentPosition   {}
+    val unsafe = new Prefixed("unsafe") with ContentPosition {}
+  }
+
+  trait ContentPosition extends DS {
+    val center: Declaration    = apply("center")
+    val start: Declaration     = apply("start")
+    val end: Declaration       = apply("end")
+    val flexStart: Declaration = apply("flex-start")
+    val flexEnd: Declaration   = apply("flex-end")
+  }
+
+  lazy val justifyItems = new DeclarationConstructor[String]("justify-items") with BaselinePosition with SelfPosition
+  with Normal with Auto with LeftOrRight { self =>
+    val stretch: Declaration = apply("stretch")
+    val safe                 = new Prefixed("safe") with SelfPosition
+    val unsafe               = new Prefixed("unsafe") with SelfPosition
   }
 
   lazy val lineHeight = new DeclarationConstructor[String]("line-height") with Normal with LengthPercentage {
@@ -434,12 +477,13 @@ object Styles {
     val fillAvailable: Declaration = apply("fill-available")
   }
 
-  lazy val minWidth: DS  = new DeclarationConstructor[String]("min-width") with MinMaxWidthHeight  {}
-  lazy val maxWidth: DS  = new DeclarationConstructor[String]("max-width") with MinMaxWidthHeight  {}
-  lazy val minHeight: DS = new DeclarationConstructor[String]("min-height") with MinMaxWidthHeight {}
-  lazy val maxHeight: DS = new DeclarationConstructor[String]("max-height") with MinMaxWidthHeight {}
+  lazy val minWidth  = new DeclarationConstructor[String]("min-width") with MinMaxWidthHeight  {}
+  lazy val maxWidth  = new DeclarationConstructor[String]("max-width") with MinMaxWidthHeight  {}
+  lazy val minHeight = new DeclarationConstructor[String]("min-height") with MinMaxWidthHeight {}
+  lazy val maxHeight = new DeclarationConstructor[String]("max-height") with MinMaxWidthHeight {}
 
-  lazy val margin = new DeclarationConstructor[String]("margin") {
+  lazy val margin = new DeclarationConstructor[String]("margin") with LengthPercentage with Auto {
+
     def apply(vertical: String, horizontal: String): Declaration            = apply(s"$vertical $horizontal")
     def apply(top: String, horizontal: String, bottom: String): Declaration = apply(s"$top $horizontal $bottom")
 
@@ -490,6 +534,14 @@ object Styles {
   lazy val paddingRight  = new DeclarationConstructor[String]("padding-right") with LengthPercentage  {}
   lazy val paddingTop    = new DeclarationConstructor[String]("padding-top") with LengthPercentage    {}
   lazy val paddingBottom = new DeclarationConstructor[String]("padding-bottom") with LengthPercentage {}
+
+  lazy val position = new DeclarationConstructor[String]("position") {
+    val static: Declaration   = apply("static")
+    val relative: Declaration = apply("relative")
+    val absolute: Declaration = apply("absolute")
+    val sticky: Declaration   = apply("sticky")
+    val fixed: Declaration    = apply("fixed")
+  }
 
   val opacity: D[Double] = Declaration("opacity")
 
@@ -618,6 +670,13 @@ object Styles {
     val clip: Declaration    = apply("clip")
     val scroll: Declaration  = apply("scroll")
   }
+
+  trait RightLeftTopBottom extends LengthPercentage with Auto
+
+  lazy val top    = new DeclarationConstructor[String]("top") with RightLeftTopBottom    {}
+  lazy val bottom = new DeclarationConstructor[String]("bottom") with RightLeftTopBottom {}
+  lazy val left   = new DeclarationConstructor[String]("left") with RightLeftTopBottom   {}
+  lazy val right  = new DeclarationConstructor[String]("right") with RightLeftTopBottom  {}
 
   def rgb(r: Int, g: Int, b: Int): String             = s"rgb($r,$g,$b)"
   def rgba(r: Int, g: Int, b: Int, a: Double): String = s"rgb($r,$g,$b,$a)"

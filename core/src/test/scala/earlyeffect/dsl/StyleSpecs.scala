@@ -90,4 +90,7 @@ class StyleSpecs extends FlatSpec with Matchers {
         |}
         |""".stripMargin)
   }
+  "prefixes" should "work" in {
+    S.alignItems.safe.end.toString should be("align-items: safe end;")
+  }
 }
