@@ -4,20 +4,19 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 import scala.scalajs.js.|
 
-abstract class VirtualNode extends js.Object {
+abstract class VNodeJS extends js.Object {
 
   @JSName("type")
   def `type`: String | js.Dynamic
 
   def props: js.Dynamic
 
-  def children: js.Array[VirtualNode] = props.children.asInstanceOf[js.Array[VirtualNode]]
+  def children: js.Array[VNodeJS] = props.children.asInstanceOf[js.Array[VNodeJS]]
 
   def key: js.UndefOr[String]
 
 }
 
-object VirtualNode {
-
-  implicit class When(vn: VirtualNode) extends Predicated(vn)
+object VNodeJS {
+  implicit class When(vn: VNodeJS) extends Predicated(vn)
 }

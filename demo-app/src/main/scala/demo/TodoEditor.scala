@@ -6,7 +6,7 @@ import earlyeffect._
 import org.scalajs.dom.raw.HTMLInputElement
 
 case class TodoEditor(todo: Todo) extends Component[TodoEditor] {
-  override def render(props: TodoEditor): VirtualNode =
+  override def render(props: TodoEditor): VNode =
     E.input(
       A.id(s"editor-${todo.key}"),
       A.`class`("edit"),

@@ -1,12 +1,13 @@
 package earlyeffect.dsl
 
-import earlyeffect.Attribute
+import earlyeffect.{Attribute, Declaration}
 import org.scalajs.dom
 import org.scalajs.dom._
 import org.scalajs.dom.raw.Event
 
 import scala.language.implicitConversions
 import scala.scalajs.js
+import scala.scalajs.js.Dictionary
 
 sealed abstract class AttributeConstructor[T](name: String) {
   def apply(t: T) = Attribute(name, t.asInstanceOf[js.Any])
@@ -102,8 +103,10 @@ trait GlobalAttributes extends AttributSet {
   def spellcheck: A[Boolean] = attribute[Boolean](name = "spellcheck")
   def translate: A[String]   = new AttributeConstructor[String]("translate") with YesOrNo {}
 
-  def style(styles: Styles.Declaration*) =
-    Attribute("style", js.Dictionary(styles.filter(_ != null).map(x => x.property -> x.value): _*))
+  def style(styles: Declaration*) = {
+    val d: Dictionary[String] = js.Dictionary(styles.filter(_ != null).map(x => x.property -> x.value): _*)
+    Attribute("style", d)
+  }
 
   def tabindex: A[Int] = attribute[Int](name = "tabindex")
   def title: A[String] = attribute[String](name = "title")
@@ -207,6 +210,8 @@ object Attributes extends GlobalAttributes with EventListeners {
   def disabled: A[Boolean] = attribute[Boolean](name = "disabled")
 
   def placeholder: A[String] = attribute[String](name = "placeholder")
+
+  def src: A[String] = attribute[String](name = "src")
 
   def apply(name: String, any: Any) = Attribute(name, any.asInstanceOf[js.Any])
 }

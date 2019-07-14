@@ -2,24 +2,22 @@ package demo
 
 import demo.model.TodoList.actions._
 import demo.model._
-import earlyeffect.impl.Preact
+import earlyeffect._
 import org.scalajs.dom
 import org.scalajs.dom.raw.HTMLInputElement
-import earlyeffect._
 
 object App {
 
   val container: dom.Element = dom.document.querySelector("div[id='root']")
 
-  def render(list: TodoList): Unit =
-    Preact.render(todoList(list), container)
+  val render = (x: TodoList) => preact.render(todoList(x), container)
 
   def main(args: Array[String]): Unit = {
     ModelCircuit.subscribe(ModelCircuit.zoom(_.todoList))(x => render(x.value))
     render(ModelCircuit.zoom(_.todoList).value)
   }
 
-  def todoList(l: TodoList): VirtualNode =
+  def todoList(l: TodoList): VNode =
     E.div(
       E.section(
         A.`class`("todoapp"),
@@ -29,12 +27,12 @@ object App {
             E.h1("todos"),
             newTodo
           ),
-          if (l.todos.nonEmpty)
-            Seq(
+          when(l.todos.nonEmpty)(
+            fragment(
               list(l.filtered),
               footer(l)
             )
-          else Empty
+          )
         )
       ),
       E.footer(
@@ -48,7 +46,7 @@ object App {
 
   def list(todos: Seq[Todo]) = {
 
-    def view(todo: Todo): VirtualNode =
+    def view(todo: Todo): VNode =
       E.div(
         A.`class`("view"),
         E.input(

@@ -9,8 +9,8 @@ class ComponentInstance[Props] extends Component {
 
   def lookup(props: js.Dynamic = rawProps): Props = props.p1.asInstanceOf[Props]
 
-  override def render(props: js.Dynamic, state: js.Dynamic): VirtualNode =
-    component(props).render(lookup(props))
+  override def render(props: js.Dynamic, state: js.Dynamic): VNodeJS =
+    component(props).render(lookup(props)).vn
 
   def componentDidMount(): Unit = component().didMount(this)
 

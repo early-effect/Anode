@@ -16,6 +16,7 @@ val baseSettings = Seq(
   organization := "rocks.earlyeffect",
   scalaVersion := "2.12.8",
   scalacOptions += "-P:scalajs:sjsDefinedByDefault",
+  scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
   libraryDependencies ++= Seq(
     "org.scala-js"  %%% "scalajs-dom" % "0.9.7",
     "org.scalatest" %%% "scalatest"   % "3.0.8" % Test

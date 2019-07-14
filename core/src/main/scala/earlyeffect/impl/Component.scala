@@ -24,6 +24,6 @@ abstract class Component extends js.Object {
   @inline
   final def rawBase: dom.Element = js.native
 
-  def render(props: js.Dynamic, state: js.Dynamic): VirtualNode
+  def render(props: js.Dynamic, state: js.Dynamic): VNodeJS
 
 }

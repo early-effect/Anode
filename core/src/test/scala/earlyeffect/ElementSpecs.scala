@@ -1,12 +1,9 @@
 package earlyeffect
 
-import earlyeffect.impl.Preact.AttributeOrChild
 import org.scalajs.dom
 import org.scalajs.dom.html.Document
 import org.scalajs.dom.raw.Element
 import org.scalatest.{FlatSpec, Matchers}
-
-import scala.None
 
 class ElementSpecs extends FlatSpec with Matchers {
   import ElementSpecs._
@@ -58,12 +55,21 @@ class ElementSpecs extends FlatSpec with Matchers {
       """<span class="bar" id="foo"><span>hello</span><span>world</span></span>"""
     )
   }
+  "Element with declarations" should "get a style attribute" in {
+    render(E.span(S.margin.px(10), S.color.rgb(100, 100, 100)))
+    check("""<span class="" id="" style="margin: 10px; color: rgb(100, 100, 100);"></span>""")
+  }
+  "Element with declarations and a style attr" should "get a single style attribute" in {
+    val s = A.style(S.backgroundColor("white"))
+    render(E.span(s, S.margin.px(10), S.color.rgb(100, 100, 100)))
+    check("""<span class="" id="" style="margin: 10px; color: rgb(100, 100, 100); background-color: white;"></span>""")
+  }
 }
 
 object ElementSpecs {
-  def render(vn: VirtualNode): Unit = Preact.render(vn, div)
-  val doc: Document                 = dom.document
-  val div: Element                  = dom.document.createElement("div")
-  def replacedNode: Element         = div.querySelector("span")
+  def render(vn: VNode): Unit = preact.render(vn, div)
+  val doc: Document           = dom.document
+  val div: Element            = dom.document.createElement("div")
+  def replacedNode: Element   = div.querySelector("span")
   doc.documentElement.appendChild(div)
 }

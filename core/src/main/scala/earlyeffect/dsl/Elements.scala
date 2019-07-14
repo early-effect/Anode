@@ -1,30 +1,17 @@
 package earlyeffect.dsl
 
-import earlyeffect.impl.Preact.{AttributeOrChild, Child, h}
-import earlyeffect.impl.VirtualNode
+import earlyeffect.impl.Preact.{AttributeOrChildJS, ChildJS, h}
+import earlyeffect.impl.{EarlyEffect, VNodeJS}
 import earlyeffect.{Attribute, NodeArgs}
 import earlyeffect._
+
 import scala.scalajs.js
 
 private[dsl] class ElementConstructor(name: String) {
 
-  def normalizeClasses(attrs: Seq[Attribute]): Seq[Attribute] = {
-    val classes = attrs.filter(_.name == "class")
-    if (classes.length <= 1) attrs
-    else {
-      val combinedClass = A.`class`(classes.map(x => x.value).mkString(" "))
-      attrs.filterNot(x => classes.contains(x)) :+ combinedClass
-    }
-  }
-
-  def filterAttributes(acs: Seq[AttributeOrChild]): Seq[Attribute] = acs.collect { case x: Attribute => x }
-
-  def attrDictionary(as: Seq[Attribute]) =
-    js.Dictionary(normalizeClasses(as).map(x => x.name -> x.value): _*)
-
-  def apply(acs: AttributeOrChild*): VirtualNode = {
+  def apply(acs: Arg*): VNode = {
     val args = NodeArgs(acs)
-    h(name, attrDictionary(args.attributes), args.children: _*)
+    EarlyEffect.h(name, args.attributeDictionary, args.children: _*)
   }
 }
 

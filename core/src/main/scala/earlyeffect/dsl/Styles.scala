@@ -1,27 +1,23 @@
 package earlyeffect.dsl
 
-import earlyeffect.impl.Predicated
+import earlyeffect.Declaration
 
 import scala.language.implicitConversions
 import scala.scalajs.js
 
 object Styles {
 
-  sealed trait DeclarationOrSelector {
+  trait DeclarationOrSelector {
     def mkString(className: String, keyFrames: js.Array[KeyFrames] = js.Array()): String
 
     override def toString: String = mkString("")
   }
 
-  private[dsl] case class KeyFrames(name: String, selectors: KeyframeSelector*) extends DeclarationOrSelector {
+  private[earlyeffect] case class KeyFrames(name: String, selectors: KeyframeSelector*) extends DeclarationOrSelector {
     override def mkString(className: String, keyFrames: js.Array[KeyFrames]): String = {
       keyFrames.push(this)
       s"animation-name: $className-$name;"
     }
-  }
-
-  private[dsl] case class Declaration(property: String, value: String) extends DeclarationOrSelector {
-    override def mkString(className: String, kf: js.Array[KeyFrames]): String = s"$property: $value;"
   }
 
   sealed abstract class DeclarationConstructor[T](property: String) {
@@ -34,13 +30,7 @@ object Styles {
     def apply(value: T) = Declaration(property, value.toString)
   }
 
-  private[dsl] case class Constructor[T](property: String) extends DeclarationConstructor[T](property)
-
-  object Declaration {
-    def apply[T](property: String): DeclarationConstructor[T] = Constructor[T](property)
-
-    implicit class When(p: Declaration) extends Predicated(p)
-  }
+  private[earlyeffect] case class Constructor[T](property: String) extends DeclarationConstructor[T](property)
 
   type D[T] = DeclarationConstructor[T]
   type DS   = D[String]
@@ -84,31 +74,31 @@ object Styles {
   }
 
   trait Normal extends DS {
-    def normal: Declaration = apply("normal")
+    val normal: Declaration = apply("normal")
   }
 
   trait None extends DS {
-    def none: Declaration = apply("none")
+    val none: Declaration = apply("none")
   }
 
   trait Auto extends DS {
-    def auto: Declaration = apply("auto")
+    val auto: Declaration = apply("auto")
   }
 
   trait Compat extends DS {
-    def searchfield: Declaration    = apply("searchfield")
-    def textarea: Declaration       = apply("textarea")
-    def pushButton: Declaration     = apply("push-button")
-    def buttonBevel: Declaration    = apply("button-bevel")
-    def checkbox: Declaration       = apply("checkbox")
-    def radio: Declaration          = apply("radio")
-    def squareButton: Declaration   = apply("square-button")
-    def menulist: Declaration       = apply("menulist")
-    def menu: Declaration           = apply("menu")
-    def menulistButton: Declaration = apply("menulist-button")
-    def listbox: Declaration        = apply("listbox")
-    def meter: Declaration          = apply("meter")
-    def progressBar: Declaration    = apply("progress-bar")
+    val searchfield: Declaration    = apply("searchfield")
+    val textarea: Declaration       = apply("textarea")
+    val pushButton: Declaration     = apply("push-button")
+    val buttonBevel: Declaration    = apply("button-bevel")
+    val checkbox: Declaration       = apply("checkbox")
+    val radio: Declaration          = apply("radio")
+    val squareButton: Declaration   = apply("square-button")
+    val menulist: Declaration       = apply("menulist")
+    val menu: Declaration           = apply("menu")
+    val menulistButton: Declaration = apply("menulist-button")
+    val listbox: Declaration        = apply("listbox")
+    val meter: Declaration          = apply("meter")
+    val progressBar: Declaration    = apply("progress-bar")
   }
 
   trait Suffixed[T] extends DS {
@@ -117,33 +107,33 @@ object Styles {
   }
 
   trait FontRelativeLength extends Suffixed[Double] {
-    def cap: ST = suffixed("cap")
-    def ch: ST  = suffixed("ch")
-    def em: ST  = suffixed("em")
-    def ex: ST  = suffixed("ex")
-    def ic: ST  = suffixed("ic")
-    def lh: ST  = suffixed("lh")
-    def rem: ST = suffixed("rem")
-    def rlh: ST = suffixed("rlh")
+    val cap: ST = suffixed("cap")
+    val ch: ST  = suffixed("ch")
+    val em: ST  = suffixed("em")
+    val ex: ST  = suffixed("ex")
+    val ic: ST  = suffixed("ic")
+    val lh: ST  = suffixed("lh")
+    val rem: ST = suffixed("rem")
+    val rlh: ST = suffixed("rlh")
   }
 
   trait ViewportPercentageLength extends Suffixed[Double] {
-    def vh: ST   = suffixed("vh")
-    def vw: ST   = suffixed("vw")
-    def vi: ST   = suffixed("vi")
-    def vb: ST   = suffixed("vb")
-    def vmin: ST = suffixed("vmin")
-    def vmax: ST = suffixed("vmax")
+    val vh: ST   = suffixed("vh")
+    val vw: ST   = suffixed("vw")
+    val vi: ST   = suffixed("vi")
+    val vb: ST   = suffixed("vb")
+    val vmin: ST = suffixed("vmin")
+    val vmax: ST = suffixed("vmax")
   }
 
   trait AbsoluteLength extends Suffixed[Double] {
-    def px: ST = suffixed("px")
-    def cm: ST = suffixed("cm")
-    def mm: ST = suffixed("mm")
-    def q: ST  = suffixed("Q")
-    def in: ST = suffixed("in")
-    def pc: ST = suffixed("pc")
-    def pt: ST = suffixed("pt")
+    val px: ST = suffixed("px")
+    val cm: ST = suffixed("cm")
+    val mm: ST = suffixed("mm")
+    val q: ST  = suffixed("Q")
+    val in: ST = suffixed("in")
+    val pc: ST = suffixed("pc")
+    val pt: ST = suffixed("pt")
   }
 
   trait Length extends FontRelativeLength with ViewportPercentageLength with AbsoluteLength
@@ -528,7 +518,7 @@ object Styles {
     val grabbing: Declaration     = apply("grabbing")
   }
 
-  val padding: DS = Declaration("padding")
+  lazy val padding = new DeclarationConstructor[String]("padding") with LengthPercentage {}
 
   lazy val paddingLeft   = new DeclarationConstructor[String]("padding-left") with LengthPercentage   {}
   lazy val paddingRight  = new DeclarationConstructor[String]("padding-right") with LengthPercentage  {}
