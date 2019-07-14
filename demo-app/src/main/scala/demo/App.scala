@@ -6,6 +6,8 @@ import earlyeffect._
 import org.scalajs.dom
 import org.scalajs.dom.raw.HTMLInputElement
 
+import scala.scalajs.js
+
 object App {
 
   val container: dom.Element = dom.document.querySelector("div[id='root']")

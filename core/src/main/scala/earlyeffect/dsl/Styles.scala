@@ -402,7 +402,7 @@ object Styles {
     val stretch: Declaration      = apply("stretch")
   }
   lazy val justifyContent = new DeclarationConstructor[String]("justify-content") with Normal with ContentDistribution
-  with LeftOrRight {
+  with LeftOrRight with ContentPosition {
     val safe   = new Prefixed("safe") with ContentPosition   {}
     val unsafe = new Prefixed("unsafe") with ContentPosition {}
   }
