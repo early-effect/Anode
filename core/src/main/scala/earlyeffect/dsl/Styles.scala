@@ -1,6 +1,6 @@
 package earlyeffect.dsl
 
-import earlyeffect.Declaration
+import earlyeffect.{Declaration, dsl}
 
 import scala.language.implicitConversions
 import scala.scalajs.js
@@ -13,7 +13,7 @@ object Styles {
     override def toString: String = mkString("")
   }
 
-  private[earlyeffect] case class KeyFrames(name: String, selectors: KeyframeSelector*) extends DeclarationOrSelector {
+  case class KeyFrames(name: String, selectors: KeyframeSelector*) extends DeclarationOrSelector {
     override def mkString(className: String, keyFrames: js.Array[KeyFrames]): String = {
       keyFrames.push(this)
       s"animation-name: $className-$name;"
