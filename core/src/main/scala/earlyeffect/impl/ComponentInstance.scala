@@ -1,6 +1,7 @@
 package earlyeffect.impl
 
 import scala.scalajs.js
+import earlyeffect._
 
 class ComponentInstance[Props] extends Component {
 
@@ -12,7 +13,8 @@ class ComponentInstance[Props] extends Component {
   override def render(props: js.Dynamic, state: js.Dynamic): VNodeJS =
     component(props).render(lookup(props)).vn
 
-  def componentDidMount(): Unit = component().didMount(this)
+  def componentDidMount(): Unit =
+    component().didMount(this)
 
   def componentWillMount(): Unit = component().willMount(this)
 

@@ -6,8 +6,6 @@ import earlyeffect._
 import org.scalajs.dom
 import org.scalajs.dom.raw.HTMLInputElement
 
-import scala.scalajs.js
-
 object App {
 
   val container: dom.Element = dom.document.querySelector("div[id='root']")
@@ -46,35 +44,7 @@ object App {
       )
     )
 
-  def list(todos: Seq[Todo]) = {
-
-    def view(todo: Todo): VNode =
-      E.div(
-        A.`class`("view"),
-        E.input(
-          A.`class`("toggle"),
-          A.`type`("checkbox"),
-          A.checked(todo.complete),
-          A.onChange(_ => ModelCircuit(Update(todo.copy(complete = !todo.complete))))
-        ),
-        E.label(todo.description, A.onDoubleClick(x => {
-          todos.foreach(x => ModelCircuit(Update(x.copy(editing = false))))
-          ModelCircuit(Update(todo.copy(editing = true)))
-        })),
-        E.button(A.`class`("destroy"), A.onClick(_ => ModelCircuit(Delete(todo))))
-      )
-
-    def item(todo: Todo) =
-      E.li(
-        A.key(todo.key),
-        A.`class`("editing").when(todo.editing),
-        if (todo.editing) {
-          TodoEditor(todo)
-        } else {
-          view(todo)
-        }
-      )
-
+  def list(todos: Seq[Todo]) =
     E.section(
       A.`class`("main"),
       E.input(
@@ -89,10 +59,9 @@ object App {
       E.label(A.`for`("toggle-all")),
       E.ul(
         A.`class`("todo-list"),
-        todos.map(item)
+        todos.map(Item(_))
       )
     )
-  }
 
   val newTodo = E.input(
     A.id("new-todo"),
@@ -124,6 +93,40 @@ object App {
         ModelCircuit(ClearCompleted)
       }))
     )
+  }
+
+  object Item extends Component[Todo] {
+    override def render(todo: Todo): VNode =
+      E.li(
+        A.key(todo.key),
+        A.`class`("editing").when(todo.editing),
+        if (todo.editing) {
+          TodoEditor(todo)
+        } else {
+          View(todo)
+        }
+      )
+  }
+
+  object View extends Component[Todo] {
+    override def render(todo: Todo): VNode =
+      E.div(
+        A.`class`("view"),
+        E.input(
+          A.`class`("toggle"),
+          A.`type`("checkbox"),
+          A.checked(todo.complete),
+          A.onChange(_ => ModelCircuit(Update(todo.copy(complete = !todo.complete))))
+        ),
+        E.label(
+          todo.description,
+          A.onDoubleClick(x => {
+            ModelCircuit.zoom(_.todoList.todos).value.foreach(x => ModelCircuit(Update(x.copy(editing = false))))
+            ModelCircuit(Update(todo.copy(editing = true)))
+          })
+        ),
+        E.button(A.`class`("destroy"), A.onClick(_ => ModelCircuit(Delete(todo))))
+      )
   }
 
 }

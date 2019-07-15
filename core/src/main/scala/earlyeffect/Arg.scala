@@ -53,7 +53,10 @@ final case class VNode(vn: VNodeJS) extends Child {
 
   def withKey(key: String): VNode = withT(name = "key", key.asInstanceOf[js.Any])
 
-  def withRef(f: js.Function1[dom.Element, Unit]): VNode = withT(name = "ref", f)
+  def withRef(f: js.Function1[dom.Element, Unit]): VNode = {
+    val ff: js.Function1[dom.Element, Unit] = e => if (e != null) f(e) else ()
+    withT(name = "ref", ff)
+  }
 
   override def value: Preact.ChildJS = vn
 
