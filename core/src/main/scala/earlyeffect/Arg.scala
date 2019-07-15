@@ -92,21 +92,25 @@ case class NodeArgs(args: Seq[Arg]) extends Arg {
   lazy val attributes: js.Array[Attribute] = {
     val as = js.Array[Attribute]()
     val ds = js.Array[Declaration]()
-    args.foreach {
-      case a: Attribute   => as.push(a)
-      case na: NodeArgs   => as.push(na.attributes: _*)
-      case d: Declaration => ds.push(d)
-      case _              =>
+    if (args != null) {
+      args.foreach {
+        case a: Attribute   => as.push(a)
+        case na: NodeArgs   => as.push(na.attributes: _*)
+        case d: Declaration => ds.push(d)
+        case _              =>
+      }
+      if (ds.nonEmpty) as.push(A.style(ds: _*))
     }
-    if (ds.nonEmpty) as.push(A.style(ds: _*))
     as
   }
   lazy val children: js.Array[Child] = {
     val cs = js.Array[Child]()
-    args.foreach {
-      case c: Child     => cs.push(c)
-      case na: NodeArgs => cs.push(na.children: _*)
-      case _            =>
+    if (args != null) {
+      args.foreach {
+        case c: Child     => cs.push(c)
+        case na: NodeArgs => cs.push(na.children: _*)
+        case _            =>
+      }
     }
     cs
   }
