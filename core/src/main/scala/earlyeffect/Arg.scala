@@ -1,8 +1,9 @@
 package earlyeffect
 
 import earlyeffect.dsl.Styles.{Constructor, DeclarationConstructor, DeclarationOrSelector, KeyFrames}
-import earlyeffect.impl.Preact.ChildJS
+import earlyeffect.impl.Preact.AnyDictionary
 import earlyeffect.impl.{Predicated, VNodeJS}
+import org.scalajs.dom
 
 import scala.language.implicitConversions
 import scala.scalajs.js
@@ -38,7 +39,24 @@ object Declaration {
 }
 
 final case class VNode(vn: VNodeJS) extends Child {
+
+  def withT[T <: js.Any](name: String, t: T) = {
+    vn.props.asInstanceOf[js.Dictionary[js.Any]].update(name, t)
+    copy(
+      vn = Preact.h(
+        vn.`type`.asInstanceOf[js.Dynamic],
+        vn.props.asInstanceOf[AnyDictionary],
+        vn.children: _*
+      )
+    )
+  }
+
+  def withKey(key: String): VNode = withT(name = "key", key.asInstanceOf[js.Any])
+
+  def withRef(f: js.Function1[dom.Element, Unit]): VNode = withT(name = "ref", f)
+
   override def value: Preact.ChildJS = vn
+
 }
 
 final case class StringArg(s: String) extends Child {

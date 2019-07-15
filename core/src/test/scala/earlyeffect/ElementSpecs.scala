@@ -5,6 +5,8 @@ import org.scalajs.dom.html.Document
 import org.scalajs.dom.raw.Element
 import org.scalatest.{FlatSpec, Matchers}
 
+import scala.scalajs.js
+
 class ElementSpecs extends FlatSpec with Matchers {
   import ElementSpecs._
   def check(s: String): Unit = div.children(0).outerHTML should be(s)
@@ -63,6 +65,16 @@ class ElementSpecs extends FlatSpec with Matchers {
     val s = A.style(S.backgroundColor("white"))
     render(E.span(s, S.margin.px(10), S.color.rgb(100, 100, 100)))
     check("""<span class="" id="" style="margin: 10px; color: rgb(100, 100, 100); background-color: white;"></span>""")
+  }
+  "Elements" should "take a key" in {
+    E.span("foo").withKey("bar").vn.key should be("bar")
+  }
+  "Elements" should "take a ref function" in {
+    var effect: Boolean                    = false
+    val f: js.Function1[dom.Element, Unit] = e => effect = true
+    val n                                  = E.span("foo").withRef(f)
+    render(n)
+    assert(effect)
   }
 }
 
