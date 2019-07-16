@@ -16,7 +16,7 @@ abstract class Component[Props] { self =>
   def didUpdate(oldProps: Props, instance: I): Unit = ()
 
   // we might want to do a deep equality check?
-  def shouldUpdate(nextProps: Props, instance: I): Boolean = instance.lookup() != nextProps
+  def shouldUpdate(nextProps: Props, previous: I): Boolean = previous.props != nextProps
 
   val constructor: js.Dynamic = Component.constructors.getOrElseUpdate(this.getClass.getName, js.constructorOf[I])
 

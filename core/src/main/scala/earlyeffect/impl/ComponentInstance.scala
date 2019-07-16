@@ -1,7 +1,7 @@
 package earlyeffect.impl
 
 import scala.scalajs.js
-import earlyeffect._
+import scala.scalajs.js.annotation.JSName
 
 class ComponentInstance[Props] extends Component {
 
@@ -9,6 +9,9 @@ class ComponentInstance[Props] extends Component {
     props.cc.asInstanceOf[earlyeffect.Component[Props]]
 
   def lookup(props: js.Dynamic = rawProps): Props = props.p1.asInstanceOf[Props]
+
+  @JSName("richProps")
+  def props = lookup()
 
   override def render(props: js.Dynamic, state: js.Dynamic): VNodeJS =
     component(props).render(lookup(props)).vn
