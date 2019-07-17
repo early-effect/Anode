@@ -18,7 +18,3 @@ abstract class VNodeJS extends js.Object {
   def key: js.UndefOr[String]
 
 }
-
-object VNodeJS {
-  implicit class When(vn: VNodeJS) extends Predicated(vn)
-}

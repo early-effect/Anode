@@ -7,6 +7,7 @@ module.exports = {
     compress: true,
     disableHostCheck: true,
     historyApiFallback: true,
+    port: 9000,
     host: "0.0.0.0",
   },
   mode: "development",

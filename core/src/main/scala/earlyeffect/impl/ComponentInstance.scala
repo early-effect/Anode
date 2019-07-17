@@ -2,6 +2,7 @@ package earlyeffect.impl
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
+import earlyeffect._
 
 class ComponentInstance[Props] extends Component {
 

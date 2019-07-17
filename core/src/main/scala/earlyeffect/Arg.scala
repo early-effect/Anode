@@ -1,17 +1,31 @@
 package earlyeffect
 
 import earlyeffect.dsl.Styles.{Constructor, DeclarationConstructor, DeclarationOrSelector, KeyFrames}
-import earlyeffect.impl.Preact.AnyDictionary
-import earlyeffect.impl.{Predicated, VNodeJS}
+import earlyeffect.impl.Preact.{AnyDictionary, ChildJS}
+import earlyeffect.impl.VNodeJS
 import org.scalajs.dom
 
 import scala.language.implicitConversions
 import scala.scalajs.js
 
-sealed trait Arg
+sealed trait Arg { self =>
+  def when(pred: => Boolean) = if (pred) self else Empty
+}
 
-sealed trait Child extends Arg {
+case object Empty extends Arg
+
+sealed trait Child extends Arg { self =>
   def value: Preact.ChildJS
+  override def when(pred: => Boolean): Child = if (pred) self else EmptyChild
+}
+
+object Child {
+  implicit def fromOption(o: Option[Child]): Child = o.getOrElse(EmptyChild)
+  implicit def toJS(c: Child): Preact.ChildJS      = c.value
+}
+
+case object EmptyChild extends Child {
+  override def value: ChildJS = null
 }
 
 trait Attribute extends Arg {
@@ -25,7 +39,6 @@ final case class SimpleAttribute(name: String, value: js.Any) extends Attribute
 
 object Attribute {
   def apply(name: String, value: js.Any): Attribute = SimpleAttribute(name, value)
-  implicit class When(a: Attribute) extends Predicated(a)
 }
 
 final case class Declaration(property: String, value: String) extends Arg with DeclarationOrSelector {
@@ -35,7 +48,6 @@ final case class Declaration(property: String, value: String) extends Arg with D
 object Declaration {
   def apply[T](property: String): DeclarationConstructor[T] = Constructor[T](property)
 
-  implicit class When(p: Declaration) extends Predicated(p)
 }
 
 final case class VNode(vn: VNodeJS) extends Child {
@@ -71,12 +83,10 @@ final case class DoubleArg(d: Double) extends Child {
 }
 
 object Arg {
-  val Empty: Arg                                       = null
-  implicit def stringToArg(s: String): StringArg       = StringArg(s)
-  implicit def doubleToArg(d: Double): DoubleArg       = DoubleArg(d)
-  implicit def toPreactChild(c: Child): Preact.ChildJS = c.value
-  implicit def maybeArg(o: Option[Arg]): Arg =
-    o.fold(Empty)(x => {
+  implicit def stringToArg(s: String): StringArg = StringArg(s)
+  implicit def doubleToArg(d: Double): DoubleArg = DoubleArg(d)
+  implicit def fromOption(o: Option[Arg]): Arg =
+    o.fold[Arg](EmptyChild)(x => {
       x
     })
   implicit def seqToArgs(s: Seq[Arg]): NodeArgs = NodeArgs(s)
@@ -130,6 +140,7 @@ case class NodeArgs(args: Seq[Arg]) extends Arg {
       args.foreach {
         case c: Child     => cs.push(c)
         case na: NodeArgs => cs.push(na.children: _*)
+        case null         => cs.push(EmptyChild)
         case _            =>
       }
     }
