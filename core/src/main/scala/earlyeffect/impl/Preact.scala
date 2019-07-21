@@ -19,7 +19,7 @@ object Preact extends js.Object {
 
   type AnyDictionary = js.Dictionary[js.Any]
 
-  type AttributeOrChildJS = VNodeJS | Attribute | Declaration | String | Double | NodeArgs | js.Object
+  type AttributeOrChildJS = VNodeJS | Attribute | Declaration | String | Double | Args | js.Object
 
   type ChildJS = VNodeJS | String
 

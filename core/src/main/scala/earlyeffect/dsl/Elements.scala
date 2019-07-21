@@ -2,7 +2,7 @@ package earlyeffect.dsl
 
 import earlyeffect.impl.Preact.{AttributeOrChildJS, ChildJS, h}
 import earlyeffect.impl.{EarlyEffect, VNodeJS}
-import earlyeffect.{Attribute, NodeArgs}
+import earlyeffect.{Attribute, Args}
 import earlyeffect._
 
 import scala.scalajs.js
@@ -10,7 +10,7 @@ import scala.scalajs.js
 private[dsl] class ElementConstructor(name: String) {
 
   def apply(acs: Arg*): VNode = {
-    val args = NodeArgs(acs)
+    val args = Args(acs)
     EarlyEffect.h(name, args.attributeDictionary, args.children: _*)
   }
 }

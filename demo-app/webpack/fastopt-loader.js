@@ -13,9 +13,11 @@ module.exports = function (source) {
     if (s.startsWith("http://") || s.startsWith("https://")) {
       return s;
     } else {
-      return "file://" + path.resolve(s);
+      let x = "file://" + path.resolve(s);
+      return x;
     }
   });
+
 
   this.callback(null, source, JSON.stringify(map));
 };

@@ -200,13 +200,12 @@ trait EventListeners extends AttributSet {
 }
 
 object Attributes extends GlobalAttributes with EventListeners {
-  def ref: A[js.Function1[dom.Element, Unit]] = attribute(name = "ref")
-  def href: A[String]                         = attribute[String](name = "href")
-  def key: A[String]                          = attribute[String](name = "key")
-  def `type`: A[String]                       = attribute[String](name = "type")
-  def `for`: A[String]                        = attribute[String](name = "for")
-  def value: A[String]                        = attribute[String](name = "value")
-  def checked: A[Boolean]                     = attribute[Boolean](name = "checked")
+  def href: A[String]     = attribute[String](name = "href")
+  def key: A[String]      = attribute[String](name = "key")
+  def `type`: A[String]   = attribute[String](name = "type")
+  def `for`: A[String]    = attribute[String](name = "for")
+  def value: A[String]    = attribute[String](name = "value")
+  def checked: A[Boolean] = attribute[Boolean](name = "checked")
 
   def disabled: A[Boolean] = attribute[Boolean](name = "disabled")
 

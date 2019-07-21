@@ -1,9 +1,7 @@
 import earlyeffect.dsl._
-import earlyeffect.impl.{EarlyEffect, Preact, VNodeJS}
-import earlyeffect.impl.Preact.{AnyDictionary, Fragment, FunctionalComponent}
+import earlyeffect.impl.EarlyEffect
+import earlyeffect.impl.Preact.Fragment
 import org.scalajs.dom
-import org.scalajs.dom._
-import org.scalajs.dom.raw.HTMLCollection
 
 import scala.language.implicitConversions
 import scala.scalajs.js
@@ -27,7 +25,9 @@ package object earlyeffect {
 
   def fragment(children: Child*): VNode = EarlyEffect.h(Fragment, null, children: _*)
 
-  def when[T](p: => Boolean)(t: => T): T = if (p) t else null.asInstanceOf[T]
+  def when[T <: Arg](p: => Boolean)(t: => T): Option[T] = if (p) Some(t) else None
+
+  def text(s: String) = StringArg(s)
 
   implicit class richDouble(d: Double) {
     def pct = s"$d%"
@@ -39,7 +39,7 @@ package object earlyeffect {
     def px  = s"${n}px"
     def em  = s"${n}em"
   }
-  def args(as: Arg*) = NodeArgs(as)
+  def args(as: Arg*) = Args(as)
 
   object preact {
     def render(node: VNode, parent: dom.Element): Unit = Preact.render(node.vn, parent)

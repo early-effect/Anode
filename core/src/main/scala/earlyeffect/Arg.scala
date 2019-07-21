@@ -66,8 +66,8 @@ final case class VNode(vn: VNodeJS) extends Child {
   def withKey(key: String): VNode = withT(name = "key", key.asInstanceOf[js.Any])
 
   def withRef(f: js.Function1[dom.Element, Unit]): VNode = {
-    val ff: js.Function1[dom.Element, Unit] = e => if (e != null) f(e) else ()
-    withT(name = "ref", ff)
+    val safe: js.Function1[dom.Element, Unit] = e => if (e != null) f(e) else ()
+    withT(name = "ref", safe)
   }
 
   override def value: Preact.ChildJS = vn
@@ -83,16 +83,17 @@ final case class DoubleArg(d: Double) extends Child {
 }
 
 object Arg {
-  implicit def stringToArg(s: String): StringArg = StringArg(s)
-  implicit def doubleToArg(d: Double): DoubleArg = DoubleArg(d)
+  implicit def stringToArg(s: String): Arg = StringArg(s)
+  implicit def doubleToArg(d: Double): Arg = DoubleArg(d)
+  implicit def intToArg(i: Int): Arg       = DoubleArg(i)
   implicit def fromOption(o: Option[Arg]): Arg =
     o.fold[Arg](EmptyChild)(x => {
       x
     })
-  implicit def seqToArgs(s: Seq[Arg]): NodeArgs = NodeArgs(s)
+  implicit def seqToArgs(s: Seq[Arg]): Args = Args(s)
 }
 
-case class NodeArgs(args: Seq[Arg]) extends Arg {
+case class Args(args: Seq[Arg]) extends Arg {
 
   lazy val attributeDictionary =
     js.Dictionary(normalizeStyles(normalizeClasses(attributes)).map(x => x.name -> x.value.asInstanceOf[js.Any]): _*)
@@ -126,7 +127,7 @@ case class NodeArgs(args: Seq[Arg]) extends Arg {
     if (args != null) {
       args.foreach {
         case a: Attribute   => as.push(a)
-        case na: NodeArgs   => as.push(na.attributes: _*)
+        case na: Args       => as.push(na.attributes: _*)
         case d: Declaration => ds.push(d)
         case _              =>
       }
@@ -138,10 +139,10 @@ case class NodeArgs(args: Seq[Arg]) extends Arg {
     val cs = js.Array[Child]()
     if (args != null) {
       args.foreach {
-        case c: Child     => cs.push(c)
-        case na: NodeArgs => cs.push(na.children: _*)
-        case null         => cs.push(EmptyChild)
-        case _            =>
+        case c: Child => cs.push(c)
+        case na: Args => cs.push(na.children: _*)
+        case null     => cs.push(EmptyChild)
+        case _        =>
       }
     }
     cs
