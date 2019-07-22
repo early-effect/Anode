@@ -6,7 +6,7 @@ import scala.scalajs.js
 import scala.scalajs.js.UndefOr
 import scala.scalajs.js.annotation.JSName
 
-class ComponentInstance[Props] extends Component {
+class ComponentInstance[Props] extends ComponentJS {
 
   def component(props: js.Dynamic = rawProps): earlyeffect.Component[Props] =
     props.cc.asInstanceOf[earlyeffect.Component[Props]]

@@ -7,7 +7,7 @@ import scala.scalajs.js.annotation.{JSImport, JSName}
 
 @JSImport("preact", "Component")
 @js.native
-abstract class Component extends js.Object {
+abstract class ComponentJS extends js.Object {
 
   @JSName("props")
   @inline
