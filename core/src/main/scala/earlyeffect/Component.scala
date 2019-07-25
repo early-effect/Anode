@@ -1,10 +1,9 @@
 package earlyeffect
 
-import earlyeffect.impl.{ComponentInstance, EarlyEffect}
+import earlyeffect.impl.{ComponentInstance, EarlyEffect, StatefulComponentInstance}
 
 import scala.language.implicitConversions
 import scala.scalajs.js
-import scala.scalajs.js.UndefOr
 
 abstract class Component[Props] { self =>
 
@@ -30,22 +29,6 @@ abstract class Component[Props] { self =>
         ("p1", props.asInstanceOf[js.Any]),
         ("cc", self.asInstanceOf[js.Any])
       )
-    )
-}
-
-abstract class Container[Props] extends Component[Props] { self =>
-  def render(props: Props): VNode = render(props, Seq.empty: _*)
-
-  def render(props: Props, children: Child*): VNode
-
-  def apply(props: Props)(children: Child*): VNode =
-    EarlyEffect.h(
-      constructor,
-      js.Dictionary[js.Any](
-        ("p1", props.asInstanceOf[js.Any]),
-        ("cc", self.asInstanceOf[js.Any])
-      ),
-      children: _*
     )
 }
 

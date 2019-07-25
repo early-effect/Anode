@@ -7,28 +7,33 @@ import org.scalajs.dom.raw.HTMLInputElement
 
 import scala.scalajs.js.timers
 
-object TodoEditor extends Component[Todo] {
-  override def render(todo: Todo): VNode =
+object TodoEditor extends StatefulComponent[Todo, String] {
+  override def willMount(instance: I): Unit =
+    instance.setState(instance.props.description)
+
+  override def render(props: Todo, state: String, instance: I): VNode = {
+    def update(): Unit = ModelCircuit(Update(props.copy(editing = false, description = state)))
     E.input(
-        A.id(s"editor-${todo.key}"),
+        A.id(s"editor-${props.key}"),
         A.`class`("edit"),
-        A.value(todo.description)
+        A.value(state),
+        A.onKeyDown { k =>
+          if (k.keyCode == ESCAPE) ModelCircuit(Update(props.copy(editing = false)))
+          else if (k.keyCode == ENTER) update()
+        },
+        A.onKeyUp(k => instance.setState(k.target.asInstanceOf[HTMLInputElement].value)),
+        A.onBlur { _ =>
+          ModelCircuit
+            .zoom(_.todoList.todos.find { x =>
+              x.key == props.key && x.editing
+            })
+            .value
+            .foreach(_ => update())
+        }
       )
       .withRef(x => {
-        val e              = x.asInstanceOf[HTMLInputElement]
-        def update(): Unit = ModelCircuit(Update(todo.copy(editing = false, description = e.value.trim)))
-        def clearThen(f: => Unit): Unit = {
-          e.onblur = _ => ()
-          f
-        }
-        e.onblur = _ => update()
-        e.onkeydown = k => {
-          if (k.keyCode == ESCAPE) clearThen {
-            ModelCircuit(Update(todo.copy(editing = false)))
-          } else if (k.keyCode == ENTER) clearThen {
-            update()
-          }
-        }
-        timers.setTimeout(2)(e.focus())
+        val e = x.asInstanceOf[HTMLInputElement]
+        timers.setTimeout(0)(e.focus())
       })
+  }
 }
