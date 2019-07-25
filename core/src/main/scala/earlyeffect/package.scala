@@ -25,7 +25,7 @@ package object earlyeffect {
 
   def fragment(children: Child*): VNode = EarlyEffect.h(Fragment, null, children: _*)
 
-  def when[T <: Arg](p: => Boolean)(t: => T): Option[T] = if (p) Some(t) else None
+  def when(p: => Boolean) = When(p)
 
   def text(s: String) = StringArg(s)
 

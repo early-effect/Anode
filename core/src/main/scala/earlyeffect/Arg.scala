@@ -87,7 +87,7 @@ object Arg {
   implicit def doubleToArg(d: Double): Arg = DoubleArg(d)
   implicit def intToArg(i: Int): Arg       = DoubleArg(i)
   implicit def fromOption(o: Option[Arg]): Arg =
-    o.fold[Arg](EmptyChild)(x => {
+    o.fold[Arg](Empty)(x => {
       x
     })
   implicit def seqToArgs(s: Seq[Arg]): Args = Args(s)

@@ -27,12 +27,12 @@ object App {
             E.h1("todos"),
             newTodo
           ),
-          when(l.todos.nonEmpty)(
+          when(l.todos.nonEmpty) {
             fragment(
               list(l.filtered),
               footer(l)
             )
-          )
+          }
         )
       ),
       E.footer(
