@@ -42,7 +42,7 @@ object App {
           A.`class`("info"),
           fragment(
             E.p("Double-click to edit a todo"),
-            E.p("Rendered by Preactor - a Scala.js wrapper for Preact")
+            E.p("Rendered by EarlyEffect - a Scala.js wrapper for Preact")
           )
         )
       )
