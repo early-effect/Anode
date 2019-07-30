@@ -2,66 +2,74 @@ package demo
 
 import demo.model.TodoList.actions._
 import demo.model._
+import diode._
 import earlyeffect._
 import org.scalajs.dom
 import org.scalajs.dom.raw.HTMLInputElement
 
 object App {
 
-  val container: dom.Element = dom.document.querySelector("div[id='root']")
+  val container: dom.Element = dom.document.body
 
-  val render = (x: TodoList) => preact.render(todoList(x), container)
+  def main(args: Array[String]): Unit =
+    preact.render(TodoListApp(), container)
 
-  def main(args: Array[String]): Unit = {
-    ModelCircuit.subscribe(ModelCircuit.zoom(_.todoList))(x => render(x.value))
-    render(ModelCircuit.zoom(_.todoList).value)
+  abstract class TodoComponent[P, S] extends DiodeComponent[P, Root, S] {
+    override def circuit: Circuit[Root] = ModelCircuit
   }
 
-  def todoList(l: TodoList): VNode =
-    E.div(
-      E.section(
-        A.`class`("todoapp"),
-        E.div(
-          E.header(
-            A.`class`("header"),
-            E.h1("todos"),
-            newTodo
-          ),
-          when(l.todos.nonEmpty) {
-            fragment(
-              list(l.filtered),
-              footer(l)
-            )
-          }
-        )
-      ),
-      E.footer(
-        A.`class`("info"),
-        fragment(
-          E.p("Double-click to edit a todo"),
-          E.p("Rendered by Preactor - a Scala.js wrapper for Preact")
+  object TodoListApp extends TodoComponent[Unit, TodoList] {
+    override def reader(p: Unit): ModelR[Root, TodoList] = zoom(_.todoList)
+    override def render(props: Unit, l: TodoList): VNode =
+      E.div(
+        E.section(
+          A.`class`("todoapp"),
+          E.div(
+            E.header(
+              A.`class`("header"),
+              E.h1("todos"),
+              newTodo
+            ),
+            when(l.todos.nonEmpty) {
+              fragment(
+                ListOfTodos(),
+                footer(l)
+              )
+            }
+          )
+        ),
+        E.footer(
+          A.`class`("info"),
+          fragment(
+            E.p("Double-click to edit a todo"),
+            E.p("Rendered by Preactor - a Scala.js wrapper for Preact")
+          )
         )
       )
-    )
+  }
 
-  def list(todos: Seq[Todo]) =
-    E.section(
-      A.`class`("main"),
-      E.input(
-        A.id("toggle-all"),
-        A.`class`("toggle-all"),
-        A.`type`("checkbox"),
-        A.checked(todos.forall(_.complete)),
-        A.onChange(e => {
-          ModelCircuit(SetAll(e.target.asInstanceOf[HTMLInputElement].checked))
-        })
-      ),
-      E.label(A.`for`("toggle-all")),
-      E.ul(
-        A.`class`("todo-list"),
-        todos.map(Item(_))
+  object ListOfTodos extends TodoComponent[Unit, Seq[Todo]] {
+    override def reader(p: Unit): ModelR[Root, Seq[Todo]] = zoom(_.todoList.filtered)
+
+    override def render(props: Unit, todos: Seq[Todo]): VNode =
+      E.section(
+        A.`class`("main"),
+        E.input(
+          A.id("toggle-all"),
+          A.`class`("toggle-all"),
+          A.`type`("checkbox"),
+          A.checked(todos.forall(_.complete)),
+          A.onChange(e => {
+            ModelCircuit(SetAll(e.target.asInstanceOf[HTMLInputElement].checked))
+          })
+        ),
+        E.label(A.`for`("toggle-all")),
+        E.ul(
+          A.`class`("todo-list"),
+          todos.map(Item(_))
+        )
       )
-    )
+  }
 
   val newTodo = E.input(
     A.id("new-todo"),
@@ -128,5 +136,4 @@ object App {
         E.button(A.`class`("destroy"), A.onClick(_ => ModelCircuit(Delete(todo))))
       )
   }
-
 }

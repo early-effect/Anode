@@ -11,13 +11,14 @@ lazy val root = project
 
 val baseSettings = Seq(
   licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
-  version := "0.0.3-SNAPSHOT",
+  version := "0.0.4-SNAPSHOT",
   bintrayRepository := "maven",
   organization := "rocks.earlyeffect",
   scalaVersion := "2.12.8",
   scalacOptions += "-P:scalajs:sjsDefinedByDefault",
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
   libraryDependencies ++= Seq(
+    "io.suzaku"     %%% "diode"       % "1.1.5",
     "org.scala-js"  %%% "scalajs-dom" % "0.9.7",
     "org.scalatest" %%% "scalatest"   % "3.0.8" % Test
   ),
