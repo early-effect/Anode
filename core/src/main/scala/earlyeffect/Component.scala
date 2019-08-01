@@ -1,13 +1,14 @@
 package earlyeffect
 
-import earlyeffect.impl.{ComponentInstance, EarlyEffect, StatefulComponentInstance}
+import earlyeffect.impl.{ComponentJS, EarlyEffect, VNodeJS}
 
 import scala.language.implicitConversions
 import scala.scalajs.js
+import scala.scalajs.js.annotation.JSName
 
 abstract class Component[Props] { self =>
 
-  type I = ComponentInstance[Props]
+  type I = Component.Instance[Props]
 
   def render(props: Props): VNode
 
@@ -20,12 +21,15 @@ abstract class Component[Props] { self =>
     previous.props != nextProps
 
   val constructor: js.Dynamic =
-    Component.constructors.getOrElseUpdate(this.getClass.getName, js.constructorOf[I])
+    constructors.getOrElseUpdate(this.getClass.getName, js.constructorOf[I])
+
+  val defaultKey = self.getClass.getName
 
   def apply(props: Props): VNode =
     EarlyEffect.h(
       constructor,
       js.Dictionary[js.Any](
+        ("key", defaultKey),
         ("p1", props.asInstanceOf[js.Any]),
         ("cc", self.asInstanceOf[js.Any])
       )
@@ -33,7 +37,32 @@ abstract class Component[Props] { self =>
 }
 
 object Component {
-  val constructors = js.Dictionary[js.Dynamic]()
+
+  class Instance[Props] extends ComponentJS {
+
+    def component(props: js.Dynamic = rawProps): earlyeffect.Component[Props] =
+      props.cc.asInstanceOf[earlyeffect.Component[Props]]
+
+    def lookup(props: js.Dynamic = rawProps): Props = props.p1.asInstanceOf[Props]
+
+    @JSName("richProps")
+    def props = lookup()
+
+    override def render(props: js.Dynamic, state: js.Dynamic): VNodeJS = component(props).render(lookup(props)).vn
+
+    def componentDidMount(): Unit =
+      component().didMount(this)
+
+    def componentWillMount(): Unit =
+      component().willMount(this)
+
+    def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic): Unit =
+      component().didUpdate(lookup(oldProps), this)
+
+    def shouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic, context: js.Dynamic): Boolean =
+      component().shouldUpdate(lookup(nextProps), this)
+
+  }
 
   implicit def applySelf[Comp <: Component[Comp], T <: Arg](self: Comp): T = self.apply(self).asInstanceOf[T]
 }

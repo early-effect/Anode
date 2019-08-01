@@ -7,6 +7,8 @@ import scala.language.implicitConversions
 import scala.scalajs.js
 
 package object earlyeffect {
+  private[earlyeffect] val constructors = js.Dictionary[js.Dynamic]()
+
   val Preact: impl.Preact.type = impl.Preact
 
   type ComponentFunction[T] = T => VNode

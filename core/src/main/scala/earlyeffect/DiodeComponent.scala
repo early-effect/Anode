@@ -26,12 +26,15 @@ trait DiodeComponent[Props, M <: AnyRef, State] { self =>
     previous.props != nextProps || nextState != previous.fetchState()
 
   val constructor: js.Dynamic =
-    Component.constructors.getOrElseUpdate(self.getClass.getName, js.constructorOf[I])
+    constructors.getOrElseUpdate(self.getClass.getName, js.constructorOf[I])
+
+  val defaultKey = self.getClass.getName
 
   def apply(props: Props): VNode =
     EarlyEffect.h(
       constructor,
       js.Dictionary[js.Any](
+        ("key", defaultKey),
         ("p1", props.asInstanceOf[js.Any]),
         ("cc", self.asInstanceOf[js.Any])
       )
@@ -75,7 +78,7 @@ object DiodeComponent {
       unsubscribe = circuit.subscribe(reader(props))(r => { this.putState(r.value) })
     }
 
-    def componentWillUnmount() = unsubscribe()
+    def componentWillUnmount(): Unit = unsubscribe()
 
     def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic): Unit =
       component().didUpdate(lookup(oldProps), fetchState(oldState), this)
