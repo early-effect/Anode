@@ -26,7 +26,7 @@ trait DiodeComponent[Props, M <: AnyRef, State] { self =>
     previous.props != nextProps || nextState != previous.fetchState()
 
   val constructor: js.Dynamic =
-    constructors.getOrElseUpdate(self.getClass.getName, js.constructorOf[I])
+    constructors.getOrElseUpdate(defaultKey, js.constructorOf[I])
 
   val defaultKey = self.getClass.getName
 

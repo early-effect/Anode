@@ -66,7 +66,7 @@ object App {
         E.label(A.`for`("toggle-all")),
         E.ul(
           A.`class`("todo-list"),
-          todos.map(Item(_))
+          todos.map(x => Item(x).withKey(x.key))
         )
       )
   }
