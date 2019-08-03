@@ -7,6 +7,7 @@ import org.scalajs.dom
 
 import scala.language.implicitConversions
 import scala.scalajs.js
+import scala.scalajs.js.UndefOr
 
 sealed trait Arg { self =>
   def when(pred: => Boolean) = if (pred) self else Empty
@@ -53,9 +54,12 @@ object Declaration {
 final case class VNode(vn: VNodeJS) extends Child {
 
   def withT[T <: js.Any](name: String, t: T) = {
-    vn.props.asInstanceOf[js.Dictionary[js.Any]].update(name, t)
-    copy(
-      vn = Preact.h(
+    val props = vn.props.asInstanceOf[js.Dictionary[js.Any]]
+    vn.ref.foreach(props.update("ref", _))
+    vn.key.foreach(props.update("key", _))
+    props.update(name, t)
+    VNode(
+      Preact.h(
         vn.`type`.asInstanceOf[js.Dynamic],
         vn.props.asInstanceOf[AnyDictionary],
         vn.children: _*
@@ -83,14 +87,11 @@ final case class DoubleArg(d: Double) extends Child {
 }
 
 object Arg {
-  implicit def stringToArg(s: String): Arg = StringArg(s)
-  implicit def doubleToArg(d: Double): Arg = DoubleArg(d)
-  implicit def intToArg(i: Int): Arg       = DoubleArg(i)
-  implicit def fromOption(o: Option[Arg]): Arg =
-    o.fold[Arg](Empty)(x => {
-      x
-    })
-  implicit def seqToArgs(s: Seq[Arg]): Args = Args(s)
+  implicit def stringToArg(s: String): Arg     = StringArg(s)
+  implicit def doubleToArg(d: Double): Arg     = DoubleArg(d)
+  implicit def intToArg(i: Int): Arg           = DoubleArg(i)
+  implicit def fromOption(o: Option[Arg]): Arg = o.getOrElse(Empty)
+  implicit def seqToArgs(s: Seq[Arg]): Args    = Args(s)
 }
 
 case class Args(args: Seq[Arg]) extends Arg {

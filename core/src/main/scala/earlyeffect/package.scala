@@ -51,4 +51,11 @@ package object earlyeffect {
 
     def rerender(): Unit = Preact.rerender()
   }
+
+  object dictionaryNames {
+    val Props                = "_early_effect_props"
+    val State                = "_early_effect_state"
+    val ComponentConstructor = "_early_effect_component"
+  }
+
 }

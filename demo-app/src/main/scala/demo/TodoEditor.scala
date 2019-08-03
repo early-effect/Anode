@@ -9,7 +9,7 @@ import scala.scalajs.js.timers
 
 object TodoEditor extends StatefulComponent[Todo, String] {
   override def willMount(instance: I): Unit =
-    instance.setState(instance.props.description)
+    instance.setState(instance.props().description)
 
   override def render(props: Todo, state: String, instance: I): VNode = {
     def update(): Unit = ModelCircuit(Update(props.copy(editing = false, description = state)))
@@ -31,9 +31,6 @@ object TodoEditor extends StatefulComponent[Todo, String] {
             .foreach(_ => update())
         }
       )
-      .withRef(x => {
-        val e = x.asInstanceOf[HTMLInputElement]
-        timers.setTimeout(0)(e.focus())
-      })
+      .withRef(x => timers.setTimeout(1)(x.asInstanceOf[HTMLInputElement].focus()))
   }
 }

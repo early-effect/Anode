@@ -69,11 +69,12 @@ class ElementSpecs extends FlatSpec with Matchers {
   "Elements" should "take a key" in {
     E.span("foo").withKey("bar").vn.key should be("bar")
   }
-  "Elements" should "take a ref function" in {
+  "Elements" should "take a ref function and a key" in {
     var effect: Boolean                    = false
     val f: js.Function1[dom.Element, Unit] = e => effect = true
-    val n                                  = E.span("foo").withRef(f)
+    val n                                  = E.span("foo").withRef(f).withKey("foo")
     render(n)
+    assert(n.vn.key.contains("foo"))
     assert(effect)
   }
 }
