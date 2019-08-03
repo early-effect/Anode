@@ -1,40 +1,40 @@
 package earlyeffect
 
+import earlyeffect.dictionaryNames._
+
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSName
 
-abstract class BaseInstance[Props, +Component <: ComponentOps[Props, State], State] extends impl.ComponentJS { self =>
-  import BaseInstance._
-
-  def componentDidMount(): Unit =
-    component().didMount(self)
-
-  def componentWillMount(): Unit =
-    component().willMount(self)
-
-  def componentWillUnmount(): Unit = component().willUnMount(self)
-
-  @JSName("earlyEffectProps")
-  def props(p: js.Dynamic = rawProps): Props = p.props
-
-  @JSName("earlyEffectComponent")
-  def component(p: js.Dynamic = rawProps): Component = p.component
-
-  @JSName("earlyEffectState")
-  def state(s: js.Dynamic = rawState): State = s.state
-
-  @JSName("earlyEffectSetState")
-  def setState(state: State): Unit =
-    rawSetState(js.Dictionary(dictionaryNames.State -> state.asInstanceOf[js.Any]).asInstanceOf[js.Dynamic])
-
+sealed trait InstanceOps[Props, State] {
+  def props: Props
+  def state: State
+  def setState(s: State): Unit
 }
 
-object BaseInstance {
-  implicit class EarlyProps(d: js.Dynamic) {
-    import dictionaryNames._
-    def cast[T](field: String): T = d.selectDynamic(field).asInstanceOf[T]
-    def props[T]: T               = cast(Props)
-    def state[T]: T               = cast(State)
-    def component[T]: T           = cast(ComponentConstructor)
+abstract class BaseInstance[Props, +Component <: ComponentOps[Props, State], State] extends impl.ComponentJS { self =>
+
+  object instance extends InstanceOps[Props, State] {
+    def props: Props             = lookupProps()
+    def state: State             = lookupState()
+    def setState(s: State): Unit = setComponentState(s)
   }
+
+  def componentDidMount(): Unit =
+    lookupComponent().didMount(self.instance)
+
+  def componentWillMount(): Unit =
+    lookupComponent().willMount(self.instance)
+
+  def componentWillUnmount(): Unit = lookupComponent().willUnMount(self.instance)
+
+  protected final def cast[T](d: js.Dynamic, field: String): T = d.selectDynamic(field).asInstanceOf[T]
+
+  protected final def lookupProps(p: js.Dynamic = rawProps): Props = cast(p, Props)
+
+  protected final def lookupComponent(p: js.Dynamic = rawProps): Component = cast(p, ComponentConstructor)
+
+  protected final def lookupState(s: js.Dynamic = rawState): State = cast(s, State)
+
+  protected def setComponentState(state: State): Unit =
+    rawSetState(js.Dictionary(dictionaryNames.State -> state.asInstanceOf[js.Any]).asInstanceOf[js.Dynamic])
+
 }

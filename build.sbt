@@ -49,7 +49,7 @@ lazy val core = project
     name := "core",
     webpackEmitSourceMaps in Compile := true,
     npmDependencies in Compile ++= Seq(
-      "preact"       -> "10.0.0-rc.0",
+      "preact"       -> "10.0.0-rc.1",
       "autoprefixer" -> "9.6.1"
     )
   )

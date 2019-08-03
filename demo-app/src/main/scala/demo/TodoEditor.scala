@@ -8,8 +8,11 @@ import org.scalajs.dom.raw.HTMLInputElement
 import scala.scalajs.js.timers
 
 object TodoEditor extends StatefulComponent[Todo, String] {
+
+  override def initialState(t: Todo): String = t.description
+
   override def willMount(instance: I): Unit =
-    instance.setState(instance.props().description)
+    instance.setState(instance.props.description)
 
   override def render(props: Todo, state: String, instance: I): VNode = {
     def update(): Unit = ModelCircuit(Update(props.copy(editing = false, description = state)))

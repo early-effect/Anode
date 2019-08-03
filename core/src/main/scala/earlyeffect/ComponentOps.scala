@@ -12,7 +12,7 @@ trait ComponentOps[Props, State] { self =>
 
   val defaultKey = self.getClass.getName
 
-  type I = BaseInstance[Props, ComponentOps[Props, State], State]
+  type I = InstanceOps[Props, State]
 
   def didMount(instance: I): Unit    = ()
   def willMount(instance: I): Unit   = ()

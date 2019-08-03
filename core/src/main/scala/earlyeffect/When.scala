@@ -1,8 +1,10 @@
 package earlyeffect
 
 class When(p: Boolean) {
-  def apply(c: => Child): Child = if (p) c else EmptyChild
-  def apply(a: => Arg): Arg     = if (p) a else Empty
+  def apply[A, B <: A](a: A, b: B): A = if (p) a else b
+  def apply(c: => Child): Child       = apply(c, EmptyChild)
+  def apply(a: => Arg): Arg           = apply(a, Empty)
+
 }
 
 object When {

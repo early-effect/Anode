@@ -12,7 +12,7 @@ abstract class Component[Props] extends ComponentOps[Props, Nothing] { self =>
   def didUpdate(oldProps: Props, instance: I): Unit = ()
 
   def shouldUpdate(nextProps: Props, previous: I): Boolean =
-    previous.props() != nextProps
+    previous.props != nextProps
 
   override val instanceConstructor: js.Dynamic =
     constructors.getOrElseUpdate(this.getClass.getName, js.constructorOf[Component.Instance[Props]])
@@ -22,13 +22,14 @@ abstract class Component[Props] extends ComponentOps[Props, Nothing] { self =>
 object Component {
 
   class Instance[Props] extends BaseInstance[Props, Component[Props], Nothing] {
-    override def render(p: js.Dynamic, s: js.Dynamic): VNodeJS = component(p).render(props(p)).vn
+    override def render(p: js.Dynamic, s: js.Dynamic): VNodeJS = lookupComponent(p).render(lookupProps(p)).vn
 
+    //TODO: not sure what to do with snapshot...
     def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic): Unit =
-      component().didUpdate(props(oldProps), this)
+      lookupComponent().didUpdate(lookupProps(oldProps), this.instance)
 
     def shouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic, context: js.Dynamic): Boolean =
-      component().shouldUpdate(props(nextProps), this)
+      lookupComponent().shouldUpdate(lookupProps(nextProps), this.instance)
   }
 
   implicit def applySelf[Comp <: Component[Comp], T <: Arg](self: Comp): T = self.apply(self).asInstanceOf[T]
