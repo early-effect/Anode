@@ -4,12 +4,14 @@ import earlyeffect.impl.VNodeJS
 
 import scala.language.implicitConversions
 import scala.scalajs.js
+import scala.scalajs.js.UndefOr
 
-abstract class Component[Props] extends ComponentOps[Props, Nothing] { self =>
+abstract class Component[Props] extends EarlyComponent[Props, Nothing] { self =>
 
   def render(props: Props): VNode
 
-  def didUpdate(oldProps: Props, instance: I): Unit = ()
+  def didUpdate(oldProps: Props, instance: I, oldInstance: UndefOr[I]): Unit =
+    log("old", oldInstance)
 
   def shouldUpdate(nextProps: Props, previous: I): Boolean =
     previous.props != nextProps
@@ -21,14 +23,18 @@ abstract class Component[Props] extends ComponentOps[Props, Nothing] { self =>
 
 object Component {
 
-  class Instance[Props] extends BaseInstance[Props, Component[Props], Nothing] {
+  class Instance[Props] extends InstanceFacade[Props, Component[Props], Nothing] {
     override def render(p: js.Dynamic, s: js.Dynamic): VNodeJS = lookupComponent(p).render(lookupProps(p)).vn
 
     //TODO: not sure what to do with snapshot...
-    def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic): Unit =
-      lookupComponent().didUpdate(lookupProps(oldProps), this.instance)
+    override def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic): Unit =
+      lookupComponent().didUpdate(
+        lookupProps(oldProps),
+        this.instance,
+        snapshot.asInstanceOf[UndefOr[Instance[Props]]].map(_.instance)
+      )
 
-    def shouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic, context: js.Dynamic): Boolean =
+    override def shouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic, context: js.Dynamic): Boolean =
       lookupComponent().shouldUpdate(lookupProps(nextProps), this.instance)
   }
 

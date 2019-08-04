@@ -1,52 +1,49 @@
 package earlyeffect
 
-import diode.{Circuit, FastEq, ModelR}
+import diode._
 import earlyeffect.impl.VNodeJS
 
 import scala.language.implicitConversions
 import scala.scalajs.js
 
-trait DiodeComponent[Props, M <: AnyRef, State] extends ComponentOps[Props, State] { self =>
+trait CircuitComponent[Props, M <: AnyRef, State] extends EarlyComponent[Props, State] {
+  self =>
 
   def circuit: Circuit[M]
-  def reader(p: Props): ModelR[M, State]
-
-  def zoom(get: M => State)(implicit f: FastEq[_ >: State]): ModelR[M, State] = circuit.zoom(get)
 
   def render(props: Props, state: State): VNode
 
-  // we might want to do a deep equality check?
-  def shouldUpdate(nextProps: Props, nextState: State, previous: InstanceOps[Props, State]): Boolean =
-    previous.props != nextProps || nextState != previous.state
+  def modelReader(p: Props): ModelR[M, State]
+
+  def zoom(get: M => State)(implicit f: FastEq[_ >: State]): ModelR[M, State] = circuit.zoom(get)
+
+  def shouldUpdate(nextProps: Props, nextState: State, previous: I): Boolean =
+    nextState != previous.state || nextProps != previous.props
 
   override def instanceConstructor: js.Dynamic =
     constructors.getOrElseUpdate(
       defaultKey,
-      js.constructorOf[DiodeComponent.Instance[Props, DiodeComponent[Props, M, State], Props]]
+      js.constructorOf[CircuitComponent.Instance[Props, CircuitComponent[Props, M, State], Props]]
     )
 
 }
 
-object DiodeComponent {
+object CircuitComponent {
 
-  class Instance[Props, M <: AnyRef, State] extends BaseInstance[Props, DiodeComponent[Props, M, State], State] {
+  class Instance[Props, M <: AnyRef, State] extends InstanceFacade[Props, CircuitComponent[Props, M, State], State] {
 
-    type CM     = Circuit[M]
     type Reader = Props => ModelR[M, State]
 
     private var unsubscribe: () => Unit = () => ()
-
-    def circuit: CM = lookupComponent().circuit
-
-    def reader: Reader = lookupComponent().reader
 
     override def render(p: js.Dynamic, s: js.Dynamic): VNodeJS =
       lookupComponent(p).render(lookupProps(p), lookupState(s)).vn
 
     override def componentWillMount(): Unit = {
-      lookupComponent().willMount(this.instance)
-      setComponentState(reader(lookupProps()).value)
-      unsubscribe = circuit.subscribe(reader(lookupProps()))(r => { setComponentState(r.value) })
+      val component = lookupComponent()
+      component.willMount(instance)
+      instance.setState(component.modelReader(instance.props).value)
+      unsubscribe = component.circuit.subscribe(component.modelReader(instance.props))(x => instance.setState(x.value))
     }
 
     override def componentWillUnmount(): Unit = unsubscribe()
@@ -58,5 +55,7 @@ object DiodeComponent {
       lookupComponent().shouldUpdate(lookupProps(nextProps), lookupState(nextState), this.instance)
 
   }
+
+  object Instance {}
 
 }

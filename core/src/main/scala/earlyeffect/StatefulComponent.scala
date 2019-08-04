@@ -5,7 +5,7 @@ import earlyeffect.impl.VNodeJS
 import scala.language.implicitConversions
 import scala.scalajs.js
 
-abstract class StatefulComponent[Props, State] extends ComponentOps[Props, State] { self =>
+abstract class StatefulComponent[Props, State] extends EarlyComponent[Props, State] { self =>
   def initialState(props: Props): State
 
   def shouldUpdate(nextProps: Props, nextState: State, previous: I): Boolean =
@@ -20,7 +20,7 @@ abstract class StatefulComponent[Props, State] extends ComponentOps[Props, State
 
 object StatefulComponent {
 
-  class Instance[Props, State] extends BaseInstance[Props, StatefulComponent[Props, State], State] {
+  class Instance[Props, State] extends InstanceFacade[Props, StatefulComponent[Props, State], State] {
 
     override def render(p: js.Dynamic, s: js.Dynamic): VNodeJS = {
       val comp = lookupComponent(p)
@@ -33,10 +33,10 @@ object StatefulComponent {
       super.componentWillMount()
     }
 
-    def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic): Unit =
+    override def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic): Unit =
       lookupComponent().didUpdate(lookupProps(oldProps), lookupState(oldState), this.instance)
 
-    def shouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic, context: js.Dynamic): Boolean =
+    override def shouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic, context: js.Dynamic): Boolean =
       lookupComponent().shouldUpdate(lookupProps(nextProps), lookupState(nextState), this.instance)
 
   }

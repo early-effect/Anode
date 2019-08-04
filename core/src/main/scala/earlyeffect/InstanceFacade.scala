@@ -4,18 +4,21 @@ import earlyeffect.dictionaryNames._
 
 import scala.scalajs.js
 
-sealed trait InstanceOps[Props, State] {
+trait EarlyInstance[Props, State] {
   def props: Props
   def state: State
   def setState(s: State): Unit
 }
 
-abstract class BaseInstance[Props, +Component <: ComponentOps[Props, State], State] extends impl.ComponentJS { self =>
+abstract class InstanceFacade[Props, +Component <: EarlyComponent[Props, State], State] extends impl.ComponentJS {
+  self =>
 
-  object instance extends InstanceOps[Props, State] {
-    def props: Props             = lookupProps()
-    def state: State             = lookupState()
-    def setState(s: State): Unit = setComponentState(s)
+  object instance extends EarlyInstance[Props, State] {
+    override def props: Props = lookupProps()
+
+    override def state: State = lookupState()
+
+    override def setState(s: State): Unit = setComponentState(s)
   }
 
   def componentDidMount(): Unit =
@@ -34,7 +37,7 @@ abstract class BaseInstance[Props, +Component <: ComponentOps[Props, State], Sta
 
   protected final def lookupState(s: js.Dynamic = rawState): State = cast(s, State)
 
-  protected def setComponentState(state: State): Unit =
+  protected final def setComponentState(state: State): Unit =
     rawSetState(js.Dictionary(dictionaryNames.State -> state.asInstanceOf[js.Any]).asInstanceOf[js.Dynamic])
 
 }

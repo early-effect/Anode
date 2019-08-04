@@ -14,12 +14,12 @@ object App {
   def main(args: Array[String]): Unit =
     preact.render(TodoListApp(()), container)
 
-  abstract class TodoComponent[P, S] extends DiodeComponent[P, Root, S] {
+  abstract class TodoComponent[P, S] extends CircuitComponent[P, Root, S] {
     override def circuit: Circuit[Root] = ModelCircuit
   }
 
   object TodoListApp extends TodoComponent[Unit, TodoList] {
-    override def reader(p: Unit): ModelR[Root, TodoList] = zoom(_.todoList)
+    override def modelReader(p: Unit): ModelR[Root, TodoList] = zoom(_.todoList)
     override def render(props: Unit, l: TodoList): VNode =
       E.div(
         E.section(
@@ -49,7 +49,7 @@ object App {
   }
 
   object ListOfTodos extends TodoComponent[Unit, Seq[Todo]] {
-    override def reader(p: Unit): ModelR[Root, Seq[Todo]] = zoom(_.todoList.filtered)
+    override def modelReader(p: Unit): ModelR[Root, Seq[Todo]] = zoom(_.todoList.filtered)
 
     override def render(props: Unit, todos: Seq[Todo]): VNode =
       E.section(
