@@ -1,6 +1,6 @@
 package earlyeffect
 
-import earlyeffect.dsl.Styles.{Constructor, DeclarationConstructor, DeclarationOrSelector, KeyFrames}
+import earlyeffect.dsl.Styles.{SimpleConstructor, DeclarationConstructor, DeclarationOrSelector, KeyFrames}
 import earlyeffect.impl.Preact.{AnyDictionary, ChildJS}
 import earlyeffect.impl.VNodeJS
 import org.scalajs.dom
@@ -47,8 +47,7 @@ final case class Declaration(property: String, value: String) extends Arg with D
 }
 
 object Declaration {
-  def apply[T](property: String): DeclarationConstructor[T] = Constructor[T](property)
-
+//  def apply[T](property: String): DeclarationConstructor[T] = SimpleConstructor[T](property)
 }
 
 final case class VNode(vn: VNodeJS) extends Child {

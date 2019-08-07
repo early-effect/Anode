@@ -93,4 +93,8 @@ class StyleSpecs extends FlatSpec with Matchers {
   "prefixes" should "work" in {
     S.alignItems.safe.end.toString should be("align-items: safe end;")
   }
+  "simple String declarations" should "work" in {
+    S("foo")("bar").toString should be("foo: bar;")
+    S("foo", "bar").toString should be("foo: bar;")
+  }
 }
