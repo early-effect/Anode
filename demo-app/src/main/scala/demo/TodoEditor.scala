@@ -11,7 +11,7 @@ object TodoEditor extends StatefulComponent[Todo, String] {
 
   override def initialState(t: Todo): String = t.description
 
-  override def render(props: Todo, state: String, instance: I): VNode = {
+  override def render(props: Todo, state: String, instance: OurInstance): VNode = {
     def update(): Unit = ModelCircuit(Update(props.copy(editing = false, description = state)))
     E.input(
         A.id(s"editor-${props.key}"),

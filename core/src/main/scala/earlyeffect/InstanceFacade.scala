@@ -3,31 +3,52 @@ package earlyeffect
 import earlyeffect.dictionaryNames._
 
 import scala.scalajs.js
+import scala.scalajs.js.annotation.JSName
 
-trait EarlyInstance[Props, State] {
+/**
+  * Provides a type safe view of the underlying instance.
+  *
+  * When we pass things to components we don't want them to see the life cycle function or the raw JS "types"
+  *
+  * @tparam Props
+  * @tparam State
+  */
+sealed trait EarlyInstance[Props, State] extends js.Any {
+
+  @JSName("eProps")
   def props: Props
+
+  @JSName("eState")
   def state: State
+
+  @JSName("eSetState")
   def setState(s: State): Unit
+
 }
 
-abstract class InstanceFacade[Props, +Component <: EarlyComponent[Props, State], State] extends impl.ComponentJS {
+abstract class InstanceFacade[Props, +Component <: EarlyComponent[Props, State], State]
+    extends impl.ComponentJS
+    with EarlyInstance[Props, State] {
   self =>
 
-  object instance extends EarlyInstance[Props, State] {
-    override def props: Props = lookupProps()
+  val instance: EarlyInstance[Props, State] = self
 
-    override def state: State = lookupState()
+  @JSName("eProps")
+  override def props: Props = lookupProps()
 
-    override def setState(s: State): Unit = setComponentState(s)
-  }
+  @JSName("eState")
+  override def state: State = lookupState()
+
+  @JSName("eSetState")
+  override def setState(s: State): Unit = setComponentState(s)
 
   def componentDidMount(): Unit =
-    lookupComponent().didMount(self.instance)
+    lookupComponent().didMount(self)
 
   def componentWillMount(): Unit =
-    lookupComponent().willMount(self.instance)
+    lookupComponent().willMount(self)
 
-  def componentWillUnmount(): Unit = lookupComponent().willUnMount(self.instance)
+  def componentWillUnmount(): Unit = lookupComponent().willUnMount(self)
 
   protected final def cast[T](d: js.Dynamic, field: String): T = d.selectDynamic(field).asInstanceOf[T]
 

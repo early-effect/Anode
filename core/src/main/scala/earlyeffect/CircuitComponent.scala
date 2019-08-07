@@ -17,7 +17,7 @@ trait CircuitComponent[Props, M <: AnyRef, State] extends EarlyComponent[Props, 
 
   def zoom(get: M => State)(implicit f: FastEq[_ >: State]): ModelR[M, State] = circuit.zoom(get)
 
-  def shouldUpdate(nextProps: Props, nextState: State, previous: I): Boolean =
+  def shouldUpdate(nextProps: Props, nextState: State, previous: OurInstance): Boolean =
     nextState != previous.state || nextProps != previous.props
 
   override def instanceConstructor: js.Dynamic =

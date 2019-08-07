@@ -10,10 +10,10 @@ abstract class Component[Props] extends EarlyComponent[Props, Nothing] { self =>
 
   def render(props: Props): VNode
 
-  def didUpdate(oldProps: Props, instance: I, oldInstance: UndefOr[I]): Unit =
+  def didUpdate(oldProps: Props, instance: OurInstance, oldInstance: UndefOr[OurInstance]): Unit =
     log("old", oldInstance)
 
-  def shouldUpdate(nextProps: Props, previous: I): Boolean =
+  def shouldUpdate(nextProps: Props, previous: OurInstance): Boolean =
     previous.props != nextProps
 
   override val instanceConstructor: js.Dynamic =
