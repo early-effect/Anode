@@ -1,4 +1,4 @@
-package earlyeffect.dsl
+package earlyeffect.dsl.css
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport

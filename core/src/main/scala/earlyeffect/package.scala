@@ -1,4 +1,5 @@
-import earlyeffect.dsl._
+import earlyeffect.dsl.{css, _}
+import earlyeffect.dsl.css.Styles
 import earlyeffect.impl.EarlyEffect
 import earlyeffect.impl.Preact.Fragment
 import org.scalajs.dom
@@ -19,8 +20,8 @@ package object earlyeffect {
   type E = Elements.type
   val E: E = Elements
 
-  type S = dsl.Styles.type
-  val S: S = dsl.Styles
+  type S = Styles.type
+  val S: S = css.Styles
 
   dom.Event
   def log(m: js.Any, a: Any*): Unit = dom.window.console.log(m, a.map(_.asInstanceOf[js.Any]): _*)

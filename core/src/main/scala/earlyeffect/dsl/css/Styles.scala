@@ -1,8 +1,7 @@
-package earlyeffect.dsl
+package earlyeffect.dsl.css
 
-import earlyeffect.{Declaration, dsl}
+import earlyeffect.Declaration
 
-import scala.language.implicitConversions
 import scala.scalajs.js
 
 object Styles {
@@ -130,6 +129,7 @@ object Styles {
   }
 
   trait AbsoluteLength extends Suffixed[Double] {
+    val zero   = apply("0")
     val px: ST = suffixed("px")
     val cm: ST = suffixed("cm")
     val mm: ST = suffixed("mm")
@@ -369,6 +369,13 @@ object Styles {
     def fillAvailable: Declaration = apply("fill-available")
   }
 
+  trait OverFlow extends DS with Auto {
+    def visible: Declaration = apply("visible")
+    def hidden: Declaration  = apply("hidden")
+    def clip: Declaration    = apply("clip")
+    def scroll: Declaration  = apply("scroll")
+  }
+
   object all extends DS(property = "all") {
     def revert: Declaration = apply("revert")
   }
@@ -414,7 +421,10 @@ object Styles {
   object backgroundSize       extends DS("background-size")
   object blockSize            extends DS("block-size") with Auto with Length {}
   object border               extends DS("border")
-  object borderBlock          extends DS("border-block")
+  // Todo: not complete
+  object borderWidth extends DS(property = "border-width") with LineWidth
+
+  object borderBlock extends DS("border-block")
 
   object color extends DS(property = "color") with Color
 
@@ -685,6 +695,145 @@ object Styles {
   object bottom extends DS("bottom") with RightLeftTopBottom {}
   object left   extends DS("left") with RightLeftTopBottom   {}
   object right  extends DS("right") with RightLeftTopBottom  {}
+
+  object transition extends DS(property = "transition")
+  object transform  extends DS(property = "transform")
+
+  object textTransform extends DS(property = "text-transform") with None {
+    val capitalize: Declaration   = apply("capitalize")
+    val uppercase: Declaration    = apply("uppercase")
+    val lowercase: Declaration    = apply("lowercase")
+    val fullWidth: Declaration    = apply("full-width")
+    val fullSizeKana: Declaration = apply("full-size-kana")
+  }
+
+  object borderTop    extends DS(property = "border-top")
+  object borderBottom extends DS(property = "border-bottom")
+  object borderLeft   extends DS(property = "border-left")
+  object borderRight  extends DS(property = "border-right")
+
+  object textDecoration extends DS(property = "text-decoration") with None
+
+  object overflowY extends DS(property = "overflow-y") with OverFlow
+  object overflowX extends DS(property = "overflow-x") with OverFlow
+
+  object listStyle     extends DS(property = "list-style") with None
+  object listStyleType extends DS(property = "list-style-type") with None
+
+  object listStylePosition extends DS(property = "list-style-position") {
+    def inside: Declaration  = apply("inside")
+    def outside: Declaration = apply("outside")
+  }
+  //Todo: need to create URL type
+  object listStyleImage extends DS(property = "list-style-image") with None
+
+  object whiteSpace extends DS(property = "white-space") {
+    def normal: Declaration  = apply("normal")
+    def pre: Declaration     = apply("pre")
+    def nowrap: Declaration  = apply("nowrap")
+    def preWrap: Declaration = apply("pre-wrap")
+    def preLine: Declaration = apply("pre-line")
+  }
+
+  object userSelect extends DS(property = "user-select") with None with Auto {
+    def all: Declaration     = apply("all")
+    def contain: Declaration = apply("contain")
+    def text: Declaration    = apply("text")
+  }
+
+  object webkitTouchCallout extends DS(property = "-webkit-touch-callout") with None {
+    def default: Declaration = apply("default")
+  }
+
+  object webkitOverflowScrolling extends DS(property = "-webkit-overflow-scrolling") with Auto {
+    def touch: Declaration = apply("touch")
+  }
+
+  object grid            extends DS(property = "grid")
+  object gridArea        extends DS(property = "grid-area")
+  object gridAutoColumns extends DS(property = "grid-auto-columns")
+
+  object gridAutoFlow extends DS(property = "grid-auto-flow") {
+    def row: Declaration         = apply("row")
+    def column: Declaration      = apply("column")
+    def rowDense: Declaration    = apply("row dense")
+    def columnDense: Declaration = apply("column dense")
+  }
+
+  object gridAutoRows        extends DS(property = "grid-auto-rows")
+  object gridColumn          extends DS(property = "grid-column")
+  object gridColumnEnd       extends DS(property = "grid-column-end")
+  object gridColumGap        extends DS(property = "grid-colum-gap")
+  object gridColumnStart     extends DS(property = "grid-column-start")
+  object gridGap             extends DS(property = "grid-gap")
+  object gridRow             extends DS(property = "grid-row")
+  object gridRowEnd          extends DS(property = "grid-row-end")
+  object gridRowGrap         extends DS(property = "grid-row-grap")
+  object gridRowStart        extends DS(property = "grid-row-start")
+  object gridTemplate        extends DS(property = "grid-template") with None
+  object gridTemplateAreas   extends DS(property = "grid-template-areas")
+  object gridTemplateColumns extends DS(property = "grid-template-columns") with None
+  object gridTemplateRows    extends DS(property = "grid-template-rows") with None
+
+  object pointerEvents extends DS(property = "pointer-events") with Auto with None {
+    def visiblePainted: Declaration = apply("visiblePainted")
+    def visibleFill: Declaration    = apply("visibleFill")
+    def visibleStroke: Declaration  = apply("visibleStroke")
+    def visible: Declaration        = apply("visible")
+    def painted: Declaration        = apply("painted")
+  }
+
+  object verticalAlign extends DS(property = "vertical-align") with LengthPercentage {
+    def baseline: Declaration   = apply("baseline")
+    def sub: Declaration        = apply("sub")
+    def `super`: Declaration    = apply("super")
+    def textTop: Declaration    = apply("text-top")
+    def textBottom: Declaration = apply("text-bottom")
+    def middle: Declaration     = apply("middle")
+    def top: Declaration        = apply("top")
+    def bottom: Declaration     = apply("bottom")
+  }
+
+  object resize extends DS(property = "resize") with None {
+    def both: Declaration       = apply("both")
+    def horizontal: Declaration = apply("horizontal")
+    def vertical: Declaration   = apply("vertical")
+    def block: Declaration      = apply("block")
+    def inline: Declaration     = apply("inline")
+  }
+
+  object letterSpacing extends DS(property = "letter-spacing") with Length {
+    def normal: Declaration = apply("normal")
+  }
+
+  //Todo: not complete... but should capture most use cases
+  object touchAction extends DS(property = "touch-action") with Auto with None {
+    def panX: Declaration         = apply("pan-x")
+    def panY: Declaration         = apply("pan-y")
+    def panLeft: Declaration      = apply("pan-left")
+    def panRight: Declaration     = apply("pan-right")
+    def panUp: Declaration        = apply("pan-up")
+    def panDown: Declaration      = apply("pan-down")
+    def pinchZoom: Declaration    = apply("pinch-zoom")
+    def manipulation: Declaration = apply("manipulation")
+    def panX_panY: Declaration    = apply("pan-x pan-y")
+  }
+
+  //Todo: this should be doable as an apply normal or two LengthPercentages
+  object gap extends DS(property = "gap") {
+    def zero: Declaration = apply("0")
+  }
+
+  object columnGap extends DS(property = "column-gap") with Normal with LengthPercentage
+  object rowGap    extends DS(property = "row-gap") with Normal with LengthPercentage
+
+  object outline extends DS(property = "outline")
+
+  //Todo: not complete
+  object content extends DS(property = "content") with Normal with None
+
+  //Todo: not complete
+  object textIndent extends DS(property = "text-indent") with LengthPercentage
 
   def rgb(r: Int, g: Int, b: Int): String             = s"rgb($r,$g,$b)"
   def rgba(r: Int, g: Int, b: Int, a: Double): String = s"rgb($r,$g,$b,$a)"

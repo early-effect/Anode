@@ -1,6 +1,6 @@
 package earlyeffect
 
-import earlyeffect.dsl.Styles.{SimpleConstructor, DeclarationConstructor, DeclarationOrSelector, KeyFrames}
+import earlyeffect.dsl.css.Styles.{SimpleConstructor, DeclarationConstructor, DeclarationOrSelector, KeyFrames}
 import earlyeffect.impl.Preact.{AnyDictionary, ChildJS}
 import earlyeffect.impl.VNodeJS
 import org.scalajs.dom
@@ -44,6 +44,7 @@ object Attribute {
 
 final case class Declaration(property: String, value: String) extends Arg with DeclarationOrSelector {
   override def mkString(className: String, kf: js.Array[KeyFrames]): String = s"$property: $value;"
+  def important                                                             = copy(value = s"$value !important")
 }
 
 object Declaration {

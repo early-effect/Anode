@@ -1,10 +1,10 @@
-package earlyeffect.dsl
+package earlyeffect.dsl.css
 
 import earlyeffect._
 import org.scalatest.{FlatSpec, Matchers}
 
 class StyleSpecs extends FlatSpec with Matchers {
-  import Styles._
+  import earlyeffect.dsl.css.Styles._
   val fooClass    = Selector(".foo", S.color("red"))
   val barClass    = Selector(".bar", S.color("blue"))
   val allChildren = Selector(" *", S.color("black"))

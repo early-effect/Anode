@@ -1,9 +1,9 @@
-package earlyeffect.dsl
+package earlyeffect.dsl.css
 
 import java.util.UUID
 
 import earlyeffect.Attribute
-import earlyeffect.dsl.Styles.{DeclarationOrSelector, KeyFrames, Selector}
+import earlyeffect.dsl.css.Styles.{DeclarationOrSelector, KeyFrames, Selector}
 
 import scala.scalajs.js
 
