@@ -25,7 +25,7 @@ trait EarlyComponent[Props, State] { self =>
       Seq[(String, js.Any)](
         (Props, props.asInstanceOf[js.Any]),
         (ComponentConstructor, self.asInstanceOf[js.Any]),
-        ("key", s"$defaultKey-${props.hashCode()}") // this is a precaution - I may want to make this optional
+        ("key", defaultKey) // this is a precaution - I may want to make this optional
       ): _*
     )
 
