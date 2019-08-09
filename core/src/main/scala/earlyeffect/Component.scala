@@ -10,8 +10,7 @@ abstract class Component[Props] extends EarlyComponent[Props, Nothing] { self =>
 
   def render(props: Props): VNode
 
-  def didUpdate(oldProps: Props, instance: OurInstance, oldInstance: UndefOr[OurInstance]): Unit =
-    log("old", oldInstance)
+  def didUpdate(oldProps: Props, instance: OurInstance, oldInstance: UndefOr[OurInstance]): Unit = ()
 
   def shouldUpdate(nextProps: Props, previous: OurInstance): Boolean =
     previous.props != nextProps

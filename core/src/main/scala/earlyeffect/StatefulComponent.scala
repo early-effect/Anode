@@ -4,6 +4,7 @@ import earlyeffect.impl.VNodeJS
 
 import scala.language.implicitConversions
 import scala.scalajs.js
+import scala.scalajs.js.UndefOr
 
 abstract class StatefulComponent[Props, State] extends EarlyComponent[Props, State] { self =>
   def initialState(props: Props): State
@@ -34,7 +35,12 @@ object StatefulComponent {
     }
 
     override def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic): Unit =
-      lookupComponent().didUpdate(lookupProps(oldProps), lookupState(oldState), this.instance)
+      lookupComponent().didUpdate(
+        lookupProps(oldProps),
+        lookupState(oldState),
+        this.instance,
+        snapshot.asInstanceOf[UndefOr[Instance[Props, State]]].map(_.instance)
+      )
 
     override def shouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic, context: js.Dynamic): Boolean =
       lookupComponent().shouldUpdate(lookupProps(nextProps), lookupState(nextState), this.instance)

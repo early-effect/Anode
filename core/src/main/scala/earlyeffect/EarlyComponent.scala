@@ -3,7 +3,7 @@ package earlyeffect
 import earlyeffect.impl.EarlyEffect
 
 import scala.scalajs.js
-import scala.scalajs.js.Dictionary
+import scala.scalajs.js.{Dictionary, UndefOr}
 
 trait EarlyComponent[Props, State] { self =>
   import dictionaryNames._
@@ -18,7 +18,7 @@ trait EarlyComponent[Props, State] { self =>
   def willMount(instance: OurInstance): Unit   = ()
   def willUnMount(instance: OurInstance): Unit = ()
 
-  def didUpdate(oldProps: Props, oldState: State, instance: OurInstance): Unit = ()
+  def didUpdate(oldProps: Props, oldState: State, instance: OurInstance, oldInstance: UndefOr[OurInstance]): Unit = ()
 
   def baseDictionary(props: Props): Dictionary[js.Any] =
     js.Dictionary(

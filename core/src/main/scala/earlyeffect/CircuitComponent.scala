@@ -5,6 +5,7 @@ import earlyeffect.impl.VNodeJS
 
 import scala.language.implicitConversions
 import scala.scalajs.js
+import scala.scalajs.js.UndefOr
 
 trait CircuitComponent[Props, M <: AnyRef, State] extends EarlyComponent[Props, State] {
   self =>
@@ -49,7 +50,12 @@ object CircuitComponent {
     override def componentWillUnmount(): Unit = unsubscribe()
 
     def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic): Unit =
-      lookupComponent().didUpdate(lookupProps(oldProps), lookupState(oldState), this.instance)
+      lookupComponent().didUpdate(
+        lookupProps(oldProps),
+        lookupState(oldState),
+        this.instance,
+        snapshot.asInstanceOf[UndefOr[Instance[Props, M, State]]].map(_.instance)
+      )
 
     def shouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic, context: js.Dynamic): Boolean =
       lookupComponent().shouldUpdate(lookupProps(nextProps), lookupState(nextState), this.instance)
