@@ -37,8 +37,10 @@ object CircuitComponent {
 
     private var unsubscribe: () => Unit = () => ()
 
-    override def render(p: js.Dynamic, s: js.Dynamic): VNodeJS =
-      lookupComponent(p).render(lookupProps(p), lookupState(s)).vn
+    override def render(p: js.Dynamic, s: js.Dynamic): VNodeJS = {
+      val comp = lookupComponent(p)
+      comp.addDataComponent(comp.render(props, lookupState(s))).vn
+    }
 
     override def componentWillMount(): Unit = {
       val component = lookupComponent()

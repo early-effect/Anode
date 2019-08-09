@@ -26,7 +26,7 @@ object StatefulComponent {
     override def render(p: js.Dynamic, s: js.Dynamic): VNodeJS = {
       val comp = lookupComponent(p)
       val ss   = lookupState(s)
-      comp.render(lookupProps(p), ss, this.instance).vn
+      comp.addDataComponent(comp.render(props, ss, this.instance)).vn
     }
 
     override def componentWillMount(): Unit = {

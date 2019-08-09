@@ -1,6 +1,7 @@
 package earlyeffect
 
 import earlyeffect.impl.EarlyEffect
+import org.scalajs.dom.Element
 
 import scala.scalajs.js
 import scala.scalajs.js.{Dictionary, UndefOr}
@@ -11,6 +12,8 @@ trait EarlyComponent[Props, State] { self =>
   def instanceConstructor: js.Dynamic
 
   val defaultKey = self.getClass.getName
+
+  def selector = s"[data-component='$defaultKey']"
 
   type OurInstance = EarlyInstance[Props, State]
 
@@ -31,5 +34,17 @@ trait EarlyComponent[Props, State] { self =>
 
   def apply(props: Props): VNode =
     VNode(EarlyEffect.h(instanceConstructor, baseDictionary(props)))
+
+  val addDataComponentAttribute: js.Function1[Element, Unit] = e => e.setAttribute("data-component", defaultKey)
+
+  def addDataComponent(res: VNode): VNode =
+    res.vn.ref
+      .fold(res.withRef(addDataComponentAttribute))(
+        wr =>
+          res.withRef(e => {
+            wr(e)
+            addDataComponentAttribute(e)
+          })
+      )
 
 }

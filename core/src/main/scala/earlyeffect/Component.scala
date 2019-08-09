@@ -1,6 +1,7 @@
 package earlyeffect
 
 import earlyeffect.impl.VNodeJS
+import org.scalajs.dom.Element
 
 import scala.language.implicitConversions
 import scala.scalajs.js
@@ -23,9 +24,11 @@ abstract class Component[Props] extends EarlyComponent[Props, Nothing] { self =>
 object Component {
 
   class Instance[Props] extends InstanceFacade[Props, Component[Props], Nothing] {
-    override def render(p: js.Dynamic, s: js.Dynamic): VNodeJS = lookupComponent(p).render(lookupProps(p)).vn
+    override def render(p: js.Dynamic, s: js.Dynamic): VNodeJS = {
+      val comp = lookupComponent(p)
+      comp.addDataComponent(comp.render(props)).vn
+    }
 
-    //TODO: not sure what to do with snapshot...
     override def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic): Unit =
       lookupComponent().didUpdate(
         lookupProps(oldProps),
