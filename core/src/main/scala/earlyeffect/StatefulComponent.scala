@@ -9,10 +9,10 @@ import scala.scalajs.js.UndefOr
 abstract class StatefulComponent[Props, State] extends EarlyComponent[Props, State] { self =>
   def initialState(props: Props): State
 
-  def shouldUpdate(nextProps: Props, nextState: State, previous: OurInstance): Boolean =
+  def shouldUpdate(nextProps: Props, nextState: State, previous: Instance): Boolean =
     previous.props != nextProps || previous.props != nextState
 
-  def render(props: Props, state: State, instance: OurInstance): VNode
+  def render(props: Props, state: State, instance: Instance): VNode
 
   override def instanceConstructor: js.Dynamic =
     constructors.getOrElseUpdate(this.getClass.getName, js.constructorOf[StatefulComponent.Instance[Props, State]])

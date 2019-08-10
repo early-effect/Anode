@@ -15,13 +15,13 @@ trait EarlyComponent[Props, State] { self =>
 
   def selector = s"[data-component='$defaultKey']"
 
-  type OurInstance = EarlyInstance[Props, State]
+  type Instance = EarlyInstance[Props, State]
 
-  def didMount(instance: OurInstance): Unit    = ()
-  def willMount(instance: OurInstance): Unit   = ()
-  def willUnMount(instance: OurInstance): Unit = ()
+  def didMount(instance: Instance): Unit    = ()
+  def willMount(instance: Instance): Unit   = ()
+  def willUnMount(instance: Instance): Unit = ()
 
-  def didUpdate(oldProps: Props, oldState: State, instance: OurInstance, oldInstance: UndefOr[OurInstance]): Unit = ()
+  def didUpdate(oldProps: Props, oldState: State, instance: Instance, oldInstance: UndefOr[Instance]): Unit = ()
 
   def baseDictionary(props: Props): Dictionary[js.Any] =
     js.Dictionary(

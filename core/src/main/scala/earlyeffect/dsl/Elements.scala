@@ -11,7 +11,7 @@ private[dsl] class ElementConstructor(name: String) {
 
   def apply(acs: Arg*): VNode = {
     val args = Args(acs)
-    EarlyEffect.h(name, args.attributeDictionary, args.children: _*)
+    EarlyEffect.h(name, args.attributeDictionary, args.children)
   }
 }
 

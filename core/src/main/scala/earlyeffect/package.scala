@@ -8,6 +8,7 @@ import scala.language.implicitConversions
 import scala.scalajs.js
 
 package object earlyeffect {
+  import scala.scalajs.js.JSConverters._
   private[earlyeffect] val constructors = js.Dictionary[js.Dynamic]()
 
   val Preact: impl.Preact.type = impl.Preact
@@ -26,7 +27,7 @@ package object earlyeffect {
   dom.Event
   def log(m: js.Any, a: Any*): Unit = dom.window.console.log(m, a.map(_.asInstanceOf[js.Any]): _*)
 
-  def fragment(children: Child*): VNode = EarlyEffect.h(Fragment, null, children: _*)
+  def fragment(children: Child*): VNode = EarlyEffect.h(Fragment, null, children.toJSArray)
 
   def when(p: => Boolean) = When(p)
 

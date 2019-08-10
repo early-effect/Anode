@@ -63,19 +63,17 @@ object EarlyEffect {
 
   implicit def nativeToVNode(v: VNodeJS): VNode = VNode(v)
 
-  import js.JSConverters._
+  def h(`type`: js.Dynamic, params: AnyDictionary, children: js.Array[Child]): VNode =
+    Preact.h(`type`, params, children.map(_.value))
 
-  def h(`type`: js.Dynamic, params: AnyDictionary, children: Child*): VNode =
-    Preact.h(`type`, params, children.map(_.value).toJSArray)
+  def h(`type`: NoArgFunctionalComponent, params: AnyDictionary, children: js.Array[Child]): VNode =
+    Preact.h(`type`, params, children.map(_.value))
 
-  def h(`type`: NoArgFunctionalComponent, params: AnyDictionary, children: Child*): VNode =
-    Preact.h(`type`, params, children.map(_.value).toJSArray)
+  def h(`type`: FunctionalComponent, params: AnyDictionary, children: js.Array[Child]): VNode =
+    Preact.h(`type`, params, children.map(_.value))
 
-  def h(`type`: FunctionalComponent, params: AnyDictionary, children: Child*): VNode =
-    Preact.h(`type`, params, children.map(_.value).toJSArray)
-
-  def h(`type`: String, params: AnyDictionary, children: Child*): VNode =
-    Preact.h(`type`, params, children.map(_.value).toJSArray)
+  def h(`type`: String, params: AnyDictionary, children: js.Array[Child]): VNode =
+    Preact.h(`type`, params, children.map(_.value))
 
   def h(`type`: js.Dynamic, params: AnyDictionary): VNodeJS = Preact.h(`type`, params)
 
