@@ -62,10 +62,12 @@ final case class VNode(vn: VNodeJS) extends Child {
       Preact.h(
         vn.`type`.asInstanceOf[js.Dynamic],
         vn.props.asInstanceOf[AnyDictionary],
-        vn.children: _*
+        vn.children
       )
     )
   }
+
+  def children: js.Array[VNode] = vn.childArray.map(VNode)
 
   def withKey(key: String): VNode = withT(name = "key", key.asInstanceOf[js.Any])
 

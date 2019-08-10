@@ -1,7 +1,6 @@
 package earlyeffect
 
 import earlyeffect.impl.VNodeJS
-import org.scalajs.dom.Element
 
 import scala.language.implicitConversions
 import scala.scalajs.js

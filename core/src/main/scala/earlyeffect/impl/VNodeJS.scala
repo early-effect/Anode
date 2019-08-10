@@ -1,6 +1,6 @@
 package earlyeffect.impl
 
-import earlyeffect.impl.Preact.ChildJS
+import earlyeffect.impl.Preact.ComponentChildren
 import org.scalajs.dom
 
 import scala.scalajs.js
@@ -14,7 +14,9 @@ abstract class VNodeJS extends js.Object {
 
   def props: js.Dynamic
 
-  def children: js.Array[ChildJS] = props.children.asInstanceOf[js.Array[ChildJS]]
+  def children: ComponentChildren = props.children.asInstanceOf[ComponentChildren]
+
+  def childArray: js.Array[VNodeJS] = Preact.toChildArray(children)
 
   def key: js.UndefOr[String]
 
