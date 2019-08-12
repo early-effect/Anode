@@ -1,6 +1,7 @@
 package earlyeffect.dsl.css
 
 import earlyeffect._
+import earlyeffect.dsl.css.values.rgb
 import org.scalatest.{FlatSpec, Matchers}
 
 class StyleSpecs extends FlatSpec with Matchers {
@@ -57,7 +58,7 @@ class StyleSpecs extends FlatSpec with Matchers {
   }
 
   "CssClass" should "support keyframes" in {
-    val c = CssClass(
+    val c = Css("a").Class(
       "foo",
       S.animationDuration.s(3),
       S.animationDelay.s(.5),
@@ -96,5 +97,8 @@ class StyleSpecs extends FlatSpec with Matchers {
   "simple String declarations" should "work" in {
     S("foo")("bar").toString should be("foo: bar;")
     S("foo", "bar").toString should be("foo: bar;")
+  }
+  "declaration constructors with apply functions" should "work" in {
+    S.borderColor(rgb(1, 2, 3)).toString should be("border-color: rgb(1,2,3);")
   }
 }

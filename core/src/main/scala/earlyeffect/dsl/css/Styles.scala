@@ -23,6 +23,9 @@ object Styles {
     abstract class Prefixed(s: String) extends D[T](property) {
       override def apply(value: T): Declaration = Declaration(property, s"$s ${value.toString}")
     }
+    abstract class Suffixed(s: String) extends D[T](property) {
+      override def apply(value: T): Declaration = Declaration(property, s"${value.toString} $s")
+    }
     def inherit         = Declaration(property, "inherit")
     def initial         = Declaration(property, "initial")
     def unset           = Declaration(property, "unset")
@@ -430,8 +433,15 @@ object Styles {
 
   object zIndex extends D[Int](property = "z-index")
 
-  object borderStyle  extends DS("border-style") with LineStyle         {}
-  object borderColor  extends DS("border-color") with Color             {}
+  object borderStyle extends DS("border-style") with LineStyle {}
+
+  object borderColor extends DS("border-color") with Color {
+    type C = values.Color
+    def apply(c1: C): Declaration                                          = apply(c1.value)
+    def apply(c1: String, c2: String, c3: String, c4: String): Declaration = apply(s"$c1 $c2 $c3 $c4")
+    def apply(c1: C, c2: C, c3: C, c4: C): Declaration                     = apply(s"$c1 $c2 $c3 $c4")
+  }
+
   object borderRadius extends DS("border-radius") with LengthPercentage {}
 
   object boxShadow extends DS("box-shadow")
@@ -679,7 +689,7 @@ object Styles {
 
   object textOverflow extends DS("text-overflow") {
     def clip: Declaration     = apply("clip")
-    def ellipses: Declaration = apply("ellipses")
+    def ellipsis: Declaration = apply("ellipsis")
   }
 
   object overflow extends DS("overflow") with Auto {
@@ -835,7 +845,7 @@ object Styles {
   //Todo: not complete
   object textIndent extends DS(property = "text-indent") with LengthPercentage
 
-  def rgb(r: Int, g: Int, b: Int): String             = s"rgb($r,$g,$b)"
-  def rgba(r: Int, g: Int, b: Int, a: Double): String = s"rgb($r,$g,$b,$a)"
+//  def rgb(r: Int, g: Int, b: Int): String             = s"rgb($r,$g,$b)"
+//  def rgba(r: Int, g: Int, b: Int, a: Double): String = s"rgb($r,$g,$b,$a)"
 
 }

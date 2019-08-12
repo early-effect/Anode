@@ -9,9 +9,15 @@ object values {
         case (s, c)              => s + c
       }
 
-    lazy val value: String = nameAsDashedLower
+    def value: String = nameAsDashedLower
 
     override def toString: String = self.value
+  }
+
+  sealed trait Color extends Value
+
+  case class rgb(r: Int, g: Int, b: Int) extends Color {
+    override def value = s"rgb($r,$g,$b)"
   }
 
   sealed trait LineStyle extends Value
