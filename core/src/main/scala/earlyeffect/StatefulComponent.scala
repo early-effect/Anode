@@ -21,12 +21,12 @@ abstract class StatefulComponent[Props, State] extends EarlyComponent[Props, Sta
 
 object StatefulComponent {
 
-  class Instance[Props, State] extends InstanceFacade[Props, StatefulComponent[Props, State], State] {
+  class Instance[Props, State] extends InstanceFacade[Props, StatefulComponent[Props, State], State] { self =>
 
     override def render(p: js.Dynamic, s: js.Dynamic): VNodeJS = {
-      val comp = lookupComponent(p)
-      val ss   = lookupState(s)
-      comp.addDataComponent(comp.render(props, ss, this.instance)).vn
+      val comp  = lookupComponent(p)
+      val state = lookupState(s)
+      comp.render(props, state, self).vnode
     }
 
     override def componentWillMount(): Unit = {

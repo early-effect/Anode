@@ -39,7 +39,7 @@ object CircuitComponent {
 
     override def render(p: js.Dynamic, s: js.Dynamic): VNodeJS = {
       val comp = lookupComponent(p)
-      comp.addDataComponent(comp.render(props, lookupState(s))).vn
+      comp.render(props, lookupState(s)).vnode
     }
 
     override def componentWillMount(): Unit = {
@@ -63,7 +63,5 @@ object CircuitComponent {
       lookupComponent().shouldUpdate(lookupProps(nextProps), lookupState(nextState), this.instance)
 
   }
-
-  object Instance {}
 
 }

@@ -1,13 +1,12 @@
 package earlyeffect
 
-import earlyeffect.dsl.css.Styles.{SimpleConstructor, DeclarationConstructor, DeclarationOrSelector, KeyFrames}
+import earlyeffect.dsl.css.Styles.{DeclarationOrSelector, KeyFrames}
 import earlyeffect.impl.Preact.{AnyDictionary, ChildJS}
 import earlyeffect.impl.VNodeJS
 import org.scalajs.dom
 
 import scala.language.implicitConversions
 import scala.scalajs.js
-import scala.scalajs.js.UndefOr
 
 sealed trait Arg { self =>
   def when(pred: => Boolean) = if (pred) self else Empty
@@ -15,9 +14,40 @@ sealed trait Arg { self =>
 
 case object Empty extends Arg
 
-sealed trait Child extends Arg { self =>
+trait Child extends Arg { self =>
   def value: Preact.ChildJS
   override def when(pred: => Boolean): Child = if (pred) self else EmptyChild
+}
+
+trait VNode extends Child {
+
+  def withT[T <: js.Any](name: String, t: T): VNode = {
+    val props = vnode.props.asInstanceOf[js.Dictionary[js.Any]]
+    vnode.ref.foreach(props.update("ref", _))
+    vnode.key.foreach(props.update("key", _))
+    props.update(name, t)
+    Preact.h(
+      vnode.`type`.asInstanceOf[js.Dynamic],
+      vnode.props.asInstanceOf[AnyDictionary],
+      vnode.children
+    )
+  }
+
+  def children: js.Array[VNode] = vnode.childArray.map(x => x: VNode)
+
+  def withKey(key: String): VNode = withT(name = "key", key.asInstanceOf[js.Any])
+
+  def withRef(f: js.Function1[dom.Element, Unit]): VNode = {
+    val safe: js.Function1[dom.Element, Unit] = e => if (e != null) f(e) else ()
+    withT(name = "ref", safe)
+  }
+
+  def value: ChildJS = vnode
+  def vnode: VNodeJS
+}
+
+object VNode {
+  implicit def toJS(c: VNode): VNodeJS = c.vnode
 }
 
 object Child {
@@ -51,35 +81,6 @@ object Declaration {
 //  def apply[T](property: String): DeclarationConstructor[T] = SimpleConstructor[T](property)
 }
 
-final case class VNode(vn: VNodeJS) extends Child {
-
-  def withT[T <: js.Any](name: String, t: T) = {
-    val props = vn.props.asInstanceOf[js.Dictionary[js.Any]]
-    vn.ref.foreach(props.update("ref", _))
-    vn.key.foreach(props.update("key", _))
-    props.update(name, t)
-    VNode(
-      Preact.h(
-        vn.`type`.asInstanceOf[js.Dynamic],
-        vn.props.asInstanceOf[AnyDictionary],
-        vn.children
-      )
-    )
-  }
-
-  def children: js.Array[VNode] = vn.childArray.map(VNode)
-
-  def withKey(key: String): VNode = withT(name = "key", key.asInstanceOf[js.Any])
-
-  def withRef(f: js.Function1[dom.Element, Unit]): VNode = {
-    val safe: js.Function1[dom.Element, Unit] = e => if (e != null) f(e) else ()
-    withT(name = "ref", safe)
-  }
-
-  override def value: Preact.ChildJS = vn
-
-}
-
 final case class StringArg(s: String) extends Child {
   override def value: Preact.ChildJS = s
 }
@@ -93,7 +94,8 @@ object Arg {
   implicit def doubleToArg(d: Double): Arg     = DoubleArg(d)
   implicit def intToArg(i: Int): Arg           = DoubleArg(i)
   implicit def fromOption(o: Option[Arg]): Arg = o.getOrElse(Empty)
-  implicit def seqToArgs(s: Seq[Arg]): Args    = Args(s)
+  implicit def seqToArgs(s: Seq[Arg]): Arg     = Args(s)
+//  implicit def nodesToArgs(s: Seq[VNodeJS]): Arg = Args(s.map(x => x: Child))
 }
 
 case class Args(args: Seq[Arg]) extends Arg {

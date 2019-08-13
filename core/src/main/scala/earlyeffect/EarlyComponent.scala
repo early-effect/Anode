@@ -3,6 +3,7 @@ package earlyeffect
 import earlyeffect.impl.EarlyEffect
 import org.scalajs.dom.Element
 
+import scala.language.implicitConversions
 import scala.scalajs.js
 import scala.scalajs.js.{Dictionary, UndefOr}
 
@@ -33,12 +34,12 @@ trait EarlyComponent[Props, State] { self =>
     )
 
   def apply(props: Props): VNode =
-    VNode(EarlyEffect.h(instanceConstructor, baseDictionary(props)))
+    EarlyEffect.h(instanceConstructor, baseDictionary(props))
 
   val addDataComponentAttribute: js.Function1[Element, Unit] = e => e.setAttribute("data-component", defaultKey)
 
   def addDataComponent(res: VNode): VNode =
-    res.vn.ref
+    res.vnode.ref
       .fold(res.withRef(addDataComponentAttribute))(
         wr =>
           res.withRef(e => {
@@ -47,4 +48,8 @@ trait EarlyComponent[Props, State] { self =>
           })
       )
 
+}
+
+object EarlyComponent {
+  implicit def toVNode(ec: EarlyComponent[Unit, _]): VNode = ec.apply(Unit)
 }

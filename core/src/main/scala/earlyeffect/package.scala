@@ -1,6 +1,6 @@
 import earlyeffect.dsl.{css, _}
 import earlyeffect.dsl.css.Styles
-import earlyeffect.impl.EarlyEffect
+import earlyeffect.impl.{EarlyEffect, VNodeJS}
 import earlyeffect.impl.Preact.Fragment
 import org.scalajs.dom
 
@@ -46,10 +46,10 @@ package object earlyeffect {
   def args(as: Arg*) = Args(as)
 
   object preact {
-    def render(node: VNode, parent: dom.Element): Unit = Preact.render(node.vn, parent)
+    def render(node: VNode, parent: dom.Element): Unit = Preact.render(node.vnode, parent)
 
     def render(node: VNode, parent: dom.Element, replaceNode: dom.Element): Unit =
-      Preact.render(node.vn, parent, replaceNode)
+      Preact.render(node.vnode, parent, replaceNode)
 
     def rerender(): Unit = Preact.rerender()
   }

@@ -12,7 +12,7 @@ object App {
   val container: dom.Element = dom.document.body
 
   def main(args: Array[String]): Unit =
-    preact.render(TodoListApp(()), container)
+    preact.render(TodoListApp, container)
 
   abstract class TodoComponent[P, S] extends CircuitComponent[P, Root, S] {
     override def circuit: Circuit[Root] = ModelCircuit
@@ -32,7 +32,7 @@ object App {
             ),
             when(l.todos.nonEmpty) {
               fragment(
-                ListOfTodos(()),
+                ListOfTodos,
                 footer(l)
               )
             }

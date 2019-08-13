@@ -67,14 +67,14 @@ class ElementSpecs extends FlatSpec with Matchers {
     check("""<span class="" id="" style="margin: 10px; color: rgb(100, 100, 100); background-color: white;"></span>""")
   }
   "Elements" should "take a key" in {
-    E.span("foo").withKey("bar").vn.key should be("bar")
+    E.span("foo").withKey("bar").vnode.key should be("bar")
   }
   "Elements" should "take a ref function and a key" in {
     var effect: Boolean                    = false
     val f: js.Function1[dom.Element, Unit] = e => effect = true
     val n                                  = E.span("foo").withRef(f).withKey("foo")
     render(n)
-    assert(n.vn.key.contains("foo"))
+    assert(n.vnode.key.contains("foo"))
     assert(effect)
   }
 }
