@@ -9,8 +9,8 @@ import scala.scalajs.js.timers
 
 object TodoEditor extends StatefulComponent[Todo, String] with InstanceDataSelector with ClassSelector {
 
-  override def extractAttributeValue(s: Instance): String =
-    s.props.key
+  override def extractAttributeValue(instance: Instance): String =
+    instance.props.key
 
   override def initialState(t: Todo): String = t.description
 

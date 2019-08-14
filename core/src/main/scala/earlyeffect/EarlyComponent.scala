@@ -21,7 +21,7 @@ trait ClassSelector { self: EarlyComponent[_, _] =>
 
 trait InstanceDataSelector { self: EarlyComponent[_, _] =>
   val attributeName = s"data-earlyeffect-$defaultKey"
-  def extractAttributeValue(s: self.Instance): String
+  def extractAttributeValue(instance: self.Instance): String
   def selector(attributeValue: String) = s"[$attributeName='$attributeValue']"
 
   def addDataAttribute(instance: self.Instance): Unit =
