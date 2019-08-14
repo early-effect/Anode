@@ -7,14 +7,16 @@ import org.scalajs.dom.raw.HTMLInputElement
 
 import scala.scalajs.js.timers
 
-object TodoEditor extends StatefulComponent[Todo, String] {
+object TodoEditor extends StatefulComponent[Todo, String] with InstanceDataSelector with ClassSelector {
+
+  override def extractAttributeValue(s: Instance): String =
+    s.props.key
 
   override def initialState(t: Todo): String = t.description
 
   override def render(props: Todo, state: String, instance: Instance): VNode = {
     def update(): Unit = ModelCircuit(Update(props.copy(editing = false, description = state)))
     E.input(
-        A.id(s"editor-${props.key}"),
         A.`class`("edit"),
         A.value(state),
         A.onKeyDown { k =>

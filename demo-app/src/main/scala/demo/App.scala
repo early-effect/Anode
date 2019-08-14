@@ -18,7 +18,7 @@ object App {
     override def circuit: Circuit[Root] = ModelCircuit
   }
 
-  object TodoListApp extends TodoComponent[Unit, TodoList] {
+  object TodoListApp extends TodoComponent[Unit, TodoList] with ClassSelector {
     override def modelReader(p: Unit): ModelR[Root, TodoList] = zoom(_.todoList)
     override def render(props: Unit, l: TodoList): VNode =
       E.div(
@@ -48,7 +48,7 @@ object App {
       )
   }
 
-  object ListOfTodos extends TodoComponent[Unit, Seq[Todo]] {
+  object ListOfTodos extends TodoComponent[Unit, Seq[Todo]] with ClassSelector {
     override def modelReader(p: Unit): ModelR[Root, Seq[Todo]] = zoom(_.todoList.filtered)
 
     override def render(props: Unit, todos: Seq[Todo]): VNode =
@@ -103,7 +103,7 @@ object App {
     )
   }
 
-  object Item extends Component[Todo] {
+  object Item extends Component[Todo] with ClassSelector {
     override def render(todo: Todo): VNode =
       E.li(
         A.key(todo.key),
@@ -116,7 +116,7 @@ object App {
       )
   }
 
-  object View extends Component[Todo] {
+  object View extends Component[Todo] with ClassSelector {
     override def render(todo: Todo): VNode =
       E.div(
         A.`class`("view"),

@@ -1,8 +1,10 @@
 package earlyeffect
 
 import earlyeffect.dictionaryNames._
+import org.scalajs.dom.Element
 
 import scala.scalajs.js
+import scala.scalajs.js.UndefOr
 import scala.scalajs.js.annotation.JSName
 
 /**
@@ -24,12 +26,18 @@ sealed trait EarlyInstance[Props, State] extends js.Any {
   @JSName("eSetState")
   def setState(s: State): Unit
 
+  @JSName("eBase")
+  def base: UndefOr[Element]
+
 }
 
 abstract class InstanceFacade[Props, +Component <: EarlyComponent[Props, State], State]
     extends impl.ComponentJS
     with EarlyInstance[Props, State] {
   self =>
+
+  @JSName("eBase")
+  def base: UndefOr[Element] = rawBase
 
   val instance: EarlyInstance[Props, State] = self
 
@@ -42,8 +50,17 @@ abstract class InstanceFacade[Props, +Component <: EarlyComponent[Props, State],
   @JSName("eSetState")
   override def setState(s: State): Unit = setComponentState(s)
 
-  def componentDidMount(): Unit =
+  def componentDidMount(): Unit = {
+    lookupComponent() match {
+      case cs: ClassSelector => cs.addClass(self)
+      case _                 => ()
+    }
+    lookupComponent() match {
+      case pds: InstanceDataSelector => pds.addDataAttribute(self)
+      case _                         => ()
+    }
     lookupComponent().didMount(self)
+  }
 
   def componentWillMount(): Unit =
     lookupComponent().willMount(self)
