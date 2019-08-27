@@ -2,14 +2,14 @@ package earlyeffect
 
 import org.scalatest.{FlatSpec, Matchers}
 
-class ComponentSpecs extends FlatSpec with Matchers with EarlyOps {
+class ComponentSpecs extends FlatSpec with EarlyOps {
   "Components" should "render" in {
     object Simple extends Component[Unit] {
       override def render(props: Unit): VNode =
         E.span("foo")
     }
     render(Simple)
-    parent.innerHTML should be("<span>foo</span>")
+    check("<span>foo</span>")
   }
   "A Component with a string prop" should "render" in {
     object Simple extends Component[String] {
@@ -17,6 +17,6 @@ class ComponentSpecs extends FlatSpec with Matchers with EarlyOps {
         E.span(props)
     }
     render(Simple("foo"))
-    parent.innerHTML should be("<span>foo</span>")
+    check("<span>foo</span>")
   }
 }
