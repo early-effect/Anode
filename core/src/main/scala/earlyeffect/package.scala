@@ -9,9 +9,9 @@ import scala.scalajs.js
 
 package object earlyeffect {
   import scala.scalajs.js.JSConverters._
-  private[earlyeffect] val constructors = js.Dictionary[js.Dynamic]()
+  private[earlyeffect] lazy val constructors = js.Dictionary[js.Dynamic]()
 
-  val Preact: impl.Preact.type = impl.Preact
+  lazy val Preact: impl.Preact.type = impl.Preact
 
   type ComponentFunction[T] = T => VNode
 
@@ -22,7 +22,7 @@ package object earlyeffect {
   val E: E = Elements
 
   type S = Styles.type
-  val S: S = css.Styles
+  val S: Styles.type = Styles
 
   dom.Event
   def log(m: js.Any, a: Any*): Unit = dom.window.console.log(m, a.map(_.asInstanceOf[js.Any]): _*)

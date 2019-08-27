@@ -15,7 +15,7 @@ abstract class Component[Props] extends EarlyComponent[Props, Nothing] { self =>
   def shouldUpdate(nextProps: Props, previous: Instance): Boolean =
     previous.props != nextProps
 
-  override val instanceConstructor: js.Dynamic =
+  override lazy val instanceConstructor: js.Dynamic =
     constructors.getOrElseUpdate(this.getClass.getName, js.constructorOf[Component.Instance[Props]])
 
 }

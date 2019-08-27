@@ -6,17 +6,45 @@ import scala.scalajs.js
 
 object Styles {
 
+  def selector[T <: DeclarationOrSelector](selector: String)(members: T*) = Selector(selector, members: _*)
+
   trait DeclarationOrSelector {
-    def mkString(className: String, keyFrames: js.Array[KeyFrames] = js.Array()): String
+
+    def mkString(
+        className: String,
+        keyFrames: js.Array[KeyFrames] = js.Array(),
+        mediaQueries: js.Array[MediaQuery] = js.Array()
+    ): String
 
     override def toString: String = mkString("")
   }
 
   case class KeyFrames(name: String, selectors: KeyframeSelector*) extends DeclarationOrSelector {
-    override def mkString(className: String, keyFrames: js.Array[KeyFrames]): String = {
+    override def mkString(
+        className: String,
+        keyFrames: js.Array[KeyFrames],
+        mediaQueries: js.Array[MediaQuery]
+    ): String = {
       keyFrames.push(this)
       s"animation-name: $className-$name;"
     }
+  }
+  case class MediaQuery(query: String, declaration: DeclarationOrSelector*) extends DeclarationOrSelector {
+    override def mkString(
+        className: String,
+        keyFrames: js.Array[KeyFrames],
+        mediaQueries: js.Array[MediaQuery]
+    ): String = {
+      mediaQueries.push(this)
+      ""
+    }
+
+    def render: String =
+      s"@media $query {\n" + declaration
+        .map { x =>
+          x.mkString("")
+        }
+        .mkString("\n") + "}"
   }
 
   sealed abstract class DeclarationConstructor[T](property: String) {
@@ -44,17 +72,23 @@ object Styles {
   def apply[T](name: String, value: T): Declaration = Declaration(name, value.toString)
 
   case class KeyframeSelector(selector: String, members: Declaration*) extends DeclarationOrSelector {
-    override def mkString(className: String, keyFrames: js.Array[KeyFrames]): String =
-      s"$selector {\n${members.map("    " + _.mkString(className, keyFrames)).mkString("\n")}\n  }"
+    override def mkString(
+        className: String,
+        keyFrames: js.Array[KeyFrames],
+        mediaQueries: js.Array[MediaQuery]
+    ): String =
+      s"$selector {\n${members.map("    " + _.mkString(className, keyFrames, mediaQueries)).mkString("\n")}\n  }"
   }
 
   class Selector private (val selector: String, val members: Seq[DeclarationOrSelector]) extends DeclarationOrSelector {
 
-    override def mkString(className: String, ks: js.Array[KeyFrames]): String = {
+    override def mkString(className: String, ks: js.Array[KeyFrames], ms: js.Array[MediaQuery]): String = {
       val ss = members.collect { case s: Selector => s }.map(s => s.mkString(className, ks)).mkString("\n")
       val inner = members
-        .collect { case p @ (_: Declaration | _: KeyFrames | _: KeyframeSelector) => p }
-        .map("  " + _.mkString(className, ks))
+        .collect { case p @ (_: Declaration | _: KeyFrames | _: KeyframeSelector | _: MediaQuery) => p }
+        .map(_.mkString(className, ks, ms))
+        .filter(_.nonEmpty)
+        .map("  " + _)
         .mkString("\n")
       s"$selector {\n$inner\n}\n" + ss
     }

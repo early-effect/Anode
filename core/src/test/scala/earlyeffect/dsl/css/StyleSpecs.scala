@@ -91,6 +91,31 @@ class StyleSpecs extends FlatSpec with Matchers {
         |}
         |""".stripMargin)
   }
+  "Css#Class" should "support media queries" in {
+    val c = Css("a").Class(
+      "foo",
+      S.minHeight.percent(100),
+      MediaQuery(
+        "print",
+        Selector(
+          "div.viewport * :after :before",
+          S.display.none.important,
+          opacity(0).important,
+          S("visibility", "hidden").important
+        )
+      )
+    )
+    c.mkString should be(""".a__foo {
+                           |  min-height: 100%;
+                           |}
+                           |@media print {
+                           |div.viewport * :after :before {
+                           |  display: none !important;
+                           |  opacity: 0 !important;
+                           |  visibility: hidden !important;
+                           |}
+                           |}""".stripMargin)
+  }
   "prefixes" should "work" in {
     S.alignItems.safe.end.toString should be("align-items: safe end;")
   }

@@ -3,7 +3,7 @@ package earlyeffect.dsl.css
 import java.util.UUID
 
 import earlyeffect.Attribute
-import earlyeffect.dsl.css.Styles.{DeclarationOrSelector, KeyFrames, Selector}
+import earlyeffect.dsl.css.Styles.{DeclarationOrSelector, KeyFrames, MediaQuery, Selector}
 
 import scala.scalajs.js
 
@@ -18,14 +18,16 @@ case class Css(prefix: String) {
     val style     = doc.createElement("style")
 
     def mkString: String = {
-      val keyframes = js.Array[KeyFrames]()
-      val mainCss   = sel.mkString(className, keyframes)
+      val keyframes    = js.Array[KeyFrames]()
+      val mediaQueries = js.Array[MediaQuery]()
+      val mainCss      = sel.mkString(className, keyframes, mediaQueries)
       val keyFramesCss = keyframes
         .map(k => {
           Selector(s"@keyframes $className-${k.name}", k.selectors: _*)
         })
         .mkString("\n")
-      mainCss + keyFramesCss
+      val mediaQueriesCss = mediaQueries.map(_.render).mkString("\n")
+      mainCss + keyFramesCss + mediaQueriesCss
     }
     style.setAttribute("data-style-for", className)
     style.appendChild(doc.createTextNode(AutoPrefixed(mkString)))
