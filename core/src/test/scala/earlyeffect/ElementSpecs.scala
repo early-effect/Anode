@@ -6,7 +6,7 @@ import org.scalatest.{FlatSpec, Matchers}
 import scala.scalajs.js
 
 class ElementSpecs extends FlatSpec with Matchers with EarlyOps {
-  def check(s: String): Unit = div.children(0).outerHTML should be(s)
+  def check(s: String): Unit = parent.children(0).outerHTML should be(s)
   "Elements without attributes or children" should "render" in {
     render(E.span())
     check("<span></span>")

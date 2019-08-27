@@ -9,7 +9,7 @@ class ComponentSpecs extends FlatSpec with Matchers with EarlyOps {
         E.span("foo")
     }
     render(Simple)
-    div.innerHTML should be("<span>foo</span>")
+    parent.innerHTML should be("<span>foo</span>")
   }
   "A Component with a string prop" should "render" in {
     object Simple extends Component[String] {
@@ -17,6 +17,6 @@ class ComponentSpecs extends FlatSpec with Matchers with EarlyOps {
         E.span(props)
     }
     render(Simple("foo"))
-    div.innerHTML should be("<span>foo</span>")
+    parent.innerHTML should be("<span>foo</span>")
   }
 }
