@@ -1,14 +1,11 @@
 package earlyeffect
 
 import org.scalajs.dom
-import org.scalajs.dom.html.Document
-import org.scalajs.dom.raw.Element
 import org.scalatest.{FlatSpec, Matchers}
 
 import scala.scalajs.js
 
-class ElementSpecs extends FlatSpec with Matchers {
-  import ElementSpecs._
+class ElementSpecs extends FlatSpec with Matchers with EarlyOps {
   def check(s: String): Unit = div.children(0).outerHTML should be(s)
   "Elements without attributes or children" should "render" in {
     render(E.span())
@@ -77,12 +74,4 @@ class ElementSpecs extends FlatSpec with Matchers {
     assert(n.vnode.key.contains("foo"))
     assert(effect)
   }
-}
-
-object ElementSpecs {
-  def render(vn: VNode): Unit = preact.render(vn, div)
-  val doc: Document           = dom.document
-  val div: Element            = dom.document.createElement("div")
-  def replacedNode: Element   = div.querySelector("span")
-  doc.documentElement.appendChild(div)
 }
