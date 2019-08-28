@@ -7,7 +7,10 @@ import scala.scalajs.js
 import scala.scalajs.js.UndefOr
 
 abstract class StatefulComponent[Props, State] extends EarlyComponent[Props, State] { self =>
+
   def initialState(props: Props): State
+
+  def deriveState(props: Props, oldState: State) = oldState
 
   def shouldUpdate(nextProps: Props, nextState: State, previous: Instance): Boolean =
     previous.props != nextProps || previous.props != nextState
@@ -22,6 +25,12 @@ abstract class StatefulComponent[Props, State] extends EarlyComponent[Props, Sta
 object StatefulComponent {
 
   class Instance[Props, State] extends InstanceFacade[Props, StatefulComponent[Props, State], State] { self =>
+
+    override def componentWillReceiveProps(nextProps: js.Dynamic, nextContext: js.Dynamic): Unit = {
+      val c   = lookupComponent(nextProps)
+      val res = c.deriveState(lookupProps(nextProps), lookupState())
+      setState(res)
+    }
 
     override def render(p: js.Dynamic, s: js.Dynamic): VNodeJS = {
       val comp  = lookupComponent(p)

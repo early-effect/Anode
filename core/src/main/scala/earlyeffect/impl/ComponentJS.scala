@@ -3,7 +3,7 @@ package earlyeffect.impl
 import org.scalajs.dom
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.{JSImport, JSName}
+import scala.scalajs.js.annotation.{JSExportStatic, JSImport, JSName}
 
 @JSImport("preact", "Component")
 @js.native
@@ -26,9 +26,11 @@ abstract class ComponentJS extends js.Object {
 
   def render(props: js.Dynamic, state: js.Dynamic): VNodeJS
 
-  def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic)
+  def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic): Unit
 
-  def shouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic, context: js.Dynamic): Boolean
+  def shouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic, nextContext: js.Dynamic): Boolean
+
+  def componentWillReceiveProps(nextProps: js.Dynamic, nextContext: js.Dynamic): Unit
 
   def componentDidMount(): Unit
 

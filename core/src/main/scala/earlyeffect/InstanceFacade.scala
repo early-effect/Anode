@@ -4,7 +4,7 @@ import earlyeffect.dictionaryNames._
 import org.scalajs.dom.Element
 
 import scala.scalajs.js
-import scala.scalajs.js.UndefOr
+import scala.scalajs.js.{Dictionary, UndefOr}
 import scala.scalajs.js.annotation.JSName
 
 /**
@@ -78,4 +78,5 @@ abstract class InstanceFacade[Props, +Component <: EarlyComponent[Props, State],
   protected final def setComponentState(state: State): Unit =
     rawSetState(js.Dictionary(dictionaryNames.State -> state.asInstanceOf[js.Any]).asInstanceOf[js.Dynamic])
 
+  override def componentWillReceiveProps(nextProps: js.Dynamic, nextContext: js.Dynamic): Unit = ()
 }
