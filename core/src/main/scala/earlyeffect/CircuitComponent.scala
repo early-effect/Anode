@@ -39,7 +39,8 @@ object CircuitComponent {
 
     override def render(p: js.Dynamic, s: js.Dynamic): VNodeJS = {
       val comp = lookupComponent(p)
-      comp.render(props, lookupState(s)).vnode
+      val res  = comp.render(props, lookupState(s))
+      addSelectors(res)
     }
 
     override def componentWillMount(): Unit = {
@@ -51,15 +52,7 @@ object CircuitComponent {
 
     override def componentWillUnmount(): Unit = unsubscribe()
 
-    def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic): Unit =
-      lookupComponent().didUpdate(
-        lookupProps(oldProps),
-        lookupState(oldState),
-        this.instance,
-        snapshot.asInstanceOf[UndefOr[Instance[Props, M, State]]].map(_.instance)
-      )
-
-    def shouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic, context: js.Dynamic): Boolean =
+    override def shouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic, context: js.Dynamic): Boolean =
       lookupComponent().shouldUpdate(lookupProps(nextProps), lookupState(nextState), this.instance)
 
   }

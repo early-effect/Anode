@@ -38,7 +38,14 @@ trait VNode extends Child {
   def withKey(key: String): VNode = withT(name = "key", key.asInstanceOf[js.Any])
 
   def withRef(f: js.Function1[dom.Element, Unit]): VNode = {
-    val safe: js.Function1[dom.Element, Unit] = e => if (e != null) f(e) else ()
+    val combined = vnode.ref.fold(f)(
+      existing =>
+        (e: dom.Element) => {
+          existing(e)
+          f(e)
+        }
+    )
+    val safe: js.Function1[dom.Element, Unit] = e => if (e != null) combined(e) else ()
     withT(name = "ref", safe)
   }
 

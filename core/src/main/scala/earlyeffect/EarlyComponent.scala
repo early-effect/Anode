@@ -1,6 +1,7 @@
 package earlyeffect
 
 import earlyeffect.impl.EarlyEffect
+import org.scalajs.dom
 
 import scala.language.implicitConversions
 import scala.scalajs.js
@@ -9,13 +10,16 @@ import scala.scalajs.js.{Dictionary, UndefOr}
 trait ClassSelector { self: EarlyComponent[_, _] =>
   def selector = s".$defaultKey"
 
-  def addClass(instance: Instance): Unit =
-    instance.base.foreach { e =>
-      e.setAttribute(
-        name = "class",
-        value = Option(e.getAttribute("class")).fold(defaultKey)(x => x + " " + defaultKey)
-      )
-    }
+  def addClass(e: dom.Element): Unit = {
+    val oldClass = Option(e.getAttribute("class"))
+    val newClass = oldClass.fold(defaultKey)(old => {
+      if (old.contains(defaultKey)) old else old + " " + defaultKey
+    })
+    e.setAttribute(
+      name = "class",
+      value = newClass
+    )
+  }
 
 }
 
@@ -24,10 +28,8 @@ trait InstanceDataSelector { self: EarlyComponent[_, _] =>
   def extractAttributeValue(instance: self.Instance): String
   def selector(attributeValue: String) = s"[$attributeName='$attributeValue']"
 
-  def addDataAttribute(instance: self.Instance): Unit =
-    instance.base.foreach { e =>
-      e.setAttribute(attributeName, self.extractAttributeValue(instance))
-    }
+  def addDataAttribute(e: dom.Element, instance: Instance): Unit =
+    e.setAttribute(attributeName, self.extractAttributeValue(instance))
 }
 
 trait EarlyComponent[Props, State] { self =>

@@ -50,17 +50,15 @@ abstract class InstanceFacade[Props, +Component <: EarlyComponent[Props, State],
   @JSName("eSetState")
   override def setState(s: State): Unit = setComponentState(s)
 
-  def componentDidMount(): Unit = {
+  def addSelectors(n: VNode): VNode =
     lookupComponent() match {
-      case cs: ClassSelector => cs.addClass(self)
-      case _                 => ()
+      case cs: ClassSelector         => n.withRef(e => cs.addClass(e))
+      case pds: InstanceDataSelector => n.withRef(e => pds.addDataAttribute(e, self))
+      case _                         => n
     }
-    lookupComponent() match {
-      case pds: InstanceDataSelector => pds.addDataAttribute(self)
-      case _                         => ()
-    }
+
+  def componentDidMount(): Unit =
     lookupComponent().didMount(self)
-  }
 
   def componentWillMount(): Unit =
     lookupComponent().willMount(self)
@@ -78,5 +76,14 @@ abstract class InstanceFacade[Props, +Component <: EarlyComponent[Props, State],
   protected final def setComponentState(state: State): Unit =
     rawSetState(js.Dictionary(dictionaryNames.State -> state.asInstanceOf[js.Any]).asInstanceOf[js.Dynamic])
 
-  override def componentWillReceiveProps(nextProps: js.Dynamic, nextContext: js.Dynamic): Unit = ()
+  override def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic): Unit =
+    lookupComponent().didUpdate(
+      lookupProps(oldProps),
+      lookupState(oldState),
+      self,
+      snapshot.asInstanceOf[UndefOr[EarlyInstance[Props, State]]]
+    )
+
+  def componentWillReceiveProps(nextProps: js.Dynamic, nextState: js.Dynamic): Unit = ()
+
 }

@@ -30,7 +30,7 @@ abstract class ComponentJS extends js.Object {
 
   def shouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic, nextContext: js.Dynamic): Boolean
 
-  def componentWillReceiveProps(nextProps: js.Dynamic, nextContext: js.Dynamic): Unit
+  def componentWillReceiveProps(nextProps: js.Dynamic, nextState: js.Dynamic): Unit
 
   def componentDidMount(): Unit
 

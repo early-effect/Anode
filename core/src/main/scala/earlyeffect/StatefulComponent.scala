@@ -35,7 +35,8 @@ object StatefulComponent {
     override def render(p: js.Dynamic, s: js.Dynamic): VNodeJS = {
       val comp  = lookupComponent(p)
       val state = lookupState(s)
-      comp.render(props, state, self).vnode
+      val res   = comp.render(props, state, self)
+      addSelectors(res)
     }
 
     override def componentWillMount(): Unit = {
