@@ -25,7 +25,7 @@ object Component {
   class Instance[Props] extends InstanceFacade[Props, Component[Props], Nothing] {
     override def render(p: js.Dynamic, s: js.Dynamic): VNodeJS = {
       val comp = lookupComponent(p)
-      val res  = comp.render(props).vnode
+      val res  = comp.render(props)
       addSelectors(res)
     }
 

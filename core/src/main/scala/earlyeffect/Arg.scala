@@ -1,7 +1,7 @@
 package earlyeffect
 
 import earlyeffect.dsl.css.Styles.{DeclarationOrSelector, KeyFrames, MediaQuery}
-import earlyeffect.impl.Preact.{AnyDictionary, ChildJS}
+import earlyeffect.impl.Preact.{AnyDictionary, ChildJS, ComponentChildren}
 import earlyeffect.impl.VNodeJS
 import org.scalajs.dom
 
@@ -28,12 +28,13 @@ trait VNode extends Child {
     props.update(name, t)
     Preact.h(
       vnode.`type`.asInstanceOf[js.Dynamic],
-      vnode.props.asInstanceOf[AnyDictionary],
-      vnode.children
+      props,
+      vnode.rawChildren
     )
   }
 
-  def children: js.Array[VNode] = vnode.childArray.map(x => x: VNode)
+  def children: js.Array[VNode] =
+    vnode.childArray.map(x => x: VNode)
 
   def withKey(key: String): VNode = withT(name = "key", key.asInstanceOf[js.Any])
 
