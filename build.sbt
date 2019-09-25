@@ -11,7 +11,7 @@ lazy val root = project
 
 val baseSettings = Seq(
   licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
-  version := "0.0.24-SNAPSHOT",
+  version := "0.0.26-SNAPSHOT",
   bintrayRepository := "maven",
   organization := "rocks.earlyeffect",
   scalaVersion := "2.12.10",
@@ -49,7 +49,7 @@ lazy val core = project
     name := "core",
     webpackEmitSourceMaps in Compile := true,
     npmDependencies in Compile ++= Seq(
-      "preact"       -> "10.0.0-rc.1",
+      "preact"       -> "10.0.0-rc.3",
       "autoprefixer" -> "9.6.1"
     )
   )

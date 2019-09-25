@@ -1,7 +1,7 @@
 package earlyeffect
 
 import earlyeffect.dsl.css.Styles.{DeclarationOrSelector, KeyFrames, MediaQuery}
-import earlyeffect.impl.Preact.{AnyDictionary, ChildJS, ComponentChildren}
+import earlyeffect.impl.Preact.ChildJS
 import earlyeffect.impl.VNodeJS
 import org.scalajs.dom
 
@@ -39,6 +39,7 @@ trait VNode extends Child {
   def withKey(key: String): VNode = withT(name = "key", key.asInstanceOf[js.Any])
 
   def withRef(f: js.Function1[dom.Element, Unit]): VNode = {
+
     val combined = vnode.ref.fold(f)(
       existing =>
         (e: dom.Element) => {
@@ -46,7 +47,14 @@ trait VNode extends Child {
           f(e)
         }
     )
-    val safe: js.Function1[dom.Element, Unit] = e => if (e != null) combined(e) else ()
+
+    val safe: js.Function1[js.Any, Unit] = {
+      case null                       => ()
+      case e: dom.Element             => combined(e)
+      case i: InstanceFacade[_, _, _] => i.base.foreach(combined)
+      case x: js.Any =>
+        Option(x.asInstanceOf[js.Dynamic].base).map(_.asInstanceOf[dom.Element]).foreach(combined)
+    }
     withT(name = "ref", safe)
   }
 
