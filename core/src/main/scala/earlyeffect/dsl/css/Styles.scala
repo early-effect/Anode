@@ -180,7 +180,7 @@ object Styles {
 
   trait Color extends DS {
     def rgb(r: Int, g: Int, b: Int): Declaration             = apply(s"rgb($r,$g,$b)")
-    def rgba(r: Int, g: Int, b: Int, a: Double): Declaration = apply(s"rgb($r,$g,$b,$a)")
+    def rgba(r: Int, g: Int, b: Int, a: Double): Declaration = apply(s"rgba($r,$g,$b,$a)")
   }
 
   trait Number extends DS {
