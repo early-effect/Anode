@@ -4,18 +4,20 @@ import java.util.UUID
 
 import earlyeffect.Attribute
 import earlyeffect.dsl.css.Styles.{DeclarationOrSelector, KeyFrames, MediaQuery, Selector}
+import org.scalajs.dom.html.Document
+import org.scalajs.dom.raw.Element
 
 import scala.scalajs.js
 
 case class Css(prefix: String) {
   case class Class(id: String, members: DeclarationOrSelector*) extends Attribute {
-    val name      = "class"
-    val className = s"${prefix}__$id"
-    val selector  = s".$className"
-    val value     = className.asInstanceOf[js.Any]
-    val sel       = Selector(s".$className", members: _*)
-    val doc       = org.scalajs.dom.document
-    val style     = doc.createElement("style")
+    override val name          = "class"
+    val className              = s"${prefix}__$id"
+    val selector               = s".$className"
+    override val value         = className.asInstanceOf[js.Any]
+    val sel: Selector          = Selector(selector, members: _*)
+    private def doc: Document  = org.scalajs.dom.document
+    private def style: Element = doc.createElement("style")
 
     def mkString: String = {
       val keyframes    = js.Array[KeyFrames]()

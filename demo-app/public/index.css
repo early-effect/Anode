@@ -374,3 +374,7 @@ html .clear-completed:active {
         bottom: 10px;
     }
 }
+
+:root {
+    --color1: red
+}

@@ -58,6 +58,11 @@ object Styles {
     def initial         = Declaration(property, "initial")
     def unset           = Declaration(property, "unset")
     def apply(value: T) = Declaration(property, value.toString)
+
+    def customProperty(name: String, fallback: String = "") = {
+      val n = if (name.startsWith("--")) name else s"--$name"
+      Declaration(property, s"var($n${if (fallback.nonEmpty) s", $fallback" else ""})")
+    }
   }
 
   private[earlyeffect] case class SimpleConstructor[T](property: String) extends DeclarationConstructor[T](property)

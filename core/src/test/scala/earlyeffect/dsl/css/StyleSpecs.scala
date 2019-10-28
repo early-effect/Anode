@@ -4,6 +4,8 @@ import earlyeffect._
 import earlyeffect.dsl.css.values.rgb
 import org.scalatest.{FlatSpec, Matchers}
 
+import scala.scalajs.js
+
 class StyleSpecs extends FlatSpec with Matchers {
   import earlyeffect.dsl.css.Styles._
   val fooClass    = Selector(".foo", S.color("red"))
@@ -75,18 +77,18 @@ class StyleSpecs extends FlatSpec with Matchers {
         |  animation-duration: 3s;
         |  animation-delay: 0.5s;
         |  animation-timing-function: ease-in-out;
-        |  background-color: rgb(255,255,113,0);
+        |  background-color: rgba(255,255,113,0);
         |  animation-name: ${c.className}-baz;
         |}
         |@keyframes ${c.className}-baz {
         |  0% {
-        |    background-color: rgb(255,255,113,0);
+        |    background-color: rgba(255,255,113,0);
         |  }
         |  50% {
-        |    background-color: rgb(255,255,113,0.95);
+        |    background-color: rgba(255,255,113,0.95);
         |  }
         |  100% {
-        |    background-color: rgb(255,255,113,0);
+        |    background-color: rgba(255,255,113,0);
         |  }
         |}
         |""".stripMargin)
@@ -125,5 +127,9 @@ class StyleSpecs extends FlatSpec with Matchers {
   }
   "declaration constructors with apply functions" should "work" in {
     S.borderColor(rgb(1, 2, 3)).toString should be("border-color: rgb(1,2,3);")
+  }
+  "custom properties" should "produce valid CSS" in {
+    S.background.customProperty("foo", "green").toString should be("background: var(--foo, green);")
+    S.background.customProperty("foo").toString should be("background: var(--foo);")
   }
 }
