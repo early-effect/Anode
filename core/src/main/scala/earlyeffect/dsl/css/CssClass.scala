@@ -11,13 +11,13 @@ import scala.scalajs.js
 
 case class Css(prefix: String) {
   case class Class(id: String, members: DeclarationOrSelector*) extends Attribute {
-    override val name          = "class"
-    val className              = s"${prefix}__$id"
-    val selector               = s".$className"
-    override val value         = className.asInstanceOf[js.Any]
-    val sel: Selector          = Selector(selector, members: _*)
-    private def doc: Document  = org.scalajs.dom.document
-    private def style: Element = doc.createElement("style")
+    override val name               = "class"
+    val className                   = s"${prefix}__$id"
+    val selector                    = s".$className"
+    override val value              = className.asInstanceOf[js.Any]
+    val sel: Selector               = Selector(selector, members: _*)
+    private def doc: Document       = org.scalajs.dom.document
+    private lazy val style: Element = doc.createElement("style")
 
     def mkString: String = {
       val keyframes    = js.Array[KeyFrames]()
