@@ -1,4 +1,4 @@
-package demo.model
+package todo.model
 
 import diode.Circuit
 

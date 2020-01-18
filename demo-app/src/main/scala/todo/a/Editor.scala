@@ -1,13 +1,14 @@
-package demo
+package todo.a
+import todo._
 
-import demo.model.TodoList.actions.Update
-import demo.model.{ModelCircuit, Todo}
+import todo.model.TodoList.actions.Update
+import todo.model.{ModelCircuit, Todo}
 import earlyeffect._
 import org.scalajs.dom.raw.HTMLInputElement
 
 import scala.scalajs.js.timers
 
-object TodoEditor extends StatefulComponent[Todo, String] with InstanceDataSelector with ClassSelector {
+object Editor extends StatefulComponent[Todo, String] with InstanceDataSelector with ClassSelector {
 
   override def extractAttributeValue(instance: Instance): String =
     instance.props.key
@@ -23,7 +24,7 @@ object TodoEditor extends StatefulComponent[Todo, String] with InstanceDataSelec
           if (k.keyCode == ESCAPE) ModelCircuit(Update(props.copy(editing = false)))
           else if (k.keyCode == ENTER) update()
         },
-        A.onKeyUp(k => instance.setState(k.target.asInstanceOf[HTMLInputElement].value)),
+        A.onKeyUp(_ => instance.setState(instance.base.asInstanceOf[HTMLInputElement].value)),
         A.onBlur { _ =>
           ModelCircuit
             .zoom(_.todoList.todos.find { x =>

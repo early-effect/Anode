@@ -11,20 +11,19 @@ lazy val root = project
 
 val baseSettings = Seq(
   licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
-  version := "0.0.29-SNAPSHOT",
+  version := "0.1.0-SNAPSHOT",
   bintrayRepository := "maven",
   organization := "rocks.earlyeffect",
-  scalaVersion := "2.12.10",
-  scalacOptions += "-P:scalajs:sjsDefinedByDefault",
+  scalaVersion := "2.13.1",
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
   libraryDependencies ++= Seq(
-    "io.suzaku"     %%% "diode"       % "1.1.5",
-    "org.scala-js"  %%% "scalajs-dom" % "0.9.7",
-    "org.scalatest" %%% "scalatest"   % "3.0.8" % Test
+    "io.suzaku"     %%% "diode"       % "1.1.7-local",
+    "org.scala-js"  %%% "scalajs-dom" % "0.9.8",
+    "org.scalatest" %%% "scalatest"   % "3.1.0" % Test
   ),
   requireJsDomEnv in Test := true,
-  version in installJsdom := "15.1.1",
-  scalaJSModuleKind := ModuleKind.CommonJSModule,
+  version in installJsdom := "11.12.0",
+  scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   scalaJSUseMainModuleInitializer := true,
   version in webpack := "4.35.2",
   webpackCliVersion := "3.3.5",
@@ -64,8 +63,8 @@ lazy val demoModel = project
     publish := {},
     publishLocal := {},
     skip in publish := true,
-    scalaJSModuleKind in Test := ModuleKind.CommonJSModule,
-    libraryDependencies += "io.suzaku" %%% "diode" % "1.1.5",
+    scalaJSLinkerConfig in Test ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
+    libraryDependencies += "io.suzaku" %%% "diode" % "1.1.7-local",
     test := {}
   )
 lazy val demo = project
@@ -75,13 +74,12 @@ lazy val demo = project
   .settings(
     baseSettings,
     name := "demo-app",
-    scalacOptions += "-P:scalajs:sjsDefinedByDefault",
     // webpack stuff
     npmDevDependencies in Compile += "webpack-merge"       -> "4.1.2",
     npmDevDependencies in Compile += "html-webpack-plugin" -> "3.2.0",
     npmDevDependencies in Compile += "copy-webpack-plugin" -> "4.5.1",
     npmDevDependencies in Compile += "crypto-js"           -> "3.1.8",
-    requiresDOM in Test := true,
+    jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv(),
     webpackResources := baseDirectory.value / "webpack" * "*",
     webpackBundlingMode in fastOptJS := BundlingMode.LibraryOnly(),
     webpackConfigFile in fastOptJS := Some(
@@ -104,5 +102,7 @@ lazy val demo = project
     skip in publish := true,
     publish := {},
     publishLocal := {},
-    skip in publish := true
+    skip in publish := true,
+    mainClass := Some("demo.Main")
+//    scalaJSMainModuleInitializer := Some("demo.Main")
   )

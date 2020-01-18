@@ -1,3 +1,3 @@
-package demo.model
+package todo.model
 
 case class Root(todoList: TodoList)

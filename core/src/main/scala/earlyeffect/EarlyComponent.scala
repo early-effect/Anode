@@ -66,5 +66,5 @@ trait EarlyComponent[Props, State] { self =>
 }
 
 object EarlyComponent {
-  implicit def toVNode(ec: EarlyComponent[Unit, _]): VNode = ec.apply(Unit)
+  implicit def toVNode(ec: EarlyComponent[Unit, _]): VNode = ec.apply(())
 }
