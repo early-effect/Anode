@@ -18,7 +18,7 @@ trait Component[Props] extends EarlyComponent[Props, Nothing] { theComponent =>
 
   override lazy val instanceConstructor: js.Dynamic = js.constructorOf[Instance]
 
-  class Instance extends InstanceFacade[Props, Nothing] {
+  final private class Instance extends InstanceFacade[Props, Nothing] {
 
     override def componentDidMount(): Unit = didMount(this)
 

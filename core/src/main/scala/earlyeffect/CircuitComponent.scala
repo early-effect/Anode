@@ -23,7 +23,7 @@ trait CircuitComponent[Props, M <: AnyRef, State] extends EarlyComponent[Props, 
 
   override lazy val instanceConstructor: js.Dynamic = js.constructorOf[Instance]
 
-  class Instance extends InstanceFacade[Props, State] {
+  final private class Instance extends InstanceFacade[Props, State] {
 
     type Reader = Props => ModelR[M, State]
 
