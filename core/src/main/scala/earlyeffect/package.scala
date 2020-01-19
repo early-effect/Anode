@@ -55,9 +55,8 @@ package object earlyeffect {
   }
 
   object dictionaryNames {
-    val PropsFieldName       = "_early_effect_props"
-    val StateFieldName       = "_early_effect_state"
-    val ComponentConstructor = "_early_effect_component"
+    val PropsFieldName = "_early_effect_props"
+    val StateFieldName = "_early_effect_state"
   }
 
 }

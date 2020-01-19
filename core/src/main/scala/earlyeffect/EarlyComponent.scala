@@ -55,7 +55,6 @@ trait EarlyComponent[Props, State] { self =>
     js.Dictionary(
       Seq[(String, js.Any)](
         (PropsFieldName, props.asInstanceOf[js.Any]),
-        (ComponentConstructor, self.asInstanceOf[js.Any]),
         ("key", defaultKey) // this is a precaution - I may want to make this optional
       ): _*
     )
