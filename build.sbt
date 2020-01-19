@@ -17,7 +17,7 @@ val baseSettings = Seq(
   scalaVersion := "2.13.1",
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
   libraryDependencies ++= Seq(
-    "io.suzaku"     %%% "diode"       % "1.1.7-local",
+    "io.suzaku"     %%% "diode"       % "1.1.7",
     "org.scala-js"  %%% "scalajs-dom" % "0.9.8",
     "org.scalatest" %%% "scalatest"   % "3.1.0" % Test
   ),
@@ -96,7 +96,7 @@ lazy val demo = project
     webpackEmitSourceMaps in Compile := true,
     addCommandAlias(
       "demo",
-      ";demo/fastOptJS::startWebpackDevServer;~demo/fastOptJS"
+      ";demo/fullOptJS::startWebpackDevServer;~demo/fullOptJS"
     ),
     test := {},
     skip in publish := true,

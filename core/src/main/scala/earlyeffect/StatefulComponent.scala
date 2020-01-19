@@ -13,10 +13,10 @@ trait StatefulComponent[Props, State] extends EarlyComponent[Props, State] { the
 
   def deriveState(props: Props, oldState: State) = oldState
 
-  def shouldUpdate(nextProps: Props, nextState: State, previous: I): Boolean =
+  def shouldUpdate(nextProps: Props, nextState: State, previous: ComponentInstance): Boolean =
     previous.props != nextProps || previous.props != nextState
 
-  def render(props: Props, state: State, instance: I): VNode
+  def render(props: Props, state: State, instance: ComponentInstance): VNode
 
   override lazy val instanceConstructor: js.Dynamic = js.constructorOf[Instance]
 
@@ -28,7 +28,7 @@ trait StatefulComponent[Props, State] extends EarlyComponent[Props, State] { the
 
     @JSName("render")
     override def renderJS(props: js.Dynamic, state: js.Dynamic): VNodeJS =
-      render(lookupProps(props), lookupState(state), instance = this)
+      addSelectors(render(lookupProps(props), lookupState(state), instance = this), this)
 
     override def shouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic, nextContext: js.Dynamic): Boolean =
       theComponent.shouldUpdate(lookupProps(nextProps), lookupState(nextState), previous = this)
@@ -38,7 +38,7 @@ trait StatefulComponent[Props, State] extends EarlyComponent[Props, State] { the
         lookupProps(oldProps),
         lookupState(oldState),
         instance = this,
-        snapshot.asInstanceOf[UndefOr[StatefulComponent[Props, State]#I]]
+        snapshot.asInstanceOf[UndefOr[StatefulComponent[Props, State]#ComponentInstance]]
       )
 
     override def componentWillReceiveProps(nextProps: js.Dynamic, nextContext: js.Dynamic): Unit = {

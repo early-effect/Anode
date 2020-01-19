@@ -12,7 +12,7 @@ trait CircuitComponent[Props, Model <: AnyRef, State] extends EarlyComponent[Pro
   def modelReader(p: Props): ModelR[Model, State]
   def zoom(get: Model => State)(implicit f: FastEq[_ >: State]): ModelR[Model, State] = circuit.zoom(get)
 
-  def shouldUpdate(nextProps: Props, nextState: State, previous: I): Boolean =
+  def shouldUpdate(nextProps: Props, nextState: State, previous: ComponentInstance): Boolean =
     nextState != previous.state || nextProps != previous.props
   override lazy val instanceConstructor: js.Dynamic = js.constructorOf[Instance]
   final private class Instance extends InstanceFacade[Props, State] {
@@ -23,15 +23,15 @@ trait CircuitComponent[Props, Model <: AnyRef, State] extends EarlyComponent[Pro
         lookupProps(oldProps),
         lookupState(oldState),
         instance = this,
-        snapshot.asInstanceOf[js.UndefOr[CircuitComponent[Props, Model, State]#I]]
+        snapshot.asInstanceOf[js.UndefOr[CircuitComponent[Props, Model, State]#ComponentInstance]]
       )
     override def componentDidMount(): Unit = didMount(this)
 
     @JSName("render")
     override def renderJS(p: js.Dynamic, s: js.Dynamic): VNodeJS =
-      addSelectors(render(lookupProps(p), lookupState(s)), theComponent)
+      addSelectors(render(lookupProps(p), lookupState(s)), this)
     override def componentWillMount(): Unit = {
-      theComponent.willMount(this)
+      willMount(this)
       setState(modelReader(props).value)
       unsubscribe = circuit.subscribe(modelReader(props))(x => setState(x.value))
     }

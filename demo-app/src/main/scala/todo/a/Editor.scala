@@ -10,12 +10,12 @@ import scala.scalajs.js.timers
 
 object Editor extends StatefulComponent[Todo, String] with InstanceDataSelector with ClassSelector {
 
-  override def extractAttributeValue(instance: I): String =
+  override def extractAttributeValue(instance: ComponentInstance): String =
     instance.props.key
 
   override def initialState(t: Todo): String = t.description
 
-  override def render(props: Todo, state: String, instance: I): VNode = {
+  override def render(props: Todo, state: String, instance: ComponentInstance): VNode = {
     def update(): Unit = ModelCircuit(Update(props.copy(editing = false, description = state)))
     E.input(
         A.`class`("edit"),

@@ -25,10 +25,10 @@ trait ClassSelector { self: EarlyComponent[_, _] =>
 
 trait InstanceDataSelector { self: EarlyComponent[_, _] =>
   val attributeName = s"data-earlyeffect-$defaultKey"
-  def extractAttributeValue(instance: self.I): String
+  def extractAttributeValue(instance: self.ComponentInstance): String
   def selector(attributeValue: String) = s"[$attributeName='$attributeValue']"
 
-  def addDataAttribute(e: dom.Element, instance: I): Unit =
+  def addDataAttribute(e: dom.Element, instance: ComponentInstance): Unit =
     e.setAttribute(attributeName, self.extractAttributeValue(instance))
 }
 
@@ -42,14 +42,20 @@ trait EarlyComponent[Props, State] { self =>
 
   val defaultKey = self.getClass.getName.replaceAll("[^\\w]", "_")
 
-  type I = EarlyInstance[Props, State]
+  type ComponentInstance = EarlyInstance[Props, State]
 
-  def didMount(instance: I): Unit = ()
+  def didMount(instance: ComponentInstance): Unit = ()
 
-  def willMount(instance: I): Unit   = ()
-  def willUnMount(instance: I): Unit = ()
+  def willMount(instance: ComponentInstance): Unit = ()
 
-  def didUpdate(oldProps: Props, oldState: State, instance: I, oldInstance: UndefOr[I]): Unit = ()
+  def willUnMount(instance: ComponentInstance): Unit = ()
+
+  def didUpdate(
+      oldProps: Props,
+      oldState: State,
+      instance: ComponentInstance,
+      oldInstance: UndefOr[ComponentInstance]
+  ): Unit = ()
 
   def baseDictionary(props: Props): Dictionary[js.Any] =
     js.Dictionary(
@@ -59,8 +65,15 @@ trait EarlyComponent[Props, State] { self =>
       ): _*
     )
 
-  def apply(props: Props): VNode =
-    EarlyEffect.h(instanceConstructor, baseDictionary(props))
+  def apply(props: Props): VNode = EarlyEffect.h(instanceConstructor, baseDictionary(props))
+
+  def addSelectors(n: VNode, facade: InstanceFacade[Props, State]): VNode =
+    self match {
+      case classSelector: ClassSelector => n.withRef(e => classSelector.addClass(e))
+      case instanceDataSelector: InstanceDataSelector =>
+        n.withRef(e => instanceDataSelector.addDataAttribute(e, facade))
+      case _ => n
+    }
 
 }
 

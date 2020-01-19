@@ -47,14 +47,6 @@ abstract class InstanceFacade[Props, State] extends impl.ComponentJS with EarlyI
   @JSName("eSetState")
   override def setState(s: State): Unit = setComponentState(s)
 
-  def addSelectors(n: VNode, component: EarlyComponent[Props, State]): VNode =
-    component match {
-      case classSelector: ClassSelector => n.withRef(e => classSelector.addClass(e))
-      case instanceDataSelector: InstanceDataSelector =>
-        n.withRef(e => instanceDataSelector.addDataAttribute(e, theFacade))
-      case _ => n
-    }
-
   protected final def cast[T](d: js.Dynamic, field: String): T = d.selectDynamic(field).asInstanceOf[T]
 
   protected final def lookupProps(p: js.Dynamic = rawProps): Props = cast(p, PropsFieldName)
