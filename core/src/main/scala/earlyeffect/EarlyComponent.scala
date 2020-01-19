@@ -25,10 +25,10 @@ trait ClassSelector { self: EarlyComponent[_, _] =>
 
 trait InstanceDataSelector { self: EarlyComponent[_, _] =>
   val attributeName = s"data-earlyeffect-$defaultKey"
-  def extractAttributeValue(instance: self.Instance): String
+  def extractAttributeValue(instance: self.I): String
   def selector(attributeValue: String) = s"[$attributeName='$attributeValue']"
 
-  def addDataAttribute(e: dom.Element, instance: Instance): Unit =
+  def addDataAttribute(e: dom.Element, instance: I): Unit =
     e.setAttribute(attributeName, self.extractAttributeValue(instance))
 }
 
@@ -42,19 +42,19 @@ trait EarlyComponent[Props, State] { self =>
 
   val defaultKey = self.getClass.getName.replaceAll("[^\\w]", "_")
 
-  type Instance = EarlyInstance[Props, State]
+  type I = EarlyInstance[Props, State]
 
-  def didMount(instance: Instance): Unit = ()
+  def didMount(instance: I): Unit = ()
 
-  def willMount(instance: Instance): Unit   = ()
-  def willUnMount(instance: Instance): Unit = ()
+  def willMount(instance: I): Unit   = ()
+  def willUnMount(instance: I): Unit = ()
 
-  def didUpdate(oldProps: Props, oldState: State, instance: Instance, oldInstance: UndefOr[Instance]): Unit = ()
+  def didUpdate(oldProps: Props, oldState: State, instance: I, oldInstance: UndefOr[I]): Unit = ()
 
   def baseDictionary(props: Props): Dictionary[js.Any] =
     js.Dictionary(
       Seq[(String, js.Any)](
-        (Props, props.asInstanceOf[js.Any]),
+        (PropsFieldName, props.asInstanceOf[js.Any]),
         (ComponentConstructor, self.asInstanceOf[js.Any]),
         ("key", defaultKey) // this is a precaution - I may want to make this optional
       ): _*

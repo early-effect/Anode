@@ -49,9 +49,9 @@ trait VNode extends Child {
     )
 
     val safe: js.Function1[js.Any, Unit] = {
-      case null                       => ()
-      case e: dom.Element             => combined(e)
-      case i: InstanceFacade[_, _, _] => i.base.foreach(combined)
+      case null                    => ()
+      case e: dom.Element          => combined(e)
+      case i: InstanceFacade[_, _] => i.base.foreach(combined)
       case x: js.Any =>
         Option(x.asInstanceOf[js.Dynamic].base).map(_.asInstanceOf[dom.Element]).foreach(combined)
     }
