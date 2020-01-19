@@ -3,58 +3,40 @@ package earlyeffect
 import diode._
 import earlyeffect.impl.VNodeJS
 
-import scala.language.implicitConversions
 import scala.scalajs.js
-import scala.scalajs.js.UndefOr
+import scala.scalajs.js.annotation.JSName
 
-trait CircuitComponent[Props, M <: AnyRef, State] extends EarlyComponent[Props, State] {
-  self =>
-
-  def circuit: Circuit[M]
-
+trait CircuitComponent[Props, Model <: AnyRef, State] extends EarlyComponent[Props, State] { theComponent =>
+  def circuit: Circuit[Model]
   def render(props: Props, state: State): VNode
+  def modelReader(p: Props): ModelR[Model, State]
+  def zoom(get: Model => State)(implicit f: FastEq[_ >: State]): ModelR[Model, State] = circuit.zoom(get)
 
-  def modelReader(p: Props): ModelR[M, State]
-
-  def zoom(get: M => State)(implicit f: FastEq[_ >: State]): ModelR[M, State] = circuit.zoom(get)
-
-  def shouldUpdate(nextProps: Props, nextState: State, previous: Instance): Boolean =
+  def shouldUpdate(nextProps: Props, nextState: State, previous: ComponentInstance): Boolean =
     nextState != previous.state || nextProps != previous.props
-
-  override def instanceConstructor: js.Dynamic =
-    constructors.getOrElseUpdate(
-      defaultKey,
-      js.constructorOf[CircuitComponent.Instance[Props, CircuitComponent[Props, M, State], Props]]
-    )
-
-}
-
-object CircuitComponent {
-
-  class Instance[Props, M <: AnyRef, State] extends InstanceFacade[Props, CircuitComponent[Props, M, State], State] {
-
-    type Reader = Props => ModelR[M, State]
-
+  override lazy val instanceConstructor: js.Dynamic = js.constructorOf[Instance]
+  final private class Instance extends InstanceFacade[Props, State] {
+    type Reader = Props => ModelR[Model, State]
     private var unsubscribe: () => Unit = () => ()
+    override def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic): Unit =
+      didUpdate(
+        lookupProps(oldProps),
+        lookupState(oldState),
+        instance = this,
+        snapshot.asInstanceOf[js.UndefOr[CircuitComponent[Props, Model, State]#ComponentInstance]]
+      )
+    override def componentDidMount(): Unit = didMount(this)
 
-    override def render(p: js.Dynamic, s: js.Dynamic): VNodeJS = {
-      val comp = lookupComponent(p)
-      val res  = comp.render(props, lookupState(s))
-      addSelectors(res)
-    }
-
+    @JSName("render")
+    override def renderJS(p: js.Dynamic, s: js.Dynamic): VNodeJS =
+      addSelectors(render(lookupProps(p), lookupState(s)), this)
     override def componentWillMount(): Unit = {
-      val component = lookupComponent()
-      component.willMount(instance)
-      instance.setState(component.modelReader(instance.props).value)
-      unsubscribe = component.circuit.subscribe(component.modelReader(instance.props))(x => instance.setState(x.value))
+      willMount(this)
+      setState(modelReader(props).value)
+      unsubscribe = circuit.subscribe(modelReader(props))(x => setState(x.value))
     }
-
     override def componentWillUnmount(): Unit = unsubscribe()
-
     override def shouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic, context: js.Dynamic): Boolean =
-      lookupComponent().shouldUpdate(lookupProps(nextProps), lookupState(nextState), this.instance)
-
+      theComponent.shouldUpdate(lookupProps(nextProps), lookupState(nextState), this)
   }
-
 }

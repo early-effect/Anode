@@ -21,10 +21,10 @@ abstract class ComponentJS extends js.Object {
   final def rawSetState(newState: js.Dynamic): Unit = js.native
 
   @JSName("base")
-  @inline
   final def rawBase: dom.Element = js.native
 
-  def render(props: js.Dynamic, state: js.Dynamic): VNodeJS
+  @JSName("render")
+  def renderJS(props: js.Dynamic, state: js.Dynamic): VNodeJS
 
   def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic): Unit
 

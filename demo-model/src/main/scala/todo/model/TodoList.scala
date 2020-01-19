@@ -1,8 +1,9 @@
-package demo.model
+package todo.model
 
 import diode.{Action, ActionHandler, ActionResult, ModelRW}
 
 case class TodoList(todos: Seq[Todo], filter: Filter) {
+  lazy val countIncomplete: Int          = todos.count(!_.complete)
   def delete(todo: Todo): TodoList       = copy(todos = todos.filter(_.key != todo.key))
   def add(todo: Todo): TodoList          = copy(todos = todos :+ todo)
   def update(todo: Todo): TodoList       = copy(todos = todos.updated(todos.indexWhere(_.key == todo.key), todo))

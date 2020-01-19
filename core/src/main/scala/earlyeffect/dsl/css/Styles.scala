@@ -115,6 +115,12 @@ object Styles {
           case x           => x
         }
       )
+
+    protected class SelectorConstructor(selector: String) {
+      def apply(members: DeclarationOrSelector*): Selector = Selector.apply(selector, members: _*)
+    }
+
+    def apply(selector: String) = new SelectorConstructor(selector)
   }
 
   trait Normal extends DS {
@@ -170,8 +176,11 @@ object Styles {
     val vmax: ST = suffixed("vmax")
   }
 
-  trait AbsoluteLength extends Suffixed[Double] {
-    val zero   = apply("0")
+  trait ZeroAble extends DS {
+    val zero = apply("0")
+  }
+
+  trait AbsoluteLength extends Suffixed[Double] with ZeroAble {
     val px: ST = suffixed("px")
     val cm: ST = suffixed("cm")
     val mm: ST = suffixed("mm")
@@ -451,7 +460,7 @@ object Styles {
   }
 
   object backfaceVisibility   extends DS("backface-visibility") with HiddenOrVisible {}
-  object background           extends DS("background")
+  object background           extends DS("background") with None
   object backgroundAttachment extends DS("background-attachment") with Attachment {}
   object backgroundBlendMode  extends DS("background-blend-mode") with BlendMode {}
   object backgroundClip       extends DS("background-clip") with Box {}
@@ -462,7 +471,7 @@ object Styles {
   object backgroundRepeat     extends DS("background-repeat")
   object backgroundSize       extends DS("background-size")
   object blockSize            extends DS("block-size") with Auto with Length {}
-  object border               extends DS("border")
+  object border               extends DS("border") with LineWidth
   // Todo: not complete
   object borderWidth extends DS(property = "border-width") with LineWidth
 

@@ -49,9 +49,9 @@ trait VNode extends Child {
     )
 
     val safe: js.Function1[js.Any, Unit] = {
-      case null                       => ()
-      case e: dom.Element             => combined(e)
-      case i: InstanceFacade[_, _, _] => i.base.foreach(combined)
+      case null                    => ()
+      case e: dom.Element          => combined(e)
+      case i: InstanceFacade[_, _] => i.base.foreach(combined)
       case x: js.Any =>
         Option(x.asInstanceOf[js.Dynamic].base).map(_.asInstanceOf[dom.Element]).foreach(combined)
     }
@@ -77,7 +77,7 @@ case object EmptyChild extends Child {
 
 trait Attribute extends Arg {
   def name: String
-  def value: Any
+  def value: js.Any
 
   override def toString: String = s"$name: ${value.toString}"
 }
@@ -119,9 +119,9 @@ object Arg {
 case class Args(args: Seq[Arg]) extends Arg {
 
   lazy val attributeDictionary =
-    js.Dictionary(normalizeStyles(normalizeClasses(attributes)).map(x => x.name -> x.value.asInstanceOf[js.Any]): _*)
+    js.Dictionary(normalizeStyles(normalizeClasses(attributes)).map(x => x.name -> x.value).toSeq: _*)
 
-  def normalizeClasses(attrs: Seq[Attribute]): Seq[Attribute] = {
+  def normalizeClasses(attrs: js.Array[Attribute]): js.Array[Attribute] = {
     val classes = attrs.filter(_.name == "class")
     if (classes.length <= 1) attrs
     else {
@@ -130,10 +130,10 @@ case class Args(args: Seq[Arg]) extends Arg {
     }
   }
 
-  def normalizeStyles(attrs: Seq[Attribute]): Seq[Attribute] = {
+  def normalizeStyles(attrs: js.Array[Attribute]): js.Array[Attribute] = {
     val styles = attributes.filter(_.name == "style")
     if (styles.length <= 1) attrs
-    else attrs.filterNot(x => styles.contains(x)) :+ combineStyles(styles: _*)
+    else attrs.filterNot(x => styles.contains(x)) :+ combineStyles(styles.toSeq: _*)
   }
 
   def combineStyles(attrs: Attribute*): Attribute = {
@@ -150,11 +150,11 @@ case class Args(args: Seq[Arg]) extends Arg {
     if (args != null) {
       args.foreach {
         case a: Attribute   => as.push(a)
-        case na: Args       => as.push(na.attributes: _*)
+        case na: Args       => as.push(na.attributes.toSeq: _*)
         case d: Declaration => ds.push(d)
         case _              =>
       }
-      if (ds.nonEmpty) as.push(A.style(ds: _*))
+      if (ds.nonEmpty) as.push(A.style(ds.toSeq: _*))
     }
     as
   }
@@ -163,7 +163,7 @@ case class Args(args: Seq[Arg]) extends Arg {
     if (args != null) {
       args.foreach {
         case c: Child => cs.push(c)
-        case na: Args => cs.push(na.children: _*)
+        case na: Args => cs.push(na.children.toSeq: _*)
         case null     => cs.push(EmptyChild)
         case _        =>
       }
