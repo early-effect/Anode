@@ -2,7 +2,8 @@ package earlyeffect
 
 import org.scalajs.dom
 import org.scalajs.dom.Element
-import org.scalatest.{Assertion, Matchers}
+import org.scalatest.Assertion
+import org.scalatest.matchers.should.Matchers
 
 trait EarlyOps extends Matchers {
   def render(vn: VNode): Unit = preact.render(vn, parent)

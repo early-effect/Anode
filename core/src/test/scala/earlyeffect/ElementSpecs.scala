@@ -1,11 +1,11 @@
 package earlyeffect
 
 import org.scalajs.dom
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.scalajs.js
 
-class ElementSpecs extends FlatSpec with EarlyOps {
+class ElementSpecs extends AnyFlatSpec with EarlyOps {
   "Elements without attributes or children" should "render" in {
     render(E.span())
     check("<span></span>")

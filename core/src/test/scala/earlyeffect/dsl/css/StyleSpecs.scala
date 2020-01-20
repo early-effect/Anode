@@ -2,11 +2,12 @@ package earlyeffect.dsl.css
 
 import earlyeffect._
 import earlyeffect.dsl.css.values.rgb
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 import scala.scalajs.js
 
-class StyleSpecs extends FlatSpec with Matchers {
+class StyleSpecs extends AnyFlatSpec with Matchers {
   import earlyeffect.dsl.css.Styles._
   val fooClass    = Selector(".foo", S.color("red"))
   val barClass    = Selector(".bar", S.color("blue"))

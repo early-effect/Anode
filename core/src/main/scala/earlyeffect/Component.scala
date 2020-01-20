@@ -7,18 +7,20 @@ import scala.scalajs.js
 import scala.scalajs.js.UndefOr
 import scala.scalajs.js.annotation.JSName
 
-trait Component[Props] extends EarlyComponent[Props, Nothing] { theComponent =>
+trait Component[Props] extends StatelessComponent[Props]
+
+trait StatelessComponent[Props] extends EarlyComponent[Props, Nothing] { theComponent =>
 
   def render(props: Props): VNode
 
-  def didUpdate(oldProps: Props, instance: ComponentInstance, oldInstance: UndefOr[ComponentInstance]): Unit = ()
+  def didUpdate(oldProps: Props, instance: Instance, oldInstance: UndefOr[Instance]): Unit = ()
 
-  def shouldUpdate(nextProps: Props, previous: ComponentInstance): Boolean =
+  def shouldUpdate(nextProps: Props, previous: Instance): Boolean =
     previous.props != nextProps
 
-  override lazy val instanceConstructor: js.Dynamic = js.constructorOf[Instance]
+  override lazy val instanceConstructor: js.Dynamic = js.constructorOf[StatelessInstance]
 
-  final private class Instance extends InstanceFacade[Props, Nothing] {
+  final private class StatelessInstance extends InstanceFacade[Props, Nothing] {
 
     override def componentDidMount(): Unit = didMount(this)
 
@@ -38,12 +40,12 @@ trait Component[Props] extends EarlyComponent[Props, Nothing] { theComponent =>
         lookupProps(oldProps),
         lookupState(oldState),
         this,
-        snapshot.asInstanceOf[UndefOr[EarlyComponent[Props, Nothing]#ComponentInstance]]
+        snapshot.asInstanceOf[UndefOr[EarlyComponent[Props, Nothing]#Instance]]
       )
   }
 
 }
 
-object Component {
+object StatelessComponent {
   implicit def applySelf[Comp <: Component[Comp], T <: Arg](self: Comp): T = self.apply(self).asInstanceOf[T]
 }

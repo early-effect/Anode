@@ -1,15 +1,19 @@
 package earlyeffect
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
 
-class ComponentSpecs extends FlatSpec with EarlyOps {
+import scala.scalajs.js
+
+class ComponentSpecs extends AnyFlatSpec with EarlyOps {
   "Components" should "render" in {
     object Simple extends Component[Unit] {
       override def render(props: Unit): VNode =
-        E.span("foo")
+        E.div(
+          js.Array(E.div("foo"), E.div("bar"))
+        )
     }
     render(Simple)
-    check("<span>foo</span>")
+    check("<div><div>foo</div><div>bar</div></div>")
   }
   "A Component with a string prop" should "render" in {
     object Simple extends Component[String] {

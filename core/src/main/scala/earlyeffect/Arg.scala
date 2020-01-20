@@ -108,12 +108,12 @@ final case class DoubleArg(d: Double) extends Child {
 }
 
 object Arg {
-  implicit def stringToArg(s: String): Arg     = StringArg(s)
-  implicit def doubleToArg(d: Double): Arg     = DoubleArg(d)
-  implicit def intToArg(i: Int): Arg           = DoubleArg(i)
-  implicit def fromOption(o: Option[Arg]): Arg = o.getOrElse(Empty)
-  implicit def seqToArgs(s: Seq[Arg]): Arg     = Args(s)
-//  implicit def nodesToArgs(s: Seq[VNodeJS]): Arg = Args(s.map(x => x: Child))
+  implicit def stringToArg(s: String): Arg                = StringArg(s)
+  implicit def doubleToArg(d: Double): Arg                = DoubleArg(d)
+  implicit def intToArg(i: Int): Arg                      = DoubleArg(i)
+  implicit def fromOption(o: Option[Arg]): Arg            = o.getOrElse(Empty)
+  implicit def seqToArgs(s: Seq[Arg]): Arg                = Args(s)
+  implicit def arrayToArgs[A <: Arg](s: js.Array[A]): Arg = Args(s)
 }
 
 case class Args(args: Seq[Arg]) extends Arg {
@@ -170,4 +170,8 @@ case class Args(args: Seq[Arg]) extends Arg {
     }
     cs
   }
+}
+
+object Args {
+  def apply[A <: Arg](args: js.Array[A]) = new Args(args.toSeq)
 }

@@ -13,14 +13,14 @@ trait StatefulComponent[Props, State] extends EarlyComponent[Props, State] { the
 
   def deriveState(props: Props, oldState: State) = oldState
 
-  def shouldUpdate(nextProps: Props, nextState: State, previous: ComponentInstance): Boolean =
+  def shouldUpdate(nextProps: Props, nextState: State, previous: Instance): Boolean =
     previous.props != nextProps || previous.props != nextState
 
-  def render(props: Props, state: State, instance: ComponentInstance): VNode
+  def render(props: Props, state: State, instance: Instance): VNode
 
-  override lazy val instanceConstructor: js.Dynamic = js.constructorOf[Instance]
+  override lazy val instanceConstructor: js.Dynamic = js.constructorOf[StatefulInstance]
 
-  final private class Instance extends InstanceFacade[Props, State] {
+  final private class StatefulInstance extends InstanceFacade[Props, State] {
 
     override def componentDidMount(): Unit = didMount(this)
 
@@ -38,7 +38,7 @@ trait StatefulComponent[Props, State] extends EarlyComponent[Props, State] { the
         lookupProps(oldProps),
         lookupState(oldState),
         instance = this,
-        snapshot.asInstanceOf[UndefOr[StatefulComponent[Props, State]#ComponentInstance]]
+        snapshot.asInstanceOf[UndefOr[StatefulComponent[Props, State]#Instance]]
       )
 
     override def componentWillReceiveProps(nextProps: js.Dynamic, nextContext: js.Dynamic): Unit = {
