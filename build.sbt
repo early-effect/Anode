@@ -11,7 +11,7 @@ lazy val root = project
 
 val baseSettings = Seq(
   licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
-  version := "0.1.0-SNAPSHOT",
+  version := "0.1.1-SNAPSHOT",
   bintrayRepository := "maven",
   organization := "rocks.earlyeffect",
   scalaVersion := "2.13.1",
@@ -48,7 +48,7 @@ lazy val core = project
     name := "core",
     webpackEmitSourceMaps in Compile := true,
     npmDependencies in Compile ++= Seq(
-      "preact"       -> "10.0.1",
+      "preact"       -> "10.2.1",
       "autoprefixer" -> "9.6.1"
     )
   )
@@ -96,7 +96,7 @@ lazy val demo = project
     webpackEmitSourceMaps in Compile := true,
     addCommandAlias(
       "demo",
-      ";demo/fullOptJS::startWebpackDevServer;~demo/fullOptJS"
+      ";demo/fastOptJS::startWebpackDevServer;~demo/fullOptJS"
     ),
     test := {},
     skip in publish := true,
