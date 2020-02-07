@@ -2,7 +2,7 @@ package todo.model
 
 import diode.{Action, ActionHandler, ActionResult, ModelRW}
 
-case class TodoList(todos: Seq[Todo], filter: Filter) {
+case class TodoList(todos: Seq[Todo], filter: Filter, online: Boolean) {
   lazy val countIncomplete: Int          = todos.count(!_.complete)
   def delete(todo: Todo): TodoList       = copy(todos = todos.filter(_.key != todo.key))
   def add(todo: Todo): TodoList          = copy(todos = todos :+ todo)
@@ -26,6 +26,8 @@ object TodoList {
   case class Handler(m: ModelRW[Root, TodoList]) extends ActionHandler(m) {
     import actions._
     override protected def handle: PartialFunction[Any, ActionResult[Root]] = {
+      case GoOnline         => updated(value.copy(online = true))
+      case GoOffline        => updated(value.copy(online = false))
       case Add(todo)        => updated(value.add(todo))
       case Delete(todo)     => updated(value.delete(todo))
       case Update(todo)     => updated(value.update(todo))
@@ -36,6 +38,8 @@ object TodoList {
   }
 
   object actions {
+    final case object GoOnline                   extends Action
+    final case object GoOffline                  extends Action
     final case class Add(todo: Todo)             extends Action
     final case class Delete(todo: Todo)          extends Action
     final case class Update(todo: Todo)          extends Action

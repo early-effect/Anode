@@ -2,7 +2,6 @@ package todo.a
 
 import diode.ModelR
 import earlyeffect.{A, ClassSelector, E, VNode, fragment, when}
-import org.scalajs.dom
 import todo.model.{Root, TodoList}
 
 object App extends TodoComponent[Unit, TodoList] with ClassSelector {
@@ -14,9 +13,12 @@ object App extends TodoComponent[Unit, TodoList] with ClassSelector {
         E.div(
           E.header(
             A.`class`("header"),
-            E.h1("todos - A", A.`class`("title"), A.onClick { _ =>
-              dom.window.location.pathname = "/b"
-            }),
+            E.h1(
+              "todos",
+              A.`class`("title"),
+//              A.onClick { _ =>dom.window.location.pathname = "/b"},
+              E.h4("Offline").when(!l.online)
+            ),
             Creator
           ),
           when(l.todos.nonEmpty) {

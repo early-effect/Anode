@@ -4,6 +4,8 @@ var HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   devServer: {
+    hot: false,
+    inline:false,
     compress: true,
     disableHostCheck: true,
     historyApiFallback: true,

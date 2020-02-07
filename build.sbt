@@ -1,9 +1,16 @@
+import java.nio.file.Files
+
 enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+
+val cachedAssets = taskKey[Seq[String]]("the list of files scala.js bundler produces via webpack")
+
+val copyWorker = taskKey[Unit]("Moves worker.js to public")
 
 lazy val root = project
   .in(file("."))
-  .aggregate(core, demo, demoModel)
+  .aggregate(core, demo, demoModel, demoWorker)
   .settings(
+    scalaVersion := "2.13.1",
     name := "root",
     publish := {},
     publishLocal := {}
@@ -11,7 +18,7 @@ lazy val root = project
 
 val baseSettings = Seq(
   licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
-  version := "0.1.1-SNAPSHOT",
+  version := "0.2.0-SNAPSHOT",
   bintrayRepository := "maven",
   organization := "rocks.earlyeffect",
   scalaVersion := "2.13.1",
@@ -67,6 +74,31 @@ lazy val demoModel = project
     libraryDependencies += "io.suzaku" %%% "diode" % "1.1.7-local",
     test := {}
   )
+lazy val demoWorker = project
+  .in(file("demo-worker"))
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+  .disablePlugins(ScalaJSBundlerPlugin)
+  .settings(
+    baseSettings,
+    name := "demo-worker",
+    publish := {},
+    publishLocal := {},
+    skip in publish := true,
+    scalaJSLinkerConfig in Test ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
+    test := {},
+    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, demo / cachedAssets),
+    buildInfoPackage := "worker",
+    mainClass := Some("worker.ServiceWorker"),
+    buildInfoOptions += BuildInfoOption.Traits("worker.Context"),
+    artifactPath in fullOptJS in Compile := {
+      (artifactPath in webpack in Compile in fullOptJS in demo).value.getParentFile / "dist/worker.js"
+    },
+    addCommandAlias("worker", "demoWorker/fullOptJS;demoWorker/copyWorker"),
+    copyWorker := {
+      val f = (artifactPath in fullOptJS in Compile).value
+      Files.copy(f.toPath, ((baseDirectory in demo).value / "public/worker.js").toPath)
+    }
+  )
 lazy val demo = project
   .in(file("demo-app"))
   .enablePlugins(ScalaJSBundlerPlugin)
@@ -92,17 +124,26 @@ lazy val demo = project
       baseDirectory.value / "webpack" / "webpack-core.config.js"
     ),
     //    webpackDevServerExtraArgs := Seq("--https", "--inline"),
-    webpackDevServerExtraArgs := Seq("--inline"),
+    version in startWebpackDevServer := "3.9.0",
     webpackEmitSourceMaps in Compile := true,
     addCommandAlias(
       "demo",
-      ";demo/fastOptJS::startWebpackDevServer;~demo/fullOptJS"
+      "demo/fullOptJS::startWebpackDevServer;~worker"
     ),
     test := {},
     skip in publish := true,
     publish := {},
     publishLocal := {},
     skip in publish := true,
-    mainClass := Some("demo.Main")
-//    scalaJSMainModuleInitializer := Some("demo.Main")
+    mainClass := Some("demo.Main"),
+    cachedAssets := {
+      val files = (webpack in (Compile, fullOptJS)).value
+      val res = files
+        .filter(!_.data.isHidden)
+        .map { file =>
+          file.data.getPath.split("/main/dist/")(1)
+        }
+      println(res.mkString("\n"))
+      res
+    }
   )
