@@ -18,13 +18,21 @@ trait ProgressiveWebApp { self =>
 
   private var timer: UndefOr[SetIntervalHandle] = js.undefined
 
-  navigator.serviceWorker
-    .register(serviceWorkerPath)
-    .toFuture
-    .onComplete {
-      case Success(r) => serviceWorkerRegistered(r)
-      case Failure(t) => handleRegistrationError(t)
-    }
+  /**
+    * Override for if you want to register service worker for https://localhost
+    * @return
+    */
+  def shouldRegister: Boolean = !(l.protocol == "https:" && l.hostname == "localhost")
+
+  val l = dom.window.location
+  if (shouldRegister)
+    navigator.serviceWorker
+      .register(serviceWorkerPath)
+      .toFuture
+      .onComplete {
+        case Success(r) => serviceWorkerRegistered(r)
+        case Failure(t) => handleRegistrationError(t)
+      }
 
   dom.window.addEventListener("online", (e: dom.Event) => {
     onlineState = true

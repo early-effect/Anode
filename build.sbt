@@ -6,6 +6,8 @@ val cachedAssets = taskKey[Seq[String]]("the list of files scala.js bundler prod
 
 val copyWorker = taskKey[Unit]("Moves worker.js to public")
 
+val diodeVersion = "1.1.8"
+
 lazy val root = project
   .in(file("."))
   .aggregate(core, demo, demoModel, demoWorker)
@@ -18,15 +20,15 @@ lazy val root = project
 
 val baseSettings = Seq(
   licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
-  version := "0.2.0-SNAPSHOT",
+  version := "0.2.2-SNAPSHOT",
   bintrayRepository := "maven",
   organization := "rocks.earlyeffect",
   scalaVersion := "2.13.1",
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
   libraryDependencies ++= Seq(
-    "io.suzaku"     %%% "diode"       % "1.1.7",
-    "org.scala-js"  %%% "scalajs-dom" % "0.9.8",
-    "org.scalatest" %%% "scalatest"   % "3.1.0" % Test
+    "io.suzaku"     %%% "diode"       % diodeVersion,
+    "org.scala-js"  %%% "scalajs-dom" % "1.0.0",
+    "org.scalatest" %%% "scalatest"   % "3.1.1" % Test
   ),
   requireJsDomEnv in Test := true,
   version in installJsdom := "11.12.0",
@@ -71,7 +73,7 @@ lazy val demoModel = project
     publishLocal := {},
     skip in publish := true,
     scalaJSLinkerConfig in Test ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
-    libraryDependencies += "io.suzaku" %%% "diode" % "1.1.7-local",
+    libraryDependencies += "io.suzaku" %%% "diode" % diodeVersion,
     test := {}
   )
 lazy val demoWorker = project
@@ -125,7 +127,8 @@ lazy val demo = project
     ),
     //    webpackDevServerExtraArgs := Seq("--https", "--inline"),
     version in startWebpackDevServer := "3.9.0",
-    webpackEmitSourceMaps in Compile := true,
+    webpackEmitSourceMaps in fastOptJS in Compile := true,
+    webpackEmitSourceMaps in fullOptJS in Compile := false,
     addCommandAlias(
       "demo",
       "demo/fullOptJS::startWebpackDevServer;~worker"
