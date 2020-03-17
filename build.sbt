@@ -20,7 +20,7 @@ lazy val root = project
 
 val baseSettings = Seq(
   licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
-  version := "0.2.4-SNAPSHOT",
+  version := "0.2.5-SNAPSHOT",
   bintrayRepository := "maven",
   organization := "rocks.earlyeffect",
   scalaVersion := "2.13.1",
@@ -97,7 +97,9 @@ lazy val demoWorker = project
     },
     addCommandAlias("worker", "demoWorker/fullOptJS;demoWorker/copyWorker"),
     copyWorker := {
-      val f = (artifactPath in fullOptJS in Compile).value
+      val f    = (artifactPath in fullOptJS in Compile).value
+      val path = ((baseDirectory in demo).value / "public/worker.js").toPath
+      if (Files.exists(path)) Files.delete(path)
       Files.copy(f.toPath, ((baseDirectory in demo).value / "public/worker.js").toPath)
     }
   )
