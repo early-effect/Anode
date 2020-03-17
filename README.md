@@ -5,7 +5,7 @@ To run the demo:
 - `sbt demo`
 - then open [http://localhost:8080](http://localhost:8080)
 
-Copyright 2019 Russ White
+Copyright 2020 Russ White
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use the source code within repository except in compliance with the License.
