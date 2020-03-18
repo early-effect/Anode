@@ -14,7 +14,7 @@ trait StatefulComponent[Props, State] extends EarlyComponent[Props, State] { the
   def deriveState(props: Props, oldState: State) = oldState
 
   def shouldUpdate(nextProps: Props, nextState: State, previous: Instance): Boolean =
-    previous.props != nextProps || previous.props != nextState
+    previous.props != nextProps || previous.state != nextState
 
   def render(props: Props, state: State, instance: Instance): VNode
 
