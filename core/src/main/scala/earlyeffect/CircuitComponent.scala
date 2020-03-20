@@ -6,17 +6,15 @@ import earlyeffect.impl.VNodeJS
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 
-trait CircuitComponent[Props, Model <: AnyRef, State] extends EarlyComponent[Props, State] { theComponent =>
+trait CircuitComponent[Props, Model <: AnyRef, State] extends EarlyComponent[Props, State] with Equivalence {
+  theComponent =>
   def circuit: Circuit[Model]
   def render(props: Props, state: State): VNode
   def modelReader(p: Props): ModelR[Model, State]
   def zoom(get: Model => State)(implicit f: FastEq[_ >: State]): ModelR[Model, State] = circuit.zoom(get)
 
-  def shouldUpdate(nextProps: Props, nextState: State, previous: Instance)(
-      implicit eqp: Equivalence[_ >: Props],
-      eqs: Equivalence[_ >: State]
-  ): Boolean =
-    eqs.notEquivalent(previous.state, nextState) || eqp.notEquivalent(previous.props, nextProps)
+  def shouldUpdate(nextProps: Props, nextState: State, previous: Instance): Boolean =
+    notEquivalent(previous.state, nextState) || notEquivalent(previous.props, nextProps)
   override lazy val instanceConstructor: js.Dynamic = js.constructorOf[CircuitInstance]
   final private class CircuitInstance extends InstanceFacade[Props, State] {
     type Reader = Props => ModelR[Model, State]

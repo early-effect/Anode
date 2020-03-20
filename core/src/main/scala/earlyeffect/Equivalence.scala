@@ -1,31 +1,21 @@
 package earlyeffect
 
-trait Equivalence[T] {
-  def equivalent(a: T, b: T): Boolean
-  def notEquivalent(a: T, b: T): Boolean = !equivalent(a, b)
-}
+trait Equivalence {
+  trait ByValue
 
-object Equivalence extends EquivalenceLowPriority
+  def equivalent(a: Any, b: Any): Boolean =
+    a match {
+      case a: AnyRef =>
+        b match {
+          case b: AnyRef with ByValue =>
+            a == b
+          case b: AnyRef =>
+            a eq b
+          case b =>
+            a == b
+        }
+      case a => a == b
+    }
 
-trait EquivalentByValue
-trait EquivalentByReference
-
-trait EquivalenceLowPriority {
-
-  implicit object AnyEquivalence extends Equivalence[Any] {
-    override def equivalent(a: Any, b: Any): Boolean =
-      a match {
-        case a: AnyRef =>
-          b match {
-            case b: AnyRef with EquivalentByValue =>
-              a == b
-            case b: AnyRef =>
-              a eq b
-            case b =>
-              a == b
-          }
-        case a => a == b
-      }
-  }
-
+  def notEquivalent(a: Any, b: Any): Boolean = !equivalent(a, b)
 }
