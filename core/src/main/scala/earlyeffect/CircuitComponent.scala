@@ -12,8 +12,11 @@ trait CircuitComponent[Props, Model <: AnyRef, State] extends EarlyComponent[Pro
   def modelReader(p: Props): ModelR[Model, State]
   def zoom(get: Model => State)(implicit f: FastEq[_ >: State]): ModelR[Model, State] = circuit.zoom(get)
 
-  def shouldUpdate(nextProps: Props, nextState: State, previous: Instance): Boolean =
-    nextState != previous.state || nextProps != previous.props
+  def shouldUpdate(nextProps: Props, nextState: State, previous: Instance)(
+      implicit eqp: Equivalence[_ >: Props],
+      eqs: Equivalence[_ >: State]
+  ): Boolean =
+    eqs.notEquivalent(previous.state, nextState) || eqp.notEquivalent(previous.props, nextProps)
   override lazy val instanceConstructor: js.Dynamic = js.constructorOf[CircuitInstance]
   final private class CircuitInstance extends InstanceFacade[Props, State] {
     type Reader = Props => ModelR[Model, State]

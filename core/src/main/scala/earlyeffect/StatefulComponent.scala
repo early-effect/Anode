@@ -13,8 +13,11 @@ trait StatefulComponent[Props, State] extends EarlyComponent[Props, State] { the
 
   def deriveState(props: Props, oldState: State) = oldState
 
-  def shouldUpdate(nextProps: Props, nextState: State, previous: Instance): Boolean =
-    previous.props != nextProps || previous.state != nextState
+  def shouldUpdate(nextProps: Props, nextState: State, previous: Instance)(
+      implicit eqp: Equivalence[_ >: Props],
+      eqs: Equivalence[_ >: State]
+  ): Boolean =
+    eqs.notEquivalent(previous.state, nextState) || eqp.notEquivalent(previous.props, nextProps)
 
   def render(props: Props, state: State, instance: Instance): VNode
 

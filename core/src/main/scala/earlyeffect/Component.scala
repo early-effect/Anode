@@ -15,8 +15,8 @@ trait StatelessComponent[Props] extends EarlyComponent[Props, Nothing] { theComp
 
   def didUpdate(oldProps: Props, instance: Instance, oldInstance: UndefOr[Instance]): Unit = ()
 
-  def shouldUpdate(nextProps: Props, previous: Instance): Boolean =
-    previous.props != nextProps
+  def shouldUpdate(nextProps: Props, previous: Instance)(implicit propsEQV: Equivalence[_ >: Props]): Boolean =
+    propsEQV.notEquivalent(previous.props, nextProps)
 
   override lazy val instanceConstructor: js.Dynamic = js.constructorOf[StatelessInstance]
 
