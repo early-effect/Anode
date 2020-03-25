@@ -1,13 +1,14 @@
 package earlyeffect
 
+trait EquivalentByValue
+
 trait Equivalence {
-  trait ByValue
 
   def equivalent(a: Any, b: Any): Boolean =
     a match {
       case a: AnyRef =>
         b match {
-          case b: AnyRef with ByValue =>
+          case b: AnyRef with EquivalentByValue =>
             a == b
           case b: AnyRef =>
             a eq b
