@@ -1,12 +1,13 @@
 package todo.b
 
+import diode._
+import earlyeffect._
+import earlyeffect.dsl.css.CssClass
+import org.scalajs.dom
+import org.scalajs.dom.raw.HTMLInputElement
 import todo._
 import todo.model.TodoList.actions._
 import todo.model._
-import diode._
-import earlyeffect._
-import org.scalajs.dom
-import org.scalajs.dom.raw.HTMLInputElement
 
 object App {
 
@@ -30,57 +31,62 @@ object App {
       element
     }
 
-    val App = css("app")(
-      background("white"),
-      marginTop.px(130),
-      marginBottom.px(40),
-      marginLeft.zero,
-      marginRight.zero,
-      position.relative,
-      boxShadow("0 2px 4px 0 rgba(0,0,0,0.2), 0 25px 50px 0 rgba(0,0,0,0.1)")
-    )
+    object App
+        extends CssClass(
+          background("white"),
+          marginTop.px(130),
+          marginBottom.px(40),
+          marginLeft.zero,
+          marginRight.zero,
+          position.relative,
+          boxShadow("0 2px 4px 0 rgba(0,0,0,0.2), 0 25px 50px 0 rgba(0,0,0,0.1)")
+        )
 
-    val Title = css("title")(
-      position.absolute,
-      top.px(-155),
-      width.pct(100),
-      fontSize.px(100),
-      fontWeight(100),
-      textAlign.center,
-      color.rgba(175, 47, 47, 0.15),
-      textRendering.optimizeLegibility,
-      textAlign.center
-    )
+    object Title
+        extends CssClass(
+          position.absolute,
+          top.px(-155),
+          width.pct(100),
+          fontSize.px(100),
+          fontWeight(100),
+          textAlign.center,
+          color.rgba(175, 47, 47, 0.15),
+          textRendering.optimizeLegibility,
+          textAlign.center
+        )
 
-    val Input = css("todo-input")(
-      position.relative,
-      margin.zero,
-      width.pct(100),
-      fontSize.px(24),
-      fontFamily.inherit,
-      fontWeight.inherit,
-      lineHeight.em(1.4),
-      paddingBottom.px(16),
-      paddingTop.px(16),
-      paddingLeft.px(16),
-      paddingRight.px(16),
-      border("none"),
-      color.inherit,
-      Selector(":focus")(outline("0")),
-      Selector("::placeholder")(
-        fontStyle.italic,
-        fontWeight(300),
-        color("#e6e6e6")
-      )
-    )
+    object Input
+        extends CssClass(
+          position.relative,
+          margin.zero,
+          width.pct(100),
+          fontSize.px(24),
+          fontFamily.inherit,
+          fontWeight.inherit,
+          lineHeight.em(1.4),
+          paddingBottom.px(16),
+          paddingTop.px(16),
+          paddingLeft.px(16),
+          paddingRight.px(16),
+          border("none"),
+          color.inherit,
+          Selector(":focus")(outline("0")),
+          Selector("::placeholder")(
+            fontStyle.italic,
+            fontWeight(300),
+            color("#e6e6e6")
+          )
+        )
 
-    val NewTodo = css("new-todo")(
-      background("rgba(0, 0, 0, 0.0003)"),
-      boxShadow("nset 0 -2px 1px rgba(0,0,0,0.03);")
-    )
+    object NewTodo
+        extends CssClass(
+          background("rgba(0, 0, 0, 0.0003)"),
+          boxShadow("nset 0 -2px 1px rgba(0,0,0,0.03);")
+        )
 
-    val EditTodo = css("edit-todo")(
-      )
+    object EditTodo
+        extends CssClass(
+          )
   }
 
   abstract class TodoComponent[P, S] extends CircuitComponent[P, Root, S] {
@@ -125,31 +131,34 @@ object App {
     object styles {
       import S._
 
-      val TodoList = css("todo-list")(
-        margin.zero,
-        padding.zero,
-        listStyle.none
-      )
+      object TodoList
+          extends CssClass(
+            margin.zero,
+            padding.zero,
+            listStyle.none
+          )
 
-      val Label = css("toggle-all-label")(
-        Selector(":before")(
-          content("\">\""),
-          fontSize.px(22),
-          color("#e6e6e6"),
-          padding("10px 27px 10px 27px")
-        )
-      )
+      object Label
+          extends CssClass(
+            Selector(":before")(
+              content("\">\""),
+              fontSize.px(22),
+              color("#e6e6e6"),
+              padding("10px 27px 10px 27px")
+            )
+          )
 
-      val ToggleAll = css("toggle-all")(
-        opacity(0),
-        width.px(60),
-        height.px(34),
-        fontSize.zero,
-        position.absolute,
-        top.px(-52),
-        left.px(-13),
-        transform("rotate(90deg)")
-      )
+      object ToggleAll
+          extends CssClass(
+            opacity(0),
+            width.px(60),
+            height.px(34),
+            fontSize.zero,
+            position.absolute,
+            top.px(-52),
+            left.px(-13),
+            transform("rotate(90deg)")
+          )
     }
 
     override def modelReader(p: Unit): ModelR[Root, Seq[Todo]] = zoom(_.todoList.filtered)
@@ -217,11 +226,12 @@ object App {
 
   object Item extends Component[Todo] with ClassSelector {
 
-    val Style = css("item")(
-      S.position.relative,
-      S.fontSize.px(24),
-      S.borderBottom("1px solid #ededed")
-    )
+    object Style
+        extends CssClass(
+          S.position.relative,
+          S.fontSize.px(24),
+          S.borderBottom("1px solid #ededed")
+        )
     override def render(todo: Todo): VNode =
       E.li(
         Style,
@@ -237,17 +247,18 @@ object App {
 
   object View extends Component[Todo] with ClassSelector {
 
-    val Toggle = css("toggle")(
-      S.textAlign.center,
-      S.width.px(40),
-      S.height.auto,
-      S.position.absolute,
-      S.top.zero,
-      S.bottom.zero,
-      S.margin("auto 0"),
-      S.border("none"),
-      S.appearance.none
-    )
+    object Toggle
+        extends CssClass(
+          S.textAlign.center,
+          S.width.px(40),
+          S.height.auto,
+          S.position.absolute,
+          S.top.zero,
+          S.bottom.zero,
+          S.margin("auto 0"),
+          S.border("none"),
+          S.appearance.none
+        )
     override def render(todo: Todo): VNode =
       E.div(
         E.input(

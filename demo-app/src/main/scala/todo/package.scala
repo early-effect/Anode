@@ -7,7 +7,4 @@ package object todo {
 
   lazy val AppCss = Css("demo-app")
 
-  def css(name: String)(children: DeclarationOrSelector*): Css#Class =
-    AppCss.Class(name, children: _*)
-
 }
