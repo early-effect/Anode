@@ -52,6 +52,3 @@ case class Css(prefix: String) {
   }
 
 }
-import earlyeffect.S._
-
-object MyCss extends CssClass(color("blue"))
