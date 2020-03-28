@@ -9,6 +9,35 @@ import scala.scalajs.js
 
 class StyleSpecs extends AnyFlatSpec with Matchers {
   import earlyeffect.dsl.css.Styles._
+
+  object MyCLass1
+      extends CssClass(
+        S.animationDuration.s(3),
+        S.animationDelay.s(.5),
+        S.animationTimingFunction("ease-in-out"),
+        S.backgroundColor.rgba(255, 255, 113, 0),
+        KeyFrames(
+          "baz",
+          KeyframeSelector("0%", backgroundColor.rgba(255, 255, 113, 0)),
+          KeyframeSelector("50%", backgroundColor.rgba(255, 255, 113, 0.95)),
+          KeyframeSelector("100%", backgroundColor.rgba(255, 255, 113, 0))
+        )
+      )
+
+  object MyClass2
+      extends CssClass(
+        S.minHeight.percent(100),
+        MediaQuery(
+          "print",
+          Selector(
+            "div.viewport * :after :before",
+            S.display.none.important,
+            opacity(0).important,
+            S("visibility", "hidden").important
+          )
+        )
+      )
+
   val fooClass    = Selector(".foo", S.color("red"))
   val barClass    = Selector(".bar", S.color("blue"))
   val allChildren = Selector(" *", S.color("black"))
@@ -61,27 +90,14 @@ class StyleSpecs extends AnyFlatSpec with Matchers {
   }
 
   "CssClass" should "support keyframes" in {
-    val c = Css("a").Class(
-      "foo",
-      S.animationDuration.s(3),
-      S.animationDelay.s(.5),
-      S.animationTimingFunction("ease-in-out"),
-      S.backgroundColor.rgba(255, 255, 113, 0),
-      KeyFrames(
-        "baz",
-        KeyframeSelector("0%", backgroundColor.rgba(255, 255, 113, 0)),
-        KeyframeSelector("50%", backgroundColor.rgba(255, 255, 113, 0.95)),
-        KeyframeSelector("100%", backgroundColor.rgba(255, 255, 113, 0))
-      )
-    )
-    c.mkString should be(s""".${c.className} {
+    MyCLass1.mkString should be(s""".${MyCLass1.className} {
         |  animation-duration: 3s;
         |  animation-delay: 0.5s;
         |  animation-timing-function: ease-in-out;
         |  background-color: rgba(255,255,113,0);
-        |  animation-name: ${c.className}-baz;
+        |  animation-name: ${MyCLass1.className}-baz;
         |}
-        |@keyframes ${c.className}-baz {
+        |@keyframes ${MyCLass1.className}-baz {
         |  0% {
         |    background-color: rgba(255,255,113,0);
         |  }
@@ -95,20 +111,7 @@ class StyleSpecs extends AnyFlatSpec with Matchers {
         |""".stripMargin)
   }
   "Css#Class" should "support media queries" in {
-    val c = Css("a").Class(
-      "foo",
-      S.minHeight.percent(100),
-      MediaQuery(
-        "print",
-        Selector(
-          "div.viewport * :after :before",
-          S.display.none.important,
-          opacity(0).important,
-          S("visibility", "hidden").important
-        )
-      )
-    )
-    c.mkString should be(""".a__foo {
+    MyClass2.mkString should be(s"""${MyClass2.selector} {
                            |  min-height: 100%;
                            |}
                            |@media print {
