@@ -16,6 +16,7 @@ object Item extends Component[Todo] {
             S("word-break")("break-all"),
             padding("15px 15px 15px 60px"),
             display.block,
+            S.backgroundRepeat("no-repeat"),
             lineHeight.em(1.2),
             transition("color .4s")
           ),
