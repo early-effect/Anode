@@ -11,11 +11,11 @@ import scala.scalajs.js
 
 abstract class CssClass(ds: DeclarationOrSelector*) extends Attribute { self =>
   override val name                       = "class"
-  val className: String                   = self.getClass.getName.replaceAll("[^\\w]", "_")
+  lazy val className: String              = self.getClass.getName.replaceAll("[^\\w]", "_")
   def members: Seq[DeclarationOrSelector] = ds
-  val selector                            = s".$className"
+  lazy val selector                       = s".$className"
   override val value                      = className.asInstanceOf[js.Any]
-  val sel: Selector                       = Selector(selector, members: _*)
+  lazy val sel: Selector                  = Selector(selector, members: _*)
   private def doc: Document               = org.scalajs.dom.document
   private lazy val style: Element         = doc.createElement("style")
 
@@ -31,24 +31,11 @@ abstract class CssClass(ds: DeclarationOrSelector*) extends Attribute { self =>
     val mediaQueriesCss = mediaQueries.map(_.render).mkString("\n")
     mainCss + keyFramesCss + mediaQueriesCss
   }
-  style.setAttribute("data-style-for", className)
-  style.appendChild(doc.createTextNode(AutoPrefixed(mkString)))
-  doc.head.appendChild(style)
-}
 
-case class Css(prefix: String) {
-
-  object Css {
-    def apply(prefix: String): Css = new Css(prefix)
+  private def appendStyle: Unit = {
+    style.setAttribute("data-style-for", className)
+    style.appendChild(doc.createTextNode(AutoPrefixed(mkString)))
+    doc.head.appendChild(style)
   }
-
-  @deprecated("Use: CssClass(...) instead...", "0.3.3")
-  case class Class(val id: String, override val members: Seq[DeclarationOrSelector]) extends CssClass {
-    override val className = s"${prefix}__$id"
-  }
-
-  object Class {
-    def apply(members: DeclarationOrSelector*) = new Class(UUID.randomUUID().toString, members)
-  }
-
+  self.appendStyle
 }

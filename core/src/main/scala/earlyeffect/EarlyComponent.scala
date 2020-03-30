@@ -40,7 +40,7 @@ trait EarlyComponent[Props, State] { self =>
 
   def instanceConstructor: js.Dynamic
 
-  val defaultKey = self.getClass.getName.replaceAll("[^\\w]", "_")
+  lazy val defaultKey = self.getClass.getName.replaceAll("[^\\w]", "_")
 
   type Instance = EarlyInstance[Props, State]
 

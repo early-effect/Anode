@@ -34,9 +34,9 @@ val baseSettings = Seq(
   version in installJsdom := "11.12.0",
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   scalaJSUseMainModuleInitializer := true,
-  version in webpack := "4.35.2",
-  webpackCliVersion := "3.3.5",
-  version in startWebpackDevServer := "3.7.2",
+  version in webpack := "4.42.1",
+  webpackCliVersion := "3.3.11",
+  version in startWebpackDevServer := "3.10.3",
   bintrayReleaseOnPublish := !isSnapshot.value,
   publishMavenStyle := true,
   publishTo := {
@@ -57,8 +57,8 @@ lazy val core = project
     name := "core",
     webpackEmitSourceMaps in Compile := true,
     npmDependencies in Compile ++= Seq(
-      "preact"       -> "10.3.3",
-      "autoprefixer" -> "9.6.1"
+      "preact"       -> "10.3.4",
+      "autoprefixer" -> "9.7.5"
     )
   )
 

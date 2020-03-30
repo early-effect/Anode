@@ -29,12 +29,7 @@ object Main extends ProgressiveWebApp {
   object Router {
 
     def route: VNode =
-      dom.window.location.pathname match {
-        case "/b" =>
-          b.App.TodoListApp
-        case x =>
-          a.App
-      }
+      if (dom.window.location.pathname == "/b") b.App.TodoListApp else a.App
   }
 
   def main(args: Array[String]): Unit = {
