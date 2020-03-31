@@ -7,16 +7,13 @@ import scala.scalajs.js
 import scala.scalajs.js.UndefOr
 import scala.scalajs.js.annotation.JSName
 
-trait Component[Props] extends StatelessComponent[Props]
-
-trait StatelessComponent[Props] extends EarlyComponent[Props, Nothing] with Equivalence { theComponent =>
+trait Component[Props] extends EarlyComponent[Props, Nothing] { theComponent =>
 
   def render(props: Props): VNode
 
   def didUpdate(oldProps: Props, instance: Instance, oldInstance: UndefOr[Instance]): Unit = ()
 
-  def shouldUpdate(nextProps: Props, previous: Instance): Boolean =
-    notEquivalent(previous.props, nextProps)
+  def shouldUpdate(nextProps: Props, previous: Instance): Boolean = nextProps != previous.props
 
   override lazy val instanceConstructor: js.Dynamic = js.constructorOf[StatelessInstance]
 

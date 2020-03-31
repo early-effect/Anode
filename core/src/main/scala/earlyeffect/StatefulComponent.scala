@@ -7,14 +7,13 @@ import scala.scalajs.js
 import scala.scalajs.js.UndefOr
 import scala.scalajs.js.annotation.JSName
 
-trait StatefulComponent[Props, State] extends EarlyComponent[Props, State] with Equivalence { theComponent =>
-
+trait StatefulComponent[Props, State] extends EarlyComponent[Props, State] { theComponent =>
   def initialState(props: Props): State
 
   def deriveState(props: Props, oldState: State) = oldState
 
   def shouldUpdate(nextProps: Props, nextState: State, previous: Instance): Boolean =
-    notEquivalent(previous.state, nextState) || notEquivalent(previous.props, nextProps)
+    previous.state != nextState || previous.props != nextProps
 
   def render(props: Props, state: State, instance: Instance): VNode
 
