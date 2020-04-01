@@ -1,9 +1,7 @@
 package earlyeffect.dsl.css
 
-import java.util.UUID
-
-import earlyeffect.Attribute
 import earlyeffect.dsl.css.Styles.{DeclarationOrSelector, KeyFrames, MediaQuery, Selector}
+import earlyeffect.{Attribute, ClassSelector}
 import org.scalajs.dom.html.Document
 import org.scalajs.dom.raw.Element
 
@@ -11,7 +9,7 @@ import scala.scalajs.js
 
 abstract class CssClass(ds: DeclarationOrSelector*) extends Attribute { self =>
   override val name                       = "class"
-  lazy val className: String              = self.getClass.getName.replaceAll("[^\\w]", "_")
+  lazy val className: String              = ClassSelector.makeCssClass(self.getClass.getName)
   def members: Seq[DeclarationOrSelector] = ds
   lazy val selector                       = s".$className"
   override val value                      = className.asInstanceOf[js.Any]

@@ -8,12 +8,11 @@ import scala.scalajs.js
 import scala.scalajs.js.{Dictionary, UndefOr}
 
 trait ClassSelector { self: EarlyComponent[_, _] =>
-  def selector = s".$defaultKey"
+  def selector = s".$classForClass"
 
   def addClass(e: dom.Element): Unit = {
-    val oldClass = Option(e.getAttribute("class"))
-    val newClass = oldClass.fold(defaultKey)(old => {
-      if (old.contains(defaultKey)) old else old + " " + defaultKey
+    val newClass = Option(e.getAttribute("class")).fold(classForClass)(old => {
+      if (old.contains(classForClass)) old else old + " " + classForClass
     })
     e.setAttribute(
       name = "class",
@@ -23,8 +22,16 @@ trait ClassSelector { self: EarlyComponent[_, _] =>
 
 }
 
+object ClassSelector {
+
+  def makeCssClass(className: String): String = {
+    val res = className.replaceAll("[^\\w]", "-")
+    if (res.endsWith("-")) res.dropRight(1) else res
+  }
+}
+
 trait InstanceDataSelector { self: EarlyComponent[_, _] =>
-  val attributeName = s"data-earlyeffect-$defaultKey"
+  val attributeName = s"data-earlyeffect-$classForClass"
   def extractAttributeValue(instance: self.Instance): String
   def selector(attributeValue: String) = s"[$attributeName='$attributeValue']"
 
@@ -40,7 +47,7 @@ trait EarlyComponent[Props, State] { self =>
 
   def instanceConstructor: js.Dynamic
 
-  lazy val defaultKey = self.getClass.getName.replaceAll("[^\\w]", "_")
+  lazy val classForClass = ClassSelector.makeCssClass(self.getClass.getName) + "__ClassSelector"
 
   type Instance = EarlyInstance[Props, State]
 
@@ -61,7 +68,7 @@ trait EarlyComponent[Props, State] { self =>
     js.Dictionary(
       Seq[(String, js.Any)](
         (PropsFieldName, props.asInstanceOf[js.Any]),
-        ("key", defaultKey) // this is a precaution - I may want to make this optional
+        ("key", classForClass) // this is a precaution - I may want to make this optional
       ): _*
     )
 

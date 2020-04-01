@@ -1,13 +1,20 @@
 package todo.a
 
 import diode.ModelR
-import earlyeffect.{A, ClassSelector, E, VNode, fragment, when}
+import earlyeffect.dsl.css.CssClass
+import earlyeffect._
 import todo.model.{Root, TodoList}
 
 object App extends TodoComponent[Unit, TodoList] with ClassSelector {
   override def modelReader(p: Unit): ModelR[Root, TodoList] = zoom(_.todoList)
+
+  object Foo
+      extends CssClass(
+        S.color("red")
+      )
   override def render(props: Unit, l: TodoList): VNode =
     E.div(
+      Foo,
       E.section(
         A.`class`("todoapp"),
         E.div(
