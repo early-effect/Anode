@@ -12,7 +12,7 @@ trait ClassSelector { self: EarlyComponent[_, _] =>
 
   def addClass(e: dom.Element): Unit = {
     val newClass = Option(e.getAttribute("class")).fold(classForClass)(old => {
-      if (old.contains(classForClass)) old else old + " " + classForClass
+      if (old.endsWith(classForClass)) old else old + " " + classForClass
     })
     e.setAttribute(
       name = "class",
@@ -47,7 +47,7 @@ trait EarlyComponent[Props, State] { self =>
 
   def instanceConstructor: js.Dynamic
 
-  lazy val classForClass = ClassSelector.makeCssClass(self.getClass.getName) + "__ClassSelector"
+  lazy val classForClass = ClassSelector.makeCssClass(self.getClass.getName)
 
   type Instance = EarlyInstance[Props, State]
 
