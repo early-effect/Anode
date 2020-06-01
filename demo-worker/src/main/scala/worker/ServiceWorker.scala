@@ -45,8 +45,7 @@ object ServiceWorker {
     self.addEventListener(
       "install",
       (e: ExtendableEvent) => {
-        self.skipWaiting()
-        e.waitUntil(prepareCache.toJSPromise)
+        self.skipWaiting().toFuture.foreach(_ => e.waitUntil(prepareCache.toJSPromise))
       }
     )
     self.addEventListener("fetch", (e: FetchEvent) => {

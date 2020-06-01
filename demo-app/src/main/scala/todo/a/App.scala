@@ -5,6 +5,82 @@ import earlyeffect.dsl.css.CssClass
 import earlyeffect._
 import todo.model.{Root, TodoList}
 
+object DumbApp extends Component[Unit] {
+
+  object CSS
+      extends CssClass(
+        S.userSelect.text
+      )
+  override def render(props: Unit): VNode =
+    E.div(
+      CSS,
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!",
+      "This is some selectable text!!!"
+    )
+}
+
 object App extends TodoComponent[Unit, TodoList] with ClassSelector {
   override def modelReader(p: Unit): ModelR[Root, TodoList] = zoom(_.todoList)
 

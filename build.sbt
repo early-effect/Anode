@@ -20,7 +20,7 @@ lazy val root = project
 
 val baseSettings = Seq(
   licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
-  version := "0.3.7",
+  version := "0.3.9",
   bintrayRepository := "maven",
   organization := "rocks.earlyeffect",
   scalaVersion := "2.13.1",

@@ -25,6 +25,13 @@ trait ProgressiveWebApp { self =>
   def shouldRegister: Boolean = !(l.protocol == "https:" && l.hostname == "localhost")
 
   val l = dom.window.location
+  if (shouldRegister) {
+    navigator.serviceWorker.register(serviceWorkerPath).toFuture.map { reg =>
+      Option(reg.waiting).map(worker => {
+        worker
+      })
+    }
+  }
   if (shouldRegister)
     navigator.serviceWorker
       .register(serviceWorkerPath)
@@ -59,17 +66,25 @@ trait ProgressiveWebApp { self =>
   def serviceWorkerUpdated(): Unit
 
   def update(r: ServiceWorkerRegistration): Unit = {
+    dom.window.console.info("checking for updated worker.")
     r.onupdatefound = _ => {
-      r.installing.onstatechange = _.target.asInstanceOf[ServiceWorker].state match {
-        case "installed" => serviceWorkerUpdated()
-        case _           =>
-      }
+      Option(r.installing)
+        .orElse(Option(r.waiting))
+        .foreach(
+          worker =>
+            worker.onstatechange = { _ =>
+              dom.window.console.info("replacement worker found - calling updated")
+              if (worker.state == "installed") serviceWorkerUpdated()
+            }
+        )
     }
     r.update
   }
 
   def installTimer(r: ServiceWorkerRegistration): Unit = {
-    dom.console.info(s"service worker timer installed.", isProgressiveWebApp, isOnline)
+    dom.console.info(
+      s"Service worker timer installed: $checkIntervalMillis millis\n is PWA: $isProgressiveWebApp\n online: $isOnline"
+    )
     timer.foreach(js.timers.clearInterval)
     timer = js.timers.setInterval(checkIntervalMillis)(
       update(r)
@@ -78,28 +93,25 @@ trait ProgressiveWebApp { self =>
   }
 
   def serviceWorkerRegistered(r: ServiceWorkerRegistration): Unit = {
+    Option(r.waiting).foreach(_ => {
+      Option(r.active).foreach(_ => serviceWorkerUpdated())
+    })
     dom.document.addEventListener(
       "visibilitychange",
       (_: dom.Event) => {
         val s = dom.document.visibilityState.asInstanceOf[VisibilityState]
-        if (s == VisibilityState.visible) {
-          dom.console.info("Document became visible - checking for worker update")
+        if (s != VisibilityState.hidden) {
+          dom.console.info("Checking for worker update because of window state change.")
           installTimer(r)
         }
       }
     )
-    installTimer(r)
-    r.onupdatefound = _ => {
-      r.installing.onstatechange = _.target.asInstanceOf[ServiceWorker].state match {
-        case "installed" => serviceWorkerUpdated()
-        case _           =>
-      }
-    }
     dom.console.info(
       "Registered service worker.",
       if (isProgressiveWebApp) "Running as PWA." else "Running in browser.",
       if (isOnline) "Device is online." else "Device is offline."
     )
+    installTimer(r)
   }
 
   def handleRegistrationError(t: Throwable): Unit =
