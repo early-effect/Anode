@@ -187,7 +187,7 @@ object Styles {
   object borderRadius extends DS("border-radius") with LengthPercentage {}
 
   object boxShadow extends DS("box-shadow")
-  object boxSizng  extends DS("box-sizing") with Box
+  object boxSizing extends DS("box-sizing") with Box
 
   object font extends DS("font")
 
