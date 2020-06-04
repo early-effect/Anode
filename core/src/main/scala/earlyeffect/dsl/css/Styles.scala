@@ -165,7 +165,7 @@ object Styles {
   object backgroundRepeat     extends DS("background-repeat")
   object backgroundSize       extends DS("background-size")
   object blockSize            extends DS("block-size") with Auto with Length {}
-  object border               extends DS("border") with LineWidth
+  object border               extends DS("border") with LineWidth with None
   // Todo: not complete
   object borderWidth extends DS(property = "border-width") with LineWidth
 
@@ -187,6 +187,7 @@ object Styles {
   object borderRadius extends DS("border-radius") with LengthPercentage {}
 
   object boxShadow extends DS("box-shadow")
+  object boxSizng  extends DS("box-sizing") with Box
 
   object font extends DS("font")
 
@@ -233,6 +234,8 @@ object Styles {
   }
 
   object textShadow extends DS("text-shadow")
+
+  object Visibility extends DS("visibility") with HiddenOrVisible
 
   //TODO: This is not a complete type
   object height extends DS("height") with Auto with LengthPercentage {
