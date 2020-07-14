@@ -76,6 +76,11 @@ trait EarlyComponent[Props, State] { self =>
 
   def addSelectors(n: VNode, facade: InstanceFacade[Props, State]): VNode =
     self match {
+      case selectors: ClassSelector with InstanceDataSelector =>
+        n.withRef { e =>
+          selectors.addDataAttribute(e, facade)
+          selectors.addClass(e)
+        }
       case classSelector: ClassSelector => n.withRef(e => classSelector.addClass(e))
       case instanceDataSelector: InstanceDataSelector =>
         n.withRef(e => instanceDataSelector.addDataAttribute(e, facade))

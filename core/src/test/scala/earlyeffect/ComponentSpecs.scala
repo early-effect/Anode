@@ -23,4 +23,17 @@ class ComponentSpecs extends AnyFlatSpec with EarlyOps {
     render(Simple("foo"))
     check("<span>foo</span>")
   }
+  "A Component with a string prop and an instance selector and a class selector" should "render" in {
+    object Simple extends Component[String] with InstanceDataSelector with ClassSelector {
+
+      override def extractAttributeValue(instance: Simple.Instance): String = instance.props
+
+      override def render(props: String): VNode =
+        E.span(props)
+    }
+    render(Simple("foo"))
+    check(
+      "<span data-earlyeffect-earlyeffect-componentspecs-simple-5=\"foo\" class=\"earlyeffect-ComponentSpecs-Simple-5\">foo</span>"
+    )
+  }
 }
