@@ -25,21 +25,28 @@ trait ProgressiveWebApp { self =>
   def shouldRegister: Boolean = !(l.protocol == "https:" && l.hostname == "localhost")
 
   val l = dom.window.location
-  if (shouldRegister) {
-    navigator.serviceWorker.register(serviceWorkerPath).toFuture.map { reg =>
-      Option(reg.waiting).map(worker => {
-        worker
-      })
-    }
-  }
-  if (shouldRegister)
-    navigator.serviceWorker
-      .register(serviceWorkerPath)
-      .toFuture
-      .onComplete {
-        case Success(r) => serviceWorkerRegistered(r)
-        case Failure(t) => handleRegistrationError(t)
+
+  def register(): Unit =
+    try {
+      navigator.serviceWorker.register(serviceWorkerPath).toFuture.map { reg =>
+        Option(reg.waiting).map(worker => {
+          worker
+        })
       }
+      navigator.serviceWorker
+        .register(serviceWorkerPath)
+        .toFuture
+        .onComplete {
+          case Success(r) => serviceWorkerRegistered(r)
+          case Failure(t) => handleRegistrationError(t)
+        }
+    } catch {
+      case e: Throwable =>
+        handleRegistrationError(e)
+        dom.console.log("can't register service worker", e)
+    }
+
+  if (shouldRegister) register()
 
   dom.window.addEventListener("online", (e: dom.Event) => {
     onlineState = true
