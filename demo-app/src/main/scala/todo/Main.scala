@@ -4,12 +4,8 @@ import earlyeffect.pwa.ProgressiveWebApp
 import earlyeffect.{VNode, log}
 import org.scalajs.dom
 import org.scalajs.dom.Event
-import todo.a.DumbApp
 import todo.model.ModelCircuit
 import todo.model.TodoList.actions.{GoOffline, GoOnline}
-
-import scala.scalajs.concurrent.JSExecutionContext
-import scala.scalajs.js
 
 object Main extends ProgressiveWebApp {
 
@@ -25,17 +21,11 @@ object Main extends ProgressiveWebApp {
 
   override def serviceWorkerPath: String = "worker.js"
 
-  override def checkIntervalMillis: Int = 5 * 60 * 1000
+  override def checkIntervalMillis: Int = 1 * 60 * 1000
 
   override def serviceWorkerUpdated(): Unit = {
-    val o = Option(dom.window.localStorage.getItem("bread-crumb"))
-    dom.window.localStorage.setItem("bread-crumb", "rye")
-    log("o", o.getOrElse(""))
-    o.foreach(_ => {
-      dom.window.alert("hey must reload!")
-      dom.window.location.reload(true)
-    })
-    log("set bread crumb..")
+    dom.window.alert("Hey must reload! Now!!! Silly!")
+    dom.window.location.reload(true)
   }
 
   object Router {
@@ -46,7 +36,6 @@ object Main extends ProgressiveWebApp {
 
   def main(args: Array[String]): Unit = {
     if (isOnline) ModelCircuit(GoOnline) else ModelCircuit(GoOffline)
-//    earlyeffect.preact.render(Router.route, dom.document.body)
-    earlyeffect.preact.render(DumbApp(()), dom.document.body)
+    earlyeffect.preact.render(Router.route, dom.document.body)
   }
 }

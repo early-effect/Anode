@@ -17,7 +17,8 @@ object ServiceWorker {
     val App = "app"
   }
 
-  def prepareCache: Future[Unit] =
+  def prepareCache: Future[Unit] = {
+    println("preparing caches")
     self.caches
       .delete(cacheKeys.App)
       .toFuture
@@ -27,6 +28,7 @@ object ServiceWorker {
             cache.addAll(Details.cachedAssets.toJSArray.map(_.asInstanceOf[RequestInfo])).toFuture
           }
       )
+  }
 
   def request(info: RequestInfo): js.Promise[Response] =
     self.caches
@@ -45,7 +47,8 @@ object ServiceWorker {
     self.addEventListener(
       "install",
       (e: ExtendableEvent) => {
-        self.skipWaiting().toFuture.foreach(_ => e.waitUntil(prepareCache.toJSPromise))
+        self.skipWaiting()
+        e.waitUntil(prepareCache.toJSPromise)
       }
     )
     self.addEventListener("fetch", (e: FetchEvent) => {

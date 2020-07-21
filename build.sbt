@@ -6,13 +6,13 @@ val cachedAssets = taskKey[Seq[String]]("the list of files scala.js bundler prod
 
 val copyWorker = taskKey[Unit]("Moves worker.js to public")
 
-val diodeVersion = "1.1.8"
+val diodeVersion = "1.1.11"
 
 lazy val root = project
   .in(file("."))
   .aggregate(core, demo, demoModel, demoWorker)
   .settings(
-    scalaVersion := "2.13.1",
+    scalaVersion := "2.13.3",
     name := "root",
     publish := {},
     publishLocal := {}
@@ -20,15 +20,15 @@ lazy val root = project
 
 val baseSettings = Seq(
   licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
-  version := "0.3.16",
+  version := "0.4.0",
   bintrayRepository := "maven",
   organization := "rocks.earlyeffect",
-  scalaVersion := "2.13.1",
+  scalaVersion := "2.13.3",
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
   libraryDependencies ++= Seq(
     "io.suzaku"     %%% "diode"       % diodeVersion,
     "org.scala-js"  %%% "scalajs-dom" % "1.0.0",
-    "org.scalatest" %%% "scalatest"   % "3.1.1" % Test
+    "org.scalatest" %%% "scalatest"   % "3.2.0" % Test
   ),
   requireJsDomEnv in Test := true,
   version in installJsdom := "11.12.0",
