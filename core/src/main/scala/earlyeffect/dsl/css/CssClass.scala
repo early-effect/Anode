@@ -14,8 +14,7 @@ abstract class CssClass(ds: DeclarationOrSelector*) extends Attribute { self =>
   lazy val selector                       = s".$className"
   override val value                      = className.asInstanceOf[js.Any]
   lazy val sel: Selector                  = Selector(selector, members: _*)
-  private def doc: Document               = org.scalajs.dom.document
-  private lazy val style: Element         = doc.createElement("style")
+  private def doc: Option[Document]       = Option(org.scalajs.dom.document)
 
   def mkString: String = {
     val keyframes    = js.Array[KeyFrames]()
@@ -30,10 +29,14 @@ abstract class CssClass(ds: DeclarationOrSelector*) extends Attribute { self =>
     mainCss + keyFramesCss + mediaQueriesCss
   }
 
-  private def appendStyle: Unit = {
-    style.setAttribute("data-style-for", className)
-    style.appendChild(doc.createTextNode(AutoPrefixed(mkString)))
-    doc.head.appendChild(style)
-  }
-  self.appendStyle
+  private def appendStyle(): Unit =
+    for {
+      d <- doc
+    } {
+      val style: Element = d.createElement("style")
+      style.setAttribute("data-style-for", className)
+      style.appendChild(d.createTextNode(AutoPrefixed(mkString)))
+      d.head.appendChild(style)
+    }
+  self.appendStyle()
 }
