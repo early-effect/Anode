@@ -64,6 +64,7 @@ lazy val core = project
     npmDependencies in Compile ++= Seq(
       "preact"       -> "10.5.10",
       "autoprefixer" -> "10.2.3",
+      "postcss"      -> "8.2.4",
     ),
   )
 
