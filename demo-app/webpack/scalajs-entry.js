@@ -1,5 +1,6 @@
 if (process.env.NODE_ENV === "production") {
   const opt = require("./demo-app-opt.js");
+  opt.main();
   module.exports = opt;
   //opt.entrypoint();
 } else {

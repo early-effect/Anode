@@ -145,8 +145,8 @@ lazy val demo = project
       "demo/fastOptJS::startWebpackDevServer;~demo/fastOptJS",
     ),
     addCommandAlias(
-      "demoPWA",
-      "demo/fullOptJS::startWebpackDevServer;~worker",
+      "demoFull",
+      "demo/fullOptJS::startWebpackDevServer;~demo/fullOptJS",
     ),
     test := {},
     skip in publish := true,

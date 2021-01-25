@@ -29,7 +29,8 @@ module.exports = merge(core, {
       { from: path.resolve(__dirname, "../../../../public") }
     ]),
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, "../../../../public/index.html")
+      template: path.resolve(__dirname, "../../../../public/index.html"),
+      inject: "head",
     }),
     new webpack.DefinePlugin({
       'process.env': {
