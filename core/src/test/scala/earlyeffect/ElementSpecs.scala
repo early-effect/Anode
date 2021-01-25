@@ -38,29 +38,29 @@ class ElementSpecs extends AnyFlatSpec with EarlyOps {
   "Elements with children but no attributes" should "render" in {
     render(E.span(E.span("hello"), E.span("world")))
     check(
-      """<span class="" id=""><span>hello</span><span>world</span></span>"""
+      """<span id=""><span>hello</span><span>world</span></span>"""
     )
   }
   "Elements with children as a sequence" should "render" in {
     render(E.span(Seq(E.span("hello"), E.span("world"))))
     check(
-      """<span class="" id=""><span>hello</span><span>world</span></span>"""
+      """<span id=""><span>hello</span><span>world</span></span>"""
     )
   }
   "Elements with a sequence of attributes and children" should "render" in {
     render(E.span(A.`class`("bar"), args(A.id("foo"), E.span("hello"), E.span("world"))))
     check(
-      """<span class="bar" id="foo"><span>hello</span><span>world</span></span>"""
+      """<span id="foo" class="bar"><span>hello</span><span>world</span></span>"""
     )
   }
   "Element with declarations" should "get a style attribute" in {
     render(E.span(S.margin.px(10), S.color.rgb(100, 100, 100)))
-    check("""<span class="" id="" style="margin: 10px; color: rgb(100, 100, 100);"></span>""")
+    check("""<span id="" style="margin: 10px; color: rgb(100, 100, 100);"></span>""")
   }
   "Element with declarations and a style attr" should "get a single style attribute" in {
     val s = A.style(S.backgroundColor("white"))
     render(E.span(s, S.margin.px(10), S.color.rgb(100, 100, 100)))
-    check("""<span class="" id="" style="margin: 10px; color: rgb(100, 100, 100); background-color: white;"></span>""")
+    check("""<span id="" style="margin: 10px; color: rgb(100, 100, 100); background-color: white;"></span>""")
   }
   "Elements" should "take a key" in {
     E.span("foo").withKey("bar").vnode.key should be("bar")
