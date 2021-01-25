@@ -1,8 +1,7 @@
-package todo.a
+package todo
 
 import earlyeffect.dsl.css.CssClass
-import earlyeffect.{Component, VNode, _}
-import todo._
+import earlyeffect.{A, Component, E, S, VNode}
 import todo.model.Todo
 
 object Item extends Component[Todo] {
@@ -12,34 +11,38 @@ object Item extends Component[Todo] {
 
     object Base
         extends CssClass(
+          position.relative,
+          fontSize.px(24),
+          borderBottom("1px solid #ededed"),
           Selector(" label")(
             S("word-break")("break-all"),
             padding("15px 15px 15px 60px"),
             display.block,
             S.backgroundRepeat("no-repeat"),
             lineHeight.em(1.2),
-            transition("color .4s")
+            transition("color .4s"),
+            fontSize.px(24),
           ),
           Selector(":last-child")(
             borderBottom("none")
-          )
+          ),
+        )
+
+    object Editing
+        extends CssClass(
+          S.borderBottom("none"),
+          S.padding.zero,
         )
   }
 
-  object Editing
-      extends CssClass(
-        S.selector(":last-child")(
-          S.marginBottom.px(-1)
-        )
-      )
   override def render(todo: Todo): VNode =
     E.li(
       styles.Base,
-      A.`class`(if (todo.editing) "editing" else "view"),
+      styles.Editing.when(todo.editing),
       if (todo.editing) {
         Editor(todo)
       } else {
         Viewer(todo)
-      }
+      },
     )
 }

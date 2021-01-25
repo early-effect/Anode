@@ -29,23 +29,21 @@ trait VNode extends Child {
     Preact.h(
       vnode.`type`.asInstanceOf[js.Dynamic],
       props,
-      vnode.rawChildren
+      vnode.rawChildren,
     )
   }
 
-  def children: js.Array[VNode] =
-    vnode.childArray.map(x => x: VNode)
+  def children: js.Array[VNode] = vnode.childArray.map(x => x: VNode)
 
   def withKey(key: String): VNode = withT(name = "key", key.asInstanceOf[js.Any])
 
   def withRef(f: js.Function1[dom.Element, Unit]): VNode = {
 
-    val combined = vnode.ref.fold(f)(
-      existing =>
-        (e: dom.Element) => {
-          existing(e)
-          f(e)
-        }
+    val combined = vnode.ref.fold(f)(existing =>
+      (e: dom.Element) => {
+        existing(e)
+        f(e)
+      }
     )
 
     val safe: js.Function1[js.Any, Unit] = {
@@ -89,6 +87,7 @@ object Attribute {
 }
 
 final case class Declaration(property: String, value: String) extends Arg with DeclarationOrSelector {
+
   override def mkString(className: String, kf: js.Array[KeyFrames], mq: js.Array[MediaQuery]): String =
     s"$property: $value;"
 
@@ -138,9 +137,9 @@ case class Args(args: Seq[Arg]) extends Arg {
 
   def combineStyles(attrs: Attribute*): Attribute = {
     val d = js.Dictionary[String]()
-    attrs.foreach(a => {
+    attrs.foreach { a =>
       a.value.asInstanceOf[js.Dictionary[String]].foreach(x => d.update(x._1, x._2))
-    })
+    }
     Attribute("style", d)
   }
 
@@ -158,6 +157,7 @@ case class Args(args: Seq[Arg]) extends Arg {
     }
     as
   }
+
   lazy val children: js.Array[Child] = {
     val cs = js.Array[Child]()
     if (args != null) {

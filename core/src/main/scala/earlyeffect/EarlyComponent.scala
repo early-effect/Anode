@@ -11,12 +11,12 @@ trait ClassSelector { self: EarlyComponent[_, _] =>
   def selector = s".$classForClass"
 
   def addClass(e: dom.Element): Unit = {
-    val newClass = Option(e.getAttribute("class")).fold(classForClass)(old => {
+    val newClass = Option(e.getAttribute("class")).fold(classForClass) { old =>
       if (old.endsWith(classForClass)) old else old + " " + classForClass
-    })
+    }
     e.setAttribute(
       name = "class",
-      value = newClass
+      value = newClass,
     )
   }
 
@@ -39,6 +39,7 @@ trait InstanceDataSelector { self: EarlyComponent[_, _] =>
     e.setAttribute(attributeName, self.extractAttributeValue(instance))
 }
 
+//noinspection ScalaUnusedSymbol
 trait EarlyComponent[Props, State] { self =>
 
   type P = Props
@@ -61,14 +62,14 @@ trait EarlyComponent[Props, State] { self =>
       oldProps: Props,
       oldState: State,
       instance: Instance,
-      oldInstance: UndefOr[Instance]
+      oldInstance: UndefOr[Instance],
   ): Unit = ()
 
   def baseDictionary(props: Props): Dictionary[js.Any] =
     js.Dictionary(
       Seq[(String, js.Any)](
         (PropsFieldName, props.asInstanceOf[js.Any]),
-        ("key", classForClass) // this is a precaution - I may want to make this optional
+        ("key", classForClass), // this is a precaution - I may want to make this optional
       ): _*
     )
 

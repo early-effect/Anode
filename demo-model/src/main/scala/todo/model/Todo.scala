@@ -6,7 +6,6 @@ case class Todo(key: String, description: String, complete: Boolean, editing: Bo
 
 object Todo {
 
-  def apply(description: String) =
-    new Todo(UUID.randomUUID().toString, description, complete = false, editing = false)
+  def apply(description: String) = new Todo(UUID.randomUUID().toString, description, complete = false, editing = false)
 
 }

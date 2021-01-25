@@ -7,7 +7,7 @@ import earlyeffect._
 
 import scala.scalajs.js
 
-private[dsl] class ElementConstructor(name: String) {
+private[earlyeffect] class ElementConstructor(name: String) {
 
   def apply(acs: Arg*): VNode = {
     val args = Args(acs)
@@ -42,6 +42,7 @@ trait TextContent extends ElementSet {
   val dd: ElementConstructor         = element("dd")
   val dir: ElementConstructor        = element("dir")
   val div: ElementConstructor        = element("div")
+  val body: ElementConstructor       = element("body")
   val dl: ElementConstructor         = element("dl")
   val dt: ElementConstructor         = element("dt")
   val figcaption: ElementConstructor = element("figcaption")

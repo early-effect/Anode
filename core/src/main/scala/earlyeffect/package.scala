@@ -38,6 +38,7 @@ package object earlyeffect {
     def px  = s"${d}px"
     def em  = s"${d}em"
   }
+
   implicit class richInt(n: Int) {
     def pct = s"$n%"
     def px  = s"${n}px"

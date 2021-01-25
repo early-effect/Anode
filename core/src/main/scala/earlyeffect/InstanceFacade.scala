@@ -8,8 +8,7 @@ import scala.scalajs.js
 import scala.scalajs.js.UndefOr
 import scala.scalajs.js.annotation.JSName
 
-/**
-  * Provides a type safe view of the underlying instance.
+/** Provides a type safe view of the underlying instance.
   *
   * When we pass things to components we don't want them to see the life cycle function or the raw JS "types"
   *

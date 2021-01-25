@@ -79,8 +79,12 @@ trait GlobalAttributes extends AttributSet {
   def accessKey: A[String] = attribute[String](name = "accessKey")
 
   def autocapitalize: A[String] =
-    new AttributeConstructor[String]("autocapitalize") with None with OnOrOff with Words with Sentences
-    with Characters {}
+    new AttributeConstructor[String]("autocapitalize")
+      with None
+      with OnOrOff
+      with Words
+      with Sentences
+      with Characters {}
 
   def `class`: A[String]          = attribute[String](name = "class")
   def contenteditable: A[Boolean] = attribute[Boolean](name = "contenteditable")

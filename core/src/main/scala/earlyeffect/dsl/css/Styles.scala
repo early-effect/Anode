@@ -1,9 +1,9 @@
 package earlyeffect.dsl.css
 
 import earlyeffect.Declaration
+import earlyeffect.dsl.css.ds._
 
 import scala.scalajs.js
-import ds._
 
 object Styles {
 
@@ -14,27 +14,30 @@ object Styles {
     def mkString(
         className: String,
         keyFrames: js.Array[KeyFrames] = js.Array(),
-        mediaQueries: js.Array[MediaQuery] = js.Array()
+        mediaQueries: js.Array[MediaQuery] = js.Array(),
     ): String
 
     override def toString: String = mkString("")
   }
 
   case class KeyFrames(name: String, selectors: KeyframeSelector*) extends DeclarationOrSelector {
+
     override def mkString(
         className: String,
         keyFrames: js.Array[KeyFrames],
-        mediaQueries: js.Array[MediaQuery]
+        mediaQueries: js.Array[MediaQuery],
     ): String = {
       keyFrames.push(this)
       s"animation-name: $className-$name;"
     }
   }
+
   case class MediaQuery(query: String, declaration: DeclarationOrSelector*) extends DeclarationOrSelector {
+
     override def mkString(
         className: String,
         keyFrames: js.Array[KeyFrames],
-        mediaQueries: js.Array[MediaQuery]
+        mediaQueries: js.Array[MediaQuery],
     ): String = {
       mediaQueries.push(this)
       ""
@@ -49,9 +52,11 @@ object Styles {
   }
 
   abstract class DeclarationConstructor[T](property: String) {
+
     abstract class Prefixed(s: String) extends D[T](property) {
       override def apply(value: T): Declaration = Declaration(property, s"$s ${value.toString}")
     }
+
     abstract class Suffixed(s: String) extends D[T](property) {
       override def apply(value: T): Declaration = Declaration(property, s"${value.toString} $s")
     }
@@ -75,10 +80,11 @@ object Styles {
   def apply[T](name: String, value: T): Declaration = Declaration(name, value.toString)
 
   case class KeyframeSelector(selector: String, members: Declaration*) extends DeclarationOrSelector {
+
     override def mkString(
         className: String,
         keyFrames: js.Array[KeyFrames],
-        mediaQueries: js.Array[MediaQuery]
+        mediaQueries: js.Array[MediaQuery],
     ): String =
       s"$selector {\n${members.map("    " + _.mkString(className, keyFrames, mediaQueries)).mkString("\n")}\n  }"
   }
@@ -97,10 +103,13 @@ object Styles {
     }
 
     def prependAll(s: String): Selector =
-      new Selector(s + selector, members.map {
-        case x: Selector => x.prependAll(s)
-        case y           => y
-      })
+      new Selector(
+        s + selector,
+        members.map {
+          case x: Selector => x.prependAll(s)
+          case y           => y
+        },
+      )
   }
 
   object Selector {
@@ -111,7 +120,7 @@ object Styles {
         members.map {
           case x: Selector => x.prependAll(selector)
           case x           => x
-        }
+        },
       )
 
     protected class SelectorConstructor(selector: String) {
@@ -139,12 +148,12 @@ object Styles {
   object alignSelf extends DS("align-self")
 
   object animation               extends DS("animation")
-  object animationDelay          extends DS("animation-delay") with Time {}
+  object animationDelay          extends DS("animation-delay") with Time    {}
   object animationDirection      extends DS("animation-direction")
   object animationDuration       extends DS("animation-duration") with Time {}
   object animationFillMode       extends DS("animation-fill-mode")
   object animationIterationCount extends DS("animation-iteration-count")
-  object animationName           extends DS("animation-name") with None {}
+  object animationName           extends DS("animation-name") with None     {}
   object animationPlayState      extends DS("animation-play-state")
   object animationTimingFunction extends DS("animation-timing-function")
 
@@ -154,17 +163,17 @@ object Styles {
   }
 
   object backfaceVisibility   extends DS("backface-visibility") with HiddenOrVisible {}
-  object background           extends DS("background") with None
-  object backgroundAttachment extends DS("background-attachment") with Attachment {}
-  object backgroundBlendMode  extends DS("background-blend-mode") with BlendMode {}
-  object backgroundClip       extends DS("background-clip") with Box {}
-  object backgroundColor      extends DS("background-color") with Color {}
+  object background           extends DS("background") with None with Color          {}
+  object backgroundAttachment extends DS("background-attachment") with Attachment    {}
+  object backgroundBlendMode  extends DS("background-blend-mode") with BlendMode     {}
+  object backgroundClip       extends DS("background-clip") with Box                 {}
+  object backgroundColor      extends DS("background-color") with Color              {}
   object backgroundImage      extends DS("background-image")
-  object backgroundOrigin     extends DS("background-origin") with Box {}
+  object backgroundOrigin     extends DS("background-origin") with Box               {}
   object backgroundPosition   extends DS("background-position")
   object backgroundRepeat     extends DS("background-repeat")
   object backgroundSize       extends DS("background-size")
-  object blockSize            extends DS("block-size") with Auto with Length {}
+  object blockSize            extends DS("block-size") with Auto with Length         {}
   object border               extends DS("border") with LineWidth with None
   // Todo: not complete
   object borderWidth extends DS(property = "border-width") with LineWidth

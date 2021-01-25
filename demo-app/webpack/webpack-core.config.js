@@ -4,8 +4,8 @@ var HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   devServer: {
-    hot: false,
-    inline:false,
+    hot: true,
+    inline:true,
     compress: true,
     disableHostCheck: true,
     historyApiFallback: true,
@@ -25,10 +25,13 @@ module.exports = {
       {from: path.resolve(__dirname, "../../../../public")}
     ]),
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, "../../../../public/index.html")
+      template: path.resolve(__dirname, "../../../../public/index.html"),
+      inject: "head",
     })
   ],
   output: {
+    hotUpdateChunkFilename: 'hot/hot-update.js',
+    hotUpdateMainFilename: 'hot/hot-update.json',
     devtoolModuleFilenameTemplate: f => {
       if (
         f.resourcePath.startsWith("http://") ||
