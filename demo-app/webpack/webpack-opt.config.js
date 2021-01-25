@@ -18,7 +18,7 @@ module.exports = merge(core, {
   entry: entries,
   output: {
     "path": path.resolve(__dirname, "dist"),
-    "publicPath": "/",
+    "publicPath": "./",
     //Deployer script needs chunkhash to be 32 chars in length and bookended by `.` in order to set proper cache headers
     hashDigestLength: 32,
     hashFunction: "md5",
