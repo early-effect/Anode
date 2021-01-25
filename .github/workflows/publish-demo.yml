@@ -22,8 +22,8 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-    - name: Run fastOptJS
-      run: sbt fastOptJS
+    - name: build demo
+      run: sbt fullOptJS
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
