@@ -1,6 +1,9 @@
 package earlyeffect.dsl.css
 
+import scala.concurrent.Future
+import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.scalajs.js
+import scala.scalajs.js.Promise
 import scala.scalajs.js.annotation.JSImport
 
 object AutoPrefixed {
@@ -8,30 +11,29 @@ object AutoPrefixed {
   object Options extends js.Object {
     def overrideBrowserslist = js.Array("last 2 versions", "> 5%")
   }
-
-  val Processor = new PostCSS(js.Array(new AutoPrefixer(Options)))
+  val AP        = AutoPrefixer(Options)
+  val Processor = new PostCSS(js.Array(AP))
 
   @js.native @JSImport("postcss", JSImport.Namespace)
   class PostCSS(arg: js.Array[js.Any]) extends js.Object {
-    def process(s: String, options: js.Any): Result = js.native
+    def process(s: String, options: js.Any): Promise[Result] = js.native
   }
 
   @js.native @JSImport("autoprefixer", JSImport.Namespace)
-  class AutoPrefixer(a: js.Any) extends js.Object
+  object AutoPrefixer extends js.Object {
+    def apply(options: js.Any): js.Any = js.native
+  }
 
   trait Result extends js.Object {
     def css: String
-    def result: Result
-    def toString: String
   }
 
-  def apply(css: String): String =
-    try {
-      Processor.process(css, Options).css
-    } catch {
+  def apply(css: String): Future[String] =
+    try Processor.process(css, Options).toFuture.map(_.css)
+    catch {
       case e: js.JavaScriptException =>
-        js.Dynamic.global.console.error("Bad CSS\n", css, e.asInstanceOf[js.Any])
-        css
+        js.Dynamic.global.console.error("Error auto-prefixing:\n", css, e.asInstanceOf[js.Any])
+        Future.successful(css)
     }
 
 }

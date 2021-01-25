@@ -6,51 +6,52 @@ val cachedAssets = taskKey[Seq[String]]("the list of files scala.js bundler prod
 
 val copyWorker = taskKey[Unit]("Moves worker.js to public")
 
-val diodeVersion = "1.1.11"
+val diodeVersion = "1.1.14"
 
 lazy val root = project
   .in(file("."))
   .aggregate(core, demo, demoModel, demoWorker)
   .settings(
-    scalaVersion := "2.13.3",
+    scalaVersion := "2.13.4",
     name := "root",
     publish := {},
-    publishLocal := {}
+    publishLocal := {},
   )
 
 val baseSettings = Seq(
   licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
-  version := "0.4.2",
+  version := "0.5.0",
+  scalaVersion := "2.13.4",
   bintrayRepository := "maven",
   organization := "rocks.earlyeffect",
-  scalaVersion := "2.13.3",
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
   libraryDependencies ++= Seq(
     "io.suzaku"     %%% "diode"       % diodeVersion,
-    "org.scala-js"  %%% "scalajs-dom" % "1.0.0",
-    "org.scalatest" %%% "scalatest"   % "3.2.0" % Test
+    "org.scala-js"  %%% "scalajs-dom" % "1.1.0",
+    "org.scalatest" %%% "scalatest"   % "3.2.3" % Test,
   ),
   requireJsDomEnv in Test := true,
-  version in installJsdom := "11.12.0",
+  version.withRank(KeyRanks.Invisible) in installJsdom := "11.12.0",
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
-  scalaJSUseMainModuleInitializer := true,
-  version in webpack := "4.42.1",
-  webpackCliVersion := "3.3.11",
-  version in startWebpackDevServer := "3.10.3",
+  version.withRank(KeyRanks.Invisible) in webpack := "4.42.1",
+  webpackCliVersion.withRank(KeyRanks.Invisible) := "3.3.11",
+  version.withRank(KeyRanks.Invisible) in startWebpackDevServer := "3.10.3",
   bintrayReleaseOnPublish := !isSnapshot.value,
   publishMavenStyle := true,
   publishTo := {
     val pt = publishTo.value
     if (isSnapshot.value) {
       Some(
-        "Artifactory Realm" at "https://oss.jfrog.org/artifactory/oss-snapshot-local;build.timestamp=" + new java.util.Date().getTime
+        "Artifactory Realm".at(
+          "https://oss.jfrog.org/artifactory/oss-snapshot-local;build.timestamp=" + new java.util.Date().getTime
+        )
       )
     } else {
       Some(
-        "Artifactory Realm" at "https://oss.jfrog.org/artifactory/oss-release-local"
+        "Artifactory Realm".at("https://oss.jfrog.org/artifactory/oss-release-local")
       )
     }
-  }
+  },
 )
 
 lazy val core = project
@@ -61,9 +62,9 @@ lazy val core = project
     name := "core",
     webpackEmitSourceMaps in Compile := true,
     npmDependencies in Compile ++= Seq(
-      "preact"       -> "10.4.5",
-      "autoprefixer" -> "9.7.5"
-    )
+      "preact"       -> "10.5.10",
+      "autoprefixer" -> "10.2.3",
+    ),
   )
 
 lazy val demoModel = project
@@ -78,8 +79,9 @@ lazy val demoModel = project
     skip in publish := true,
     scalaJSLinkerConfig in Test ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
     libraryDependencies += "io.suzaku" %%% "diode" % diodeVersion,
-    test := {}
+    test := {},
   )
+
 lazy val demoWorker = project
   .in(file("demo-worker"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
@@ -94,7 +96,7 @@ lazy val demoWorker = project
     test := {},
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, demo / cachedAssets),
     buildInfoPackage := "worker",
-    mainClass := Some("worker.ServiceWorker"),
+    mainClass.withRank(KeyRanks.Invisible) := Some("worker.ServiceWorker"),
     buildInfoOptions += BuildInfoOption.Traits("worker.Context"),
     artifactPath in fullOptJS in Compile := {
       (artifactPath in webpack in Compile in fullOptJS in demo).value.getParentFile / "dist/worker.js"
@@ -105,8 +107,9 @@ lazy val demoWorker = project
       val path = ((baseDirectory in demo).value / "public/worker.js").toPath
       if (Files.exists(path)) Files.delete(path)
       Files.copy(f.toPath, ((baseDirectory in demo).value / "public/worker.js").toPath)
-    }
+    },
   )
+
 lazy val demo = project
   .in(file("demo-app"))
   .enablePlugins(ScalaJSBundlerPlugin)
@@ -131,20 +134,24 @@ lazy val demo = project
     webpackConfigFile in Test := Some(
       baseDirectory.value / "webpack" / "webpack-core.config.js"
     ),
+    fastOptJS / webpackDevServerExtraArgs := Seq("--inline", "--hot"),
     //    webpackDevServerExtraArgs := Seq("--https", "--inline"),
     version in startWebpackDevServer := "3.9.0",
     webpackEmitSourceMaps in fastOptJS in Compile := true,
     webpackEmitSourceMaps in fullOptJS in Compile := false,
     addCommandAlias(
       "demo",
-      "demo/fullOptJS::startWebpackDevServer;~worker"
+      "demo/fastOptJS::startWebpackDevServer;~demo/fastOptJS",
+    ),
+    addCommandAlias(
+      "demoPWA",
+      "demo/fullOptJS::startWebpackDevServer;~worker",
     ),
     test := {},
     skip in publish := true,
     publish := {},
     publishLocal := {},
     skip in publish := true,
-    mainClass := Some("demo.Main"),
     cachedAssets := {
       val files = (webpack in (Compile, fullOptJS)).value
       val res = files
@@ -154,5 +161,5 @@ lazy val demo = project
         }
       println(res.mkString("\n"))
       res
-    }
+    },
   )

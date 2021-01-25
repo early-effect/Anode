@@ -11,6 +11,7 @@ trait Component[Props] extends EarlyComponent[Props, Nothing] { theComponent =>
 
   def render(props: Props): VNode
 
+  //noinspection ScalaUnusedSymbol
   def didUpdate(oldProps: Props, instance: Instance, oldInstance: UndefOr[Instance]): Unit = ()
 
   def shouldUpdate(nextProps: Props, previous: Instance): Boolean = nextProps != previous.props
@@ -37,12 +38,12 @@ trait Component[Props] extends EarlyComponent[Props, Nothing] { theComponent =>
         lookupProps(oldProps),
         lookupState(oldState),
         this,
-        snapshot.asInstanceOf[UndefOr[EarlyComponent[Props, Nothing]#Instance]]
+        snapshot.asInstanceOf[UndefOr[EarlyComponent[Props, Nothing]#Instance]],
       )
   }
 
 }
 
-object StatelessComponent {
+object Component {
   implicit def applySelf[Comp <: Component[Comp], T <: Arg](self: Comp): T = self.apply(self).asInstanceOf[T]
 }

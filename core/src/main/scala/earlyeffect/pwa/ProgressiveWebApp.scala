@@ -31,23 +31,29 @@ trait ProgressiveWebApp { self =>
       workerContainer
         .register(serviceWorkerPath)
         .toFuture
-        .map(reg => {
+        .map { reg =>
           serviceWorkerRegistered(reg)
-        })
+        }
         .recover(handleRegistrationError(_))
     }
 
   if (shouldRegister) register()
 
-  dom.window.addEventListener("online", (e: dom.Event) => {
-    onlineState = true
-    self.goOnline(e)
-  })
+  dom.window.addEventListener(
+    "online",
+    (e: dom.Event) => {
+      onlineState = true
+      self.goOnline(e)
+    },
+  )
 
-  dom.window.addEventListener("offline", (e: dom.Event) => {
-    onlineState = false
-    self.goOffline(e)
-  })
+  dom.window.addEventListener(
+    "offline",
+    (e: dom.Event) => {
+      onlineState = false
+      self.goOffline(e)
+    },
+  )
 
   def isProgressiveWebApp: Boolean = dom.window.matchMedia("(display-mode: standalone)").matches
 
@@ -67,11 +73,10 @@ trait ProgressiveWebApp { self =>
     r.onupdatefound = _ => {
       Option(r.installing)
         .orElse(Option(r.waiting))
-        .foreach(
-          worker =>
-            worker.onstatechange = { _ =>
-              if (worker.state == "installed") serviceWorkerUpdated()
-            }
+        .foreach(worker =>
+          worker.onstatechange = { _ =>
+            if (worker.state == "installed") serviceWorkerUpdated()
+          }
         )
     }
     r.update()
@@ -87,9 +92,9 @@ trait ProgressiveWebApp { self =>
   }
 
   def serviceWorkerRegistered(r: ServiceWorkerRegistration): Unit = {
-    Option(r.waiting).foreach(_ => {
+    Option(r.waiting).foreach { _ =>
       Option(r.active).foreach(_ => serviceWorkerUpdated())
-    })
+    }
     dom.document.addEventListener(
       "visibilitychange",
       (_: dom.Event) => {
@@ -98,12 +103,11 @@ trait ProgressiveWebApp { self =>
           installTimer(r)
           update(r)
         }
-      }
+      },
     )
     installTimer(r)
   }
 
-  def handleRegistrationError(t: Throwable): Unit =
-    dom.console.error("Failed to register service worker", t)
+  def handleRegistrationError(t: Throwable): Unit = dom.console.error("Failed to register service worker", t)
 
 }

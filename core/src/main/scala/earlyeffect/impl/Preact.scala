@@ -28,11 +28,9 @@ object Preact extends js.Object {
 
   def toChildArray(children: ComponentChildren): js.Array[VNodeJS] = js.native
 
-  def h(`type`: js.Dynamic, params: AnyDictionary, children: ComponentChildren): VNodeJS =
-    js.native
+  def h(`type`: js.Dynamic, params: AnyDictionary, children: ComponentChildren): VNodeJS = js.native
 
-  def h(`type`: String, params: AnyDictionary, children: ComponentChildren): VNodeJS =
-    js.native
+  def h(`type`: String, params: AnyDictionary, children: ComponentChildren): VNodeJS = js.native
 
   def h(`type`: js.Dynamic, params: AnyDictionary): VNodeJS = js.native
 

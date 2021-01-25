@@ -22,11 +22,10 @@ object ServiceWorker {
     self.caches
       .delete(cacheKeys.App)
       .toFuture
-      .map(
-        _ =>
-          self.caches.open(cacheKeys.App).toFuture.flatMap { cache =>
-            cache.addAll(Details.cachedAssets.toJSArray.map(_.asInstanceOf[RequestInfo])).toFuture
-          }
+      .map(_ =>
+        self.caches.open(cacheKeys.App).toFuture.flatMap { cache =>
+          cache.addAll(Details.cachedAssets.toJSArray.map(_.asInstanceOf[RequestInfo])).toFuture
+        }
       )
   }
 
@@ -49,10 +48,8 @@ object ServiceWorker {
       (e: ExtendableEvent) => {
         self.skipWaiting()
         e.waitUntil(prepareCache.toJSPromise)
-      }
+      },
     )
-    self.addEventListener("fetch", (e: FetchEvent) => {
-      e.respondWith(request(e.request).asInstanceOf[Resp])
-    })
+    self.addEventListener("fetch", (e: FetchEvent) => e.respondWith(request(e.request).asInstanceOf[Resp]))
   }
 }

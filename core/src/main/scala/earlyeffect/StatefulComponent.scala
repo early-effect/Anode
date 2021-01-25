@@ -37,7 +37,7 @@ trait StatefulComponent[Props, State] extends EarlyComponent[Props, State] { the
         lookupProps(oldProps),
         lookupState(oldState),
         instance = this,
-        snapshot.asInstanceOf[UndefOr[StatefulComponent[Props, State]#Instance]]
+        snapshot.asInstanceOf[UndefOr[StatefulComponent[Props, State]#Instance]],
       )
 
     override def componentWillReceiveProps(nextProps: js.Dynamic, nextContext: js.Dynamic): Unit = {
@@ -54,6 +54,5 @@ trait StatefulComponent[Props, State] extends EarlyComponent[Props, State] { the
 }
 
 object StatefulComponent {
-  implicit def applySelf[Comp <: StatefulComponent[Comp, _], T <: Arg](self: Comp): T =
-    self.apply(self).asInstanceOf[T]
+  implicit def applySelf[Comp <: StatefulComponent[Comp, _], T <: Arg](self: Comp): T = self.apply(self).asInstanceOf[T]
 }

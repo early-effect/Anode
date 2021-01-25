@@ -1,6 +1,7 @@
 package earlyeffect.dsl.css
 
 object values {
+
   sealed trait Value { self =>
 
     def nameAsDashedLower: String =
