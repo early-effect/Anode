@@ -30,7 +30,7 @@ object Creator extends StatefulComponent[Unit, Boolean] {
 
   override def render(props: Unit, state: Boolean, instance: Creator.Instance): VNode =
     Input(
-      A("readonly", state),
+//      A("readonly", state),
       A.placeholder("What needs to be done?"),
       A.onMouseDown(_ => instance.setState(false)),
 //      A.onClick(_ => instance.setState(false)),
