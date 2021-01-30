@@ -40,6 +40,6 @@ object Creator extends StatefulComponent[Unit, Boolean] {
           e.value = ""
         }
       },
-    )
+    ).withKey(s"input-$state")
 
 }
