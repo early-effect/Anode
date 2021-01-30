@@ -32,7 +32,8 @@ object Creator extends StatefulComponent[Unit, Boolean] {
     Input(
       A("readonly", state),
       A.placeholder("What needs to be done?"),
-      A.onClick(_ => instance.setState(false)),
+      A.onMouseDown(_ => instance.setState(false)),
+//      A.onClick(_ => instance.setState(false)),
       A.onKeyDown { x =>
         val e = x.target.asInstanceOf[HTMLInputElement]
         if (x.keyCode == ENTER && e.value.nonEmpty) {
@@ -40,6 +41,7 @@ object Creator extends StatefulComponent[Unit, Boolean] {
           e.value = ""
         }
       },
-    ).withKey(s"input-$state")
+    )
+//      .withKey(s"input-$state")
 
 }
