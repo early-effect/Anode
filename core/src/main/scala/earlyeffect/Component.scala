@@ -45,5 +45,9 @@ trait Component[Props] extends EarlyComponent[Props, Nothing] { theComponent =>
 }
 
 object Component {
+
+  implicit class FunctionalComponent[T](f: (T) => VNode) extends Component[T] {
+    override def render(props: T): VNode = f(props)
+  }
   implicit def applySelf[Comp <: Component[Comp], T <: Arg](self: Comp): T = self.apply(self).asInstanceOf[T]
 }
