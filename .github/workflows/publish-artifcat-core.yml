@@ -1,17 +1,12 @@
-name: Publish-Package-Core
+name: Publish Artifact Core
 
 on:
-  push:
-    branches: [ master ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Node 
@@ -29,11 +24,5 @@ jobs:
         key: ${{ runner.os }}-build-cache-node-${{ hashFiles('**/package-lock.json') }}
     - name: Scala Caching
       uses: coursier/cache-action@v5
-    - name: build demo
-      run: sbt fullOptJS
-    - name: Deploy
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./demo-app/target/scala-2.13/scalajs-bundler/main/dist
-        cname: www.earlyeffect.rocks
+    - name: publish core artifact
+      run: sbt publish
