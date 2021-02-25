@@ -25,4 +25,6 @@ jobs:
     - name: Scala Caching
       uses: coursier/cache-action@v5
     - name: publish core artifact
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: sbt publish
