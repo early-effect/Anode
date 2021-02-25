@@ -1,4 +1,4 @@
-name: Publish-Demo
+name: Publish-Package-Core
 
 on:
   push:
