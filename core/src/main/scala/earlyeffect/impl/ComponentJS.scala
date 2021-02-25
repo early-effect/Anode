@@ -38,4 +38,6 @@ abstract class ComponentJS extends js.Object {
 
   def componentWillUnmount(): Unit
 
+  def componentDidCatch(e: js.Error): Unit
+
 }

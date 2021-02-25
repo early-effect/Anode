@@ -49,6 +49,10 @@ trait StatefulComponent[Props, State] extends EarlyComponent[Props, State] { the
       setState(theComponent.initialState(props))
       willMount(this)
     }
+
+    override def componentDidCatch(e: js.Error): Unit =
+//      log("caught", e)
+      didCatch(e, this)
   }
 
 }

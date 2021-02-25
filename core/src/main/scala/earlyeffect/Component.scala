@@ -35,11 +35,13 @@ trait Component[Props] extends EarlyComponent[Props, Nothing] { theComponent =>
 
     override def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic): Unit =
       didUpdate(
-        lookupProps(oldProps),
-        lookupState(oldState),
-        this,
-        snapshot.asInstanceOf[UndefOr[EarlyComponent[Props, Nothing]#Instance]],
+        oldProps = lookupProps(oldProps),
+        oldState = lookupState(oldState),
+        instance = this,
+        oldInstance = snapshot.asInstanceOf[UndefOr[EarlyComponent[Props, Nothing]#Instance]],
       )
+
+    override def componentDidCatch(e: js.Error): Unit = didCatch(e, this)
   }
 
 }

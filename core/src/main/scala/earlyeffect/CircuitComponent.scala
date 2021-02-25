@@ -23,10 +23,10 @@ trait CircuitComponent[Props, Model <: AnyRef, State] extends EarlyComponent[Pro
 
     override def componentDidUpdate(oldProps: js.Dynamic, oldState: js.Dynamic, snapshot: js.Dynamic): Unit =
       didUpdate(
-        lookupProps(oldProps),
-        lookupState(oldState),
+        oldProps = lookupProps(oldProps),
+        oldState = lookupState(oldState),
         instance = this,
-        snapshot.asInstanceOf[js.UndefOr[CircuitComponent[Props, Model, State]#Instance]],
+        oldInstance = snapshot.asInstanceOf[js.UndefOr[CircuitComponent[Props, Model, State]#Instance]],
       )
     override def componentDidMount(): Unit = didMount(this)
 
@@ -43,5 +43,7 @@ trait CircuitComponent[Props, Model <: AnyRef, State] extends EarlyComponent[Pro
 
     override def shouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic, context: js.Dynamic): Boolean =
       theComponent.shouldUpdate(lookupProps(nextProps), lookupState(nextState), this)
+
+    override def componentDidCatch(e: js.Error): Unit = didCatch(e, this)
   }
 }

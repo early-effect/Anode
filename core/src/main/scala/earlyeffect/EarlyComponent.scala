@@ -26,6 +26,8 @@ trait EarlyComponent[Props, State] { self =>
 
   def willUnMount(instance: Instance): Unit = ()
 
+  def didCatch(e: js.Error, instance: Instance): Unit = ()
+
   def didUpdate(
       oldProps: Props,
       oldState: State,

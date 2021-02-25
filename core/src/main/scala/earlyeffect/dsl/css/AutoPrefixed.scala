@@ -3,13 +3,14 @@ package earlyeffect.dsl.css
 import scala.concurrent.Future
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.scalajs.js
-import scala.scalajs.js.Promise
+import scala.scalajs.js.{Promise, UndefOr}
 import scala.scalajs.js.annotation.JSImport
 
 object AutoPrefixed {
 
   object Options extends js.Object {
-    def overrideBrowserslist = js.Array("last 2 versions", "> 5%")
+    val from: UndefOr[Nothing]                 = js.undefined
+    val overrideBrowserslist: js.Array[String] = js.Array("last 2 versions", "> 5%")
   }
   val AP        = AutoPrefixer(Options)
   val Processor = new PostCSS(js.Array(AP))
