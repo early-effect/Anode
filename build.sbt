@@ -10,19 +10,10 @@ val diodeVersion = "1.1.14"
 
 val token = sys.env.getOrElse("GITHUB_TOKEN", "No Token")
 
-lazy val anode = project
-  .in(file("."))
-  .aggregate(core, demo, demoModel, demoWorker)
-  .settings(
-    scalaVersion := "2.13.5",
-    name := "anode",
-    publish := {},
-    publishLocal := {},
-  )
-
 val baseSettings = Seq(
+  versionScheme := Some(sbt.VersionScheme.SemVerSpec),
+  version := "0.1.0",
   licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
-  version := "0.5.1",
   scalaVersion := "2.13.5",
   organization := "rocks.earlyeffect",
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
@@ -41,12 +32,37 @@ val baseSettings = Seq(
   credentials += Credentials("GitHub Package Registry", "maven.pkg.github.com", "early-effect", token),
 )
 
+lazy val anode = project
+  .in(file("."))
+  .aggregate(core, demo, demoModel, demoWorker)
+  .settings(
+    scalaVersion := "2.13.5",
+    name := "anode",
+    publish := {},
+    publishLocal := {},
+  )
+
 lazy val core = project
   .in(file("core"))
   .enablePlugins(ScalaJSBundlerPlugin)
   .settings(
     baseSettings,
     name := "anode-core",
+    Compile / fastOptJS / webpackEmitSourceMaps := true,
+    Compile / fullOptJS / webpackEmitSourceMaps := false,
+    Compile / npmDependencies ++= Seq(
+      "preact"       -> "10.5.10",
+      "autoprefixer" -> "10.2.3",
+      "postcss"      -> "8.2.6",
+    ),
+  )
+lazy val diodeSupport = project
+  .in(file("diode-support"))
+  .dependsOn(core)
+  .enablePlugins(ScalaJSBundlerPlugin)
+  .settings(
+    baseSettings,
+    name := "anode-diode-support",
     Compile / fastOptJS / webpackEmitSourceMaps := true,
     Compile / fullOptJS / webpackEmitSourceMaps := false,
     Compile / npmDependencies ++= Seq(
@@ -102,7 +118,7 @@ lazy val demoWorker = project
 lazy val demo = project
   .in(file("demo-app"))
   .enablePlugins(ScalaJSBundlerPlugin)
-  .dependsOn(core, demoModel % "test->test;compile->compile")
+  .dependsOn(core, diodeSupport, demoModel % "test->test;compile->compile")
   .settings(
     baseSettings,
     name := "demo-app",
