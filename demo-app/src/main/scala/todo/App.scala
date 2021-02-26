@@ -1,8 +1,8 @@
 package todo
 
 import diode.ModelR
-import earlyeffect.dsl.css.CssClass
-import earlyeffect.{ClassSelector, E, S, VNode, fragment, when}
+import anode.dsl.css.CssClass
+import anode.{ClassSelector, E, S, VNode, fragment, when}
 import todo.model.{Root, TodoList}
 
 object App extends TodoComponent[Unit, TodoList] with ClassSelector {

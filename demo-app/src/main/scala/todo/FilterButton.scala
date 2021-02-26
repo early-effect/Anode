@@ -1,7 +1,7 @@
 package todo
 
-import earlyeffect.S._
-import earlyeffect._
+import anode.S._
+import anode._
 import todo.model.TodoList.actions.ApplyFilter
 import todo.model._
 

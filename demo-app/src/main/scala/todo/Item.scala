@@ -1,7 +1,7 @@
 package todo
 
-import earlyeffect.dsl.css.CssClass
-import earlyeffect.{A, Component, E, S, VNode}
+import anode.dsl.css.CssClass
+import anode.{A, Component, E, S, VNode}
 import todo.model.Todo
 
 object Item extends Component[Todo] {

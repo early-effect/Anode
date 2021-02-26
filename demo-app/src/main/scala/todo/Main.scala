@@ -20,7 +20,7 @@ object Main {
     def start: Unit = {
       val e = document.createElement("body")
       document.documentElement.replaceChild(e, document.body)
-      earlyeffect.preact.render(App, document.documentElement, e)
+      anode.preact.render(App, document.documentElement, e)
     }
   }
 }

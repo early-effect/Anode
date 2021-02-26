@@ -1,7 +1,7 @@
 package todo
 
-import earlyeffect._
-import earlyeffect.dsl.css.CssClass
+import anode._
+import anode.dsl.css.CssClass
 import org.scalajs.dom.raw.HTMLInputElement
 import todo.model.TodoList.actions.{CancelEditing, FinishEditing}
 import todo.model.{Todo, TodosCircuit}

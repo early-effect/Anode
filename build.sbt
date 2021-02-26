@@ -10,12 +10,12 @@ val diodeVersion = "1.1.14"
 
 val token = sys.env.getOrElse("GITHUB_TOKEN", "No Token")
 
-lazy val root = project
+lazy val anode = project
   .in(file("."))
   .aggregate(core, demo, demoModel, demoWorker)
   .settings(
     scalaVersion := "2.13.5",
-    name := "root",
+    name := "anode",
     publish := {},
     publishLocal := {},
   )
@@ -37,6 +37,8 @@ val baseSettings = Seq(
   webpack / version.withRank(KeyRanks.Invisible) := "4.46.0",
   webpackCliVersion.withRank(KeyRanks.Invisible) := "3.3.11",
   startWebpackDevServer / version.withRank(KeyRanks.Invisible) := "3.11.2",
+  publishTo := Some("GitHub Package Registry".at("https://maven.pkg.github.com/early-effect/Anode")),
+  credentials += Credentials("GitHub Package Registry", "maven.pkg.github.com", "early-effect", token),
 )
 
 lazy val core = project
@@ -44,7 +46,7 @@ lazy val core = project
   .enablePlugins(ScalaJSBundlerPlugin)
   .settings(
     baseSettings,
-    name := "core",
+    name := "anode-core",
     Compile / fastOptJS / webpackEmitSourceMaps := true,
     Compile / fullOptJS / webpackEmitSourceMaps := false,
     Compile / npmDependencies ++= Seq(
@@ -52,8 +54,6 @@ lazy val core = project
       "autoprefixer" -> "10.2.3",
       "postcss"      -> "8.2.6",
     ),
-    publishTo := Some("GitHub Package Registry".at("https://maven.pkg.github.com/russwyte/EarlyEffect")),
-    credentials += Credentials("GitHub Package Registry", "maven.pkg.github.com", "russwyte", token),
   )
 
 lazy val demoModel = project
