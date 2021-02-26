@@ -1,7 +1,7 @@
 package anode
 
-import diode._
 import anode.impl.VNodeJS
+import diode.{Circuit, FastEq, ModelR}
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
