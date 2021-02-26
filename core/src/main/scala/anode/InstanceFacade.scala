@@ -15,7 +15,7 @@ import scala.scalajs.js.annotation.JSName
   * @tparam Props
   * @tparam State
   */
-trait EarlyInstance[Props, State] extends js.Any {
+trait AnodeInstance[Props, State] extends js.Any {
 
   @JSName("eProps")
   def props: Props
@@ -31,7 +31,7 @@ trait EarlyInstance[Props, State] extends js.Any {
 
 }
 
-abstract class InstanceFacade[Props, State] extends impl.ComponentJS with EarlyInstance[Props, State] {
+abstract class InstanceFacade[Props, State] extends impl.ComponentJS with AnodeInstance[Props, State] {
   theFacade =>
 
   @JSName("eBase")

@@ -7,7 +7,7 @@ import scala.scalajs.js
 import scala.scalajs.js.UndefOr
 import scala.scalajs.js.annotation.JSName
 
-trait StatefulComponent[Props, State] extends EarlyComponent[Props, State] { theComponent =>
+trait StatefulComponent[Props, State] extends AnodeComponent[Props, State] { theComponent =>
   def initialState(props: Props): State
 
   def deriveState(props: Props, oldState: State) = oldState

@@ -44,7 +44,7 @@ object Preact extends js.Object {
 
 }
 
-object EarlyEffect {
+object Anode {
 
   def h(`type`: js.Dynamic, params: AnyDictionary, children: js.Array[Child]): VNodeJS =
     Preact.h(`type`, params, children.map(_.value))

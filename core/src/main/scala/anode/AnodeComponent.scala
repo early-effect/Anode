@@ -1,14 +1,15 @@
 package anode
 
-import anode.impl.EarlyEffect
+import anode.impl.Anode
 import org.scalajs.dom
 
 import scala.language.implicitConversions
 import scala.scalajs.js
 import scala.scalajs.js.{Dictionary, UndefOr}
+import Anode._
 
 //noinspection ScalaUnusedSymbol
-trait EarlyComponent[Props, State] { self =>
+trait AnodeComponent[Props, State] { self =>
 
   type P = Props
 
@@ -18,7 +19,7 @@ trait EarlyComponent[Props, State] { self =>
 
   lazy val classForClass = ClassSelector.makeCssClass(self.getClass.getName)
 
-  type Instance = EarlyInstance[Props, State]
+  type Instance = AnodeInstance[Props, State]
 
   def didMount(instance: Instance): Unit = ()
 
@@ -43,7 +44,8 @@ trait EarlyComponent[Props, State] { self =>
       ): _*
     )
 
-  def apply(props: Props): VNode = EarlyEffect.h(instanceConstructor, baseDictionary(props))
+  def apply(props: Props): VNode = Anode
+      .h(instanceConstructor, baseDictionary(props))
 
   def addSelectors(n: VNode, facade: InstanceFacade[Props, State]): VNode =
     self match {
@@ -60,6 +62,6 @@ trait EarlyComponent[Props, State] { self =>
 
 }
 
-object EarlyComponent {
-  implicit def toVNode(ec: EarlyComponent[Unit, _]): VNode = ec.apply(())
+object AnodeComponent {
+  implicit def toVNode(ec: AnodeComponent[Unit, _]): VNode = ec.apply(())
 }

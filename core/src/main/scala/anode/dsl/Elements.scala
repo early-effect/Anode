@@ -1,17 +1,13 @@
 package anode.dsl
 
-import anode.impl.Preact.{AttributeOrChildJS, ChildJS, h}
-import anode.impl.{EarlyEffect, VNodeJS}
-import anode.{Attribute, Args}
-import anode._
-
-import scala.scalajs.js
+import anode.{Args, _}
+import anode.impl.Anode
 
 private[anode] class ElementConstructor(name: String) {
 
   def apply(acs: Arg*): VNode = {
     val args = Args(acs)
-    EarlyEffect.h(name, args.attributeDictionary, args.children)
+    Anode.h(name, args.attributeDictionary, args.children)
   }
 }
 

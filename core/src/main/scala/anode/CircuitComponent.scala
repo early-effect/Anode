@@ -6,7 +6,7 @@ import anode.impl.VNodeJS
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 
-trait CircuitComponent[Props, Model <: AnyRef, State] extends EarlyComponent[Props, State] {
+trait CircuitComponent[Props, Model <: AnyRef, State] extends AnodeComponent[Props, State] {
   theComponent =>
   def circuit: Circuit[Model]
   def render(props: Props, state: State): VNode

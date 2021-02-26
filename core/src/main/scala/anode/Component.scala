@@ -7,7 +7,7 @@ import scala.scalajs.js
 import scala.scalajs.js.UndefOr
 import scala.scalajs.js.annotation.JSName
 
-trait Component[Props] extends EarlyComponent[Props, Nothing] { theComponent =>
+trait Component[Props] extends AnodeComponent[Props, Nothing] { theComponent =>
 
   def render(props: Props): VNode
 
@@ -38,7 +38,7 @@ trait Component[Props] extends EarlyComponent[Props, Nothing] { theComponent =>
         oldProps = lookupProps(oldProps),
         oldState = lookupState(oldState),
         instance = this,
-        oldInstance = snapshot.asInstanceOf[UndefOr[EarlyComponent[Props, Nothing]#Instance]],
+        oldInstance = snapshot.asInstanceOf[UndefOr[AnodeComponent[Props, Nothing]#Instance]],
       )
 
     override def componentDidCatch(e: js.Error): Unit = didCatch(e, this)

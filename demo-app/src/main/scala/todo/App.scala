@@ -85,7 +85,7 @@ object App extends TodoComponent[Unit, TodoList] with ClassSelector {
         css.Info,
         fragment(
           E.p("Double-click to edit a todo"),
-          E.p("Rendered by ", E.strong("EarlyEffect"), " - a Scala.js wrapper for Preact"),
+          E.p("Rendered by ", E.strong("Anode"), " - a Scala.js wrapper for Preact"),
         ),
       ),
     )

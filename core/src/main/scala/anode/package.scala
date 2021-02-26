@@ -1,6 +1,6 @@
-import anode.dsl.{css, _}
+import anode.dsl._
 import anode.dsl.css.Styles
-import anode.impl.{EarlyEffect, VNodeJS}
+import anode.impl.Anode
 import anode.impl.Preact.Fragment
 import org.scalajs.dom
 
@@ -27,7 +27,7 @@ package object anode {
   dom.Event
   def log(m: js.Any, a: Any*): Unit = dom.window.console.log(m, a.map(_.asInstanceOf[js.Any]): _*)
 
-  def fragment(children: Child*): VNode = EarlyEffect.h(Fragment, null, children.toJSArray)
+  def fragment(children: Child*): VNode = Anode.h(Fragment, null, children.toJSArray)
 
   def when(p: => Boolean) = When(p)
 
@@ -56,8 +56,8 @@ package object anode {
   }
 
   object dictionaryNames {
-    val PropsFieldName = "_early_effect_props"
-    val StateFieldName = "_early_effect_state"
+    val PropsFieldName = "_anode_props"
+    val StateFieldName = "_anode_state"
   }
 
 }

@@ -7,7 +7,7 @@ import org.scalatest.matchers.should.Matchers
 
 import scala.scalajs.js
 
-trait EarlyOps extends Matchers {
+trait AnodeOps extends Matchers {
   def render(vn: VNode): Unit = preact.render(vn, parent)
 
   val parent: Element = {

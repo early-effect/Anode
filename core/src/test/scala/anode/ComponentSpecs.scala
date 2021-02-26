@@ -4,7 +4,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.scalajs.js
 
-class ComponentSpecs extends AnyFlatSpec with EarlyOps {
+class ComponentSpecs extends AnyFlatSpec with AnodeOps {
   "Components" should "render" in {
     object Simple extends Component[Unit] {
       override def render(props: Unit): VNode =
@@ -31,7 +31,7 @@ class ComponentSpecs extends AnyFlatSpec with EarlyOps {
     }
     render(Simple("foo"))
     check(
-      "<span data-earlyeffect-earlyeffect-componentspecs-simple-5=\"foo\" class=\"earlyeffect-ComponentSpecs-Simple-5\">foo</span>"
+      "<span data-anode-anode-componentspecs-simple-5=\"foo\" class=\"anode-ComponentSpecs-Simple-5\">foo</span>"
     )
   }
   "A didCatch() error boundary" should "render an error condition" in {

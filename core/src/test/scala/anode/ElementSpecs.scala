@@ -5,7 +5,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.scalajs.js
 
-class ElementSpecs extends AnyFlatSpec with EarlyOps {
+class ElementSpecs extends AnyFlatSpec with AnodeOps {
   "Elements without attributes or children" should "render" in {
     render(E.span())
     check("<span></span>")

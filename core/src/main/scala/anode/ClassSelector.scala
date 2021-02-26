@@ -2,7 +2,7 @@ package anode
 
 import org.scalajs.dom
 
-trait ClassSelector { self: EarlyComponent[_, _] =>
+trait ClassSelector { self: AnodeComponent[_, _] =>
   def selector = s".$classForClass"
 
   def addClass(e: dom.Element): Unit = {
