@@ -34,7 +34,7 @@ val baseSettings = Seq(
 
 lazy val anode = project
   .in(file("."))
-  .aggregate(core, demo, demoModel, demoWorker)
+  .aggregate(core, diodeSupport, demo, demoModel, demoWorker)
   .settings(
     scalaVersion := "2.13.5",
     name := "anode",
