@@ -1,8 +1,8 @@
 package todo
 
 import diode.ModelR
-import earlyeffect.dsl.css.CssClass
-import earlyeffect.{ClassSelector, E, S, VNode, fragment, when}
+import anode.dsl.css.CssClass
+import anode.{ClassSelector, E, S, VNode, fragment, when}
 import todo.model.{Root, TodoList}
 
 object App extends TodoComponent[Unit, TodoList] with ClassSelector {
@@ -85,7 +85,7 @@ object App extends TodoComponent[Unit, TodoList] with ClassSelector {
         css.Info,
         fragment(
           E.p("Double-click to edit a todo"),
-          E.p("Rendered by ", E.strong("EarlyEffect"), " - a Scala.js wrapper for Preact"),
+          E.p("Rendered by ", E.strong("Anode"), " - a Scala.js wrapper for Preact"),
         ),
       ),
     )

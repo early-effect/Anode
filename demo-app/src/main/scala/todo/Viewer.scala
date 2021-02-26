@@ -1,7 +1,7 @@
 package todo
 
-import earlyeffect.dsl.css.CssClass
-import earlyeffect.{A, ClassSelector, Component, E, S, VNode}
+import anode.dsl.css.CssClass
+import anode.{A, ClassSelector, Component, E, S, VNode}
 import todo.model.TodoList.actions.{Delete, Update}
 import todo.model.{Todo, TodosCircuit}
 

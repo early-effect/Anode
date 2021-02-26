@@ -1,8 +1,8 @@
 package todo
 
 import diode.ModelR
-import earlyeffect._
-import earlyeffect.dsl.css.CssClass
+import anode._
+import anode.dsl.css.CssClass
 import todo.model.TodoList.actions.{ApplyFilter, ClearCompleted}
 import todo.model._
 

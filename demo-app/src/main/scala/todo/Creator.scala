@@ -1,7 +1,7 @@
 package todo
 
-import earlyeffect.S._
-import earlyeffect._
+import anode.S._
+import anode._
 import org.scalajs.dom.raw.HTMLInputElement
 import todo.model.TodoList.actions.Add
 import todo.model.{Todo, TodosCircuit}
