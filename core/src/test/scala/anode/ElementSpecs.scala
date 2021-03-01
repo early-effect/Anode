@@ -1,31 +1,31 @@
 package anode
 
 import org.scalajs.dom
-import org.scalatest.flatspec.AnyFlatSpec
+import munit._
 
 import scala.scalajs.js
 
-class ElementSpecs extends AnyFlatSpec with AnodeOps {
-  "Elements without attributes or children" should "render" in {
+class ElementSpecs extends FunSuite with AnodeOps {
+  test("Elements without attributes or children render") {
     render(E.span())
     check("<span></span>")
   }
-  "Elements with attributes but no children" should "render" in {
+  test("Elements with attributes but no children should render") {
     render(E.span(A.`class`("a"), A.id("foo")))
     check("""<span class="a" id="foo"></span>""")
   }
-  "Elements with None attributes but no children" should "render" in {
+  test("Elements with None attributes but no children should render") {
     val a: Option[Attribute] = None
     render(E.span(A.`class`("a"), A.id("foo"), a))
     check("""<span class="a" id="foo"></span>""")
   }
-  "Elements with Some(a) attributes but no children" should "render" in {
+  test("Elements with Some(a) attributes but no children shouldrender"){
     val a: Option[Attribute] = Some(A.id("foo"))
     render(E.span(A.`class`("a"), a))
     check("""<span class="a" id="foo"></span>""")
   }
 
-  "Elements with attributes and children" should "render" in {
+  test("Elements with attributes and children shouldrender"){
     render(E.span(A.id("foo"), A.`class`("a"), E.button()))
     check("""<span class="a" id="foo"><button></button></span>""")
     render(
@@ -35,37 +35,37 @@ class ElementSpecs extends AnyFlatSpec with AnodeOps {
       """<span class="a" id="foo"><button></button><a href="foo.com"></a></span>"""
     )
   }
-  "Elements with children but no attributes" should "render" in {
+  test("Elements with children but no attributes shouldrender"){
     render(E.span(E.span("hello"), E.span("world")))
     check(
       """<span id=""><span>hello</span><span>world</span></span>"""
     )
   }
-  "Elements with children as a sequence" should "render" in {
+  test("Elements with children as a sequence shouldrender"){
     render(E.span(Seq(E.span("hello"), E.span("world"))))
     check(
       """<span id=""><span>hello</span><span>world</span></span>"""
     )
   }
-  "Elements with a sequence of attributes and children" should "render" in {
+  test("Elements with a sequence of attributes and children shouldrender"){
     render(E.span(A.`class`("bar"), args(A.id("foo"), E.span("hello"), E.span("world"))))
     check(
       """<span id="foo" class="bar"><span>hello</span><span>world</span></span>"""
     )
   }
-  "Element with declarations" should "get a style attribute" in {
+  test("Element with declarations shouldget a style attribute"){
     render(E.span(S.margin.px(10), S.color.rgb(100, 100, 100)))
     check("""<span id="" style="margin: 10px; color: rgb(100, 100, 100);"></span>""")
   }
-  "Element with declarations and a style attr" should "get a single style attribute" in {
+  test("Element with declarations and a style attr shouldget a single style attribute"){
     val s = A.style(S.backgroundColor("white"))
     render(E.span(s, S.margin.px(10), S.color.rgb(100, 100, 100)))
     check("""<span id="" style="margin: 10px; color: rgb(100, 100, 100); background-color: white;"></span>""")
   }
-  "Elements" should "take a key" in {
-    E.span("foo").withKey("bar").vnode.key should be("bar")
+  test("Elements shouldtake a key"){
+    Assertions.assertEquals(E.span("foo").withKey("bar").vnode.key.toString,"bar")
   }
-  "Elements" should "take a ref function and a key" in {
+  test("Elements shouldtake a ref function and a key"){
     var effect: Boolean                    = false
     val f: js.Function1[dom.Element, Unit] = e => effect = true
     val n                                  = E.span("foo").withRef(f).withKey("foo")

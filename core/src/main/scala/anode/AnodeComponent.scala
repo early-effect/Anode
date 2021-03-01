@@ -9,7 +9,7 @@ import scala.scalajs.js.{Dictionary, UndefOr}
 import Anode._
 
 //noinspection ScalaUnusedSymbol
-trait AnodeComponent[Props, State] { self =>
+trait AnodeComponent[Props, State] {
 
   type P = Props
 
@@ -17,7 +17,7 @@ trait AnodeComponent[Props, State] { self =>
 
   def instanceConstructor: js.Dynamic
 
-  lazy val classForClass = ClassSelector.makeCssClass(self.getClass.getName)
+  lazy val classForClass = ClassSelector.makeCssClass(this.getClass.getName)
 
   type Instance = AnodeInstance[Props, State]
 
@@ -48,7 +48,7 @@ trait AnodeComponent[Props, State] { self =>
       .h(instanceConstructor, baseDictionary(props))
 
   def addSelectors(n: VNode, facade: InstanceFacade[Props, State]): VNode =
-    self match {
+    this match {
       case selectors: ClassSelector with InstanceDataSelector =>
         n.withRef { e =>
           selectors.addDataAttribute(e, facade)

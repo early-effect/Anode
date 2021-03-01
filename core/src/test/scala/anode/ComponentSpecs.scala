@@ -1,11 +1,11 @@
 package anode
 
-import org.scalatest.flatspec.AnyFlatSpec
+import munit._
 
 import scala.scalajs.js
 
-class ComponentSpecs extends AnyFlatSpec with AnodeOps {
-  "Components" should "render" in {
+class ComponentSpecs extends FunSuite with AnodeOps {
+  test("Components should render") {
     object Simple extends Component[Unit] {
       override def render(props: Unit): VNode =
         E.div(
@@ -15,26 +15,28 @@ class ComponentSpecs extends AnyFlatSpec with AnodeOps {
     render(Simple)
     check("<div><div>foo</div><div>bar</div></div>")
   }
-  "A Component with a string prop" should "render" in {
+  test("A Component with a string prop should render") {
     object Simple extends Component[String] {
       override def render(props: String): VNode = E.span(props)
     }
     render(Simple("foo"))
     check("<span>foo</span>")
   }
-  "A Component with a string prop and an instance selector and a class selector" should "render" in {
+  test("A Component with a string prop and an instance selector and a class selector should render withRef") {
     object Simple extends Component[String] with InstanceDataSelector with ClassSelector {
+
+      override lazy val classForClass: String = "simple"
 
       override def extractAttributeValue(instance: Simple.Instance): String = instance.props
 
       override def render(props: String): VNode = E.span(props)
     }
-    render(Simple("foo"))
+    render(Simple("foo").withRef(e => e.setAttribute("foo","bar")))
     check(
-      "<span data-anode-anode-componentspecs-simple-5=\"foo\" class=\"anode-ComponentSpecs-Simple-5\">foo</span>"
+      "<span data-anode-simple=\"foo\" class=\"simple\" foo=\"bar\">foo</span>"
     )
   }
-  "A didCatch() error boundary" should "render an error condition" in {
+  test("A didCatch() error boundary should render an error condition") {
     object Catcher extends StatefulComponent[String, Option[js.Error]] {
       override def initialState(name: String): Option[js.Error] = None
 
