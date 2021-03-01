@@ -4,6 +4,7 @@ import anode.dsl.css.Styles.{DeclarationOrSelector, KeyFrames, MediaQuery}
 import anode.impl.Preact.ChildJS
 import anode.impl.VNodeJS
 import org.scalajs.dom
+import org.scalajs.dom.Element
 
 import scala.language.implicitConversions
 import scala.scalajs.js
@@ -39,7 +40,7 @@ trait VNode extends Child {
 
   def withRef(f: js.Function1[dom.Element, Unit]): VNode = {
 
-    val combined = vnode.ref.fold(f)(existing =>
+    val combined: js.Function1[Element, Unit] = vnode.ref.fold(f)(existing =>
       (e: dom.Element) => {
         existing(e)
         f(e)

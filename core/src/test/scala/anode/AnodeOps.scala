@@ -2,12 +2,10 @@ package anode
 
 import org.scalajs.dom
 import org.scalajs.dom.Element
-import org.scalatest.Assertion
-import org.scalatest.matchers.should.Matchers
 
 import scala.scalajs.js
 
-trait AnodeOps extends Matchers {
+trait AnodeOps {
   def render(vn: VNode): Unit = preact.render(vn, parent)
 
   val parent: Element = {
@@ -16,6 +14,6 @@ trait AnodeOps extends Matchers {
     res
   }
 
-  def check(s: String): Assertion   = parent.innerHTML should be(s)
-  def checkAfter(n: Int)(s: String) = js.timers.setTimeout(n)(parent.innerHTML should be(s))
+  def check(s: String)              = munit.Assertions.assertEquals(parent.innerHTML, s)
+  def checkAfter(n: Int)(s: String) = js.timers.setTimeout(n)(check(s))
 }

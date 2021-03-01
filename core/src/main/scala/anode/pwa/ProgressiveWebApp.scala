@@ -34,7 +34,7 @@ trait ProgressiveWebApp { self =>
         .map { reg =>
           serviceWorkerRegistered(reg)
         }
-        .recover(handleRegistrationError(_))
+        .recover{case t:Throwable => handleRegistrationError(t)}
     }
 
   if (shouldRegister) register()

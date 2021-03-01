@@ -32,16 +32,5 @@ module.exports = {
   output: {
     hotUpdateChunkFilename: 'hot/hot-update.js',
     hotUpdateMainFilename: 'hot/hot-update.json',
-    // devtoolModuleFilenameTemplate: f => {
-    //   if (
-    //     f.resourcePath.startsWith("http://") ||
-    //     f.resourcePath.startsWith("https://") ||
-    //     f.resourcePath.startsWith("file://")
-    //   ) {
-    //     return f.resourcePath;
-    //   } else {
-    //     return "webpack://" + f.namespace + "/" + f.resourcePath;
-    //   }
-    // }
   }
 };

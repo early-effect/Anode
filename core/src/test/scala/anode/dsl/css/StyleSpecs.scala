@@ -2,12 +2,9 @@ package anode.dsl.css
 
 import anode._
 import anode.dsl.css.values.rgb
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
+import munit._
 
-import scala.scalajs.js
-
-class StyleSpecs extends AnyFlatSpec with Matchers {
+class StyleSpecs extends FunSuite {
   import anode.dsl.css.Styles._
 
   object MyCLass1
@@ -20,8 +17,8 @@ class StyleSpecs extends AnyFlatSpec with Matchers {
           "baz",
           KeyframeSelector("0%", backgroundColor.rgba(255, 255, 113, 0)),
           KeyframeSelector("50%", backgroundColor.rgba(255, 255, 113, 0.95)),
-          KeyframeSelector("100%", backgroundColor.rgba(255, 255, 113, 0))
-        )
+          KeyframeSelector("100%", backgroundColor.rgba(255, 255, 113, 0)),
+        ),
       )
 
   object MyClass2
@@ -33,9 +30,9 @@ class StyleSpecs extends AnyFlatSpec with Matchers {
             "div.viewport * :after :before",
             S.display.none.important,
             opacity(0).important,
-            S("visibility", "hidden").important
-          )
-        )
+            S("visibility", "hidden").important,
+          ),
+        ),
       )
 
   val fooClass    = Selector(".foo", S.color("red"))
@@ -45,17 +42,22 @@ class StyleSpecs extends AnyFlatSpec with Matchers {
   val nested = Selector(
     ".foo",
     S.zIndex(0),
-    Selector(".bar", S.zIndex(1), Selector(".baz", S.zIndex(2), Selector(".zooks", S.zIndex(3))))
+    Selector(".bar", S.zIndex(1), Selector(".baz", S.zIndex(2), Selector(".zooks", S.zIndex(3)))),
   )
-  "Simple selectors" should "make correct declarations" in {
-    fooClass.toString should be(""".foo {
+  test("Simple selectors should make correct declarations") {
+    assertEquals(
+      fooClass.toString,
+      (""".foo {
         |  color: red;
         |}
-        |""".stripMargin)
+        |""".stripMargin),
+    )
   }
-  "complex selectors" should "make correct declarations" in {
+  test("complex selectors should make correct declarations") {
     val s = Selector(".baz", S.zIndex(1), fooClass, barClass, allChildren)
-    s.toString should be(""".baz {
+    assertEquals(
+      s.toString,
+      """.baz {
                            |  z-index: 1;
                            |}
                            |.baz.foo {
@@ -69,10 +71,12 @@ class StyleSpecs extends AnyFlatSpec with Matchers {
                            |.baz * {
                            |  color: black;
                            |}
-                           |""".stripMargin)
+                           |""".stripMargin,
+    )
   }
-  "Nested selectors" should "make correct declarations" in {
-    nested.toString should be(
+  test("Nested selectors should make correct declarations") {
+    assertEquals(
+      nested.toString,
       """.foo {
         |  z-index: 0;
         |}
@@ -85,12 +89,14 @@ class StyleSpecs extends AnyFlatSpec with Matchers {
         |.foo.bar.baz.zooks {
         |  z-index: 3;
         |}
-        |""".stripMargin
+        |""".stripMargin,
     )
   }
 
-  "CssClass" should "support keyframes" in {
-    MyCLass1.mkString should be(s""".${MyCLass1.className} {
+  test("CssClass should support keyframes") {
+    assertEquals(
+      MyCLass1.mkString,
+      s""".${MyCLass1.className} {
         |  animation-duration: 3s;
         |  animation-delay: 0.5s;
         |  animation-timing-function: ease-in-out;
@@ -108,10 +114,13 @@ class StyleSpecs extends AnyFlatSpec with Matchers {
         |    background-color: rgba(255,255,113,0);
         |  }
         |}
-        |""".stripMargin)
+        |""".stripMargin,
+    )
   }
-  "Css#Class" should "support media queries" in {
-    MyClass2.mkString should be(s"""${MyClass2.selector} {
+  test("Css#Class support media queries") {
+    assertEquals(
+      MyClass2.mkString,
+      s"""${MyClass2.selector} {
                            |  min-height: 100%;
                            |}
                            |@media print {
@@ -120,20 +129,21 @@ class StyleSpecs extends AnyFlatSpec with Matchers {
                            |  opacity: 0 !important;
                            |  visibility: hidden !important;
                            |}
-                           |}""".stripMargin)
+                           |}""".stripMargin,
+    )
   }
-  "prefixes" should "work" in {
-    S.alignItems.safe.end.toString should be("align-items: safe end;")
+  test("prefixes should work") {
+    assertEquals(S.alignItems.safe.end.toString, "align-items: safe end;")
   }
-  "simple String declarations" should "work" in {
-    S("foo")("bar").toString should be("foo: bar;")
-    S("foo", "bar").toString should be("foo: bar;")
+  test("simple String declarations should work") {
+    assertEquals(S("foo")("bar").toString, "foo: bar;")
+    assertEquals(S("foo", "bar").toString, "foo: bar;")
   }
-  "declaration constructors with apply functions" should "work" in {
-    S.borderColor(rgb(1, 2, 3)).toString should be("border-color: rgb(1,2,3);")
+  test("declaration constructors with apply functions work") {
+    assertEquals(S.borderColor(rgb(1, 2, 3)).toString, "border-color: rgb(1,2,3);")
   }
-  "custom properties" should "produce valid CSS" in {
-    S.background.customProperty("foo", "green").toString should be("background: var(--foo, green);")
-    S.background.customProperty("foo").toString should be("background: var(--foo);")
+  test("custom properties should produce valid CSS") {
+    assertEquals(S.background.customProperty("foo", "green").toString, "background: var(--foo, green);")
+    assertEquals(S.background.customProperty("foo").toString, "background: var(--foo);")
   }
 }

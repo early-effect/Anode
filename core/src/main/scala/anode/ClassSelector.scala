@@ -2,18 +2,10 @@ package anode
 
 import org.scalajs.dom
 
-trait ClassSelector { self: AnodeComponent[_, _] =>
-  def selector = s".$classForClass"
+trait ClassSelector { comp:AnodeComponent[_,_] =>
+  def selector = s".${comp.classForClass}"
 
-  def addClass(e: dom.Element): Unit = {
-    val newClass = Option(e.getAttribute("class")).fold(classForClass) { old =>
-      if (old.endsWith(classForClass)) old else old + " " + classForClass
-    }
-    e.setAttribute(
-      name = "class",
-      value = newClass,
-    )
-  }
+  def addClass(e: dom.Element): Unit = if(!e.classList.contains(classForClass)) e.classList.add(classForClass)
 
 }
 

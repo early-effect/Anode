@@ -8,7 +8,7 @@ val copyWorker = taskKey[Unit]("Moves worker.js to public")
 
 val diodeVersion = "1.1.14"
 
-val token = sys.env.getOrElse("GITHUB_TOKEN", "No Token")
+lazy val token = sys.env.getOrElse("GITHUB_TOKEN", "No Token")
 
 val baseSettings = Seq(
   versionScheme := Some(sbt.VersionScheme.SemVerSpec),
@@ -18,13 +18,13 @@ val baseSettings = Seq(
   organization := "rocks.earlyeffect",
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
   libraryDependencies ++= Seq(
-    "io.suzaku"     %%% "diode"       % diodeVersion,
     "org.scala-js"  %%% "scalajs-dom" % "1.1.0",
-    "org.scalatest" %%% "scalatest"   % "3.2.3" % Test,
+    "org.scalameta" %%% "munit" % "0.7.22" % Test,
   ),
-  Test / requireJsDomEnv := true,
+  testFrameworks += new TestFramework("munit.Framework"),
   installJsdom / version.withRank(KeyRanks.Invisible) := "16.4.0",
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
+  Test / requireJsDomEnv := true,
   webpack / version.withRank(KeyRanks.Invisible) := "4.46.0",
   webpackCliVersion.withRank(KeyRanks.Invisible) := "3.3.11",
   startWebpackDevServer / version.withRank(KeyRanks.Invisible) := "3.11.2",
@@ -47,6 +47,7 @@ lazy val core = project
   .enablePlugins(ScalaJSBundlerPlugin)
   .settings(
     baseSettings,
+//    crossScalaVersions := Seq("2.13.5","3.0.0-RC1"),
     name := "anode-core",
     Compile / fastOptJS / webpackEmitSourceMaps := true,
     Compile / fullOptJS / webpackEmitSourceMaps := false,
@@ -55,7 +56,11 @@ lazy val core = project
       "autoprefixer" -> "10.2.3",
       "postcss"      -> "8.2.6",
     ),
+    Test / webpackConfigFile := Some(
+      baseDirectory.value / "webpack" / "no-fs-config.js"
+    ),
   )
+
 lazy val diodeSupport = project
   .in(file("diode-support"))
   .dependsOn(core)
@@ -63,6 +68,7 @@ lazy val diodeSupport = project
   .settings(
     baseSettings,
     name := "anode-diode-support",
+    libraryDependencies += "io.suzaku" %%% "diode" % diodeVersion,
     Compile / fastOptJS / webpackEmitSourceMaps := true,
     Compile / fullOptJS / webpackEmitSourceMaps := false,
     Compile / npmDependencies ++= Seq(
@@ -129,7 +135,6 @@ lazy val demo = project
       "copy-webpack-plugin" -> "4.6.0",
       "crypto-js"           -> "4.0.0",
     ),
-    jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv(),
     webpackResources := baseDirectory.value / "webpack" * "*",
     fastOptJS / webpackBundlingMode := BundlingMode.LibraryOnly(),
     fastOptJS / webpackConfigFile := Some(
@@ -142,8 +147,6 @@ lazy val demo = project
       baseDirectory.value / "webpack" / "webpack-core.config.js"
     ),
     fastOptJS / webpackDevServerExtraArgs := Seq("--inline", "--hot"),
-    //    webpackDevServerExtraArgs := Seq("--https", "--inline"),
-//    version in startWebpackDevServer := "3.9.0",
     Compile / fastOptJS / webpackEmitSourceMaps := true,
     Compile / fullOptJS / webpackEmitSourceMaps := false,
     addCommandAlias(
