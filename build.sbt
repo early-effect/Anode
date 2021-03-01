@@ -18,7 +18,7 @@ val baseSettings = Seq(
   organization := "rocks.earlyeffect",
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
   libraryDependencies ++= Seq(
-    "org.scala-js"  %%% "scalajs-dom" % "1.2.0-SNAPSHOT",
+    "org.scala-js"  %%% "scalajs-dom" % "1.1.0",
     "org.scalameta" %%% "munit" % "0.7.22" % Test,
   ),
   testFrameworks += new TestFramework("munit.Framework"),
@@ -47,7 +47,7 @@ lazy val core = project
   .enablePlugins(ScalaJSBundlerPlugin)
   .settings(
     baseSettings,
-    crossScalaVersions := Seq("2.13.5","3.0.0-RC1"),
+//    crossScalaVersions := Seq("2.13.5","3.0.0-RC1"),
     name := "anode-core",
     Compile / fastOptJS / webpackEmitSourceMaps := true,
     Compile / fullOptJS / webpackEmitSourceMaps := false,
@@ -147,8 +147,6 @@ lazy val demo = project
       baseDirectory.value / "webpack" / "webpack-core.config.js"
     ),
     fastOptJS / webpackDevServerExtraArgs := Seq("--inline", "--hot"),
-    //    webpackDevServerExtraArgs := Seq("--https", "--inline"),
-//    version in startWebpackDevServer := "3.9.0",
     Compile / fastOptJS / webpackEmitSourceMaps := true,
     Compile / fullOptJS / webpackEmitSourceMaps := false,
     addCommandAlias(

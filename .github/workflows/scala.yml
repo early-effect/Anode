@@ -29,4 +29,4 @@ jobs:
     - name: Scala Caching
       uses: coursier/cache-action@v5
     - name: Run tests
-      run: sbt +test
+      run: sbt test
