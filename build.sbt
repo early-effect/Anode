@@ -10,16 +10,45 @@ val diodeVersion = "1.1.14"
 
 lazy val token = sys.env.getOrElse("GITHUB_TOKEN", "No Token")
 
-val baseSettings = Seq(
+val publishSettings = Seq(
+  version := "0.2.0-SNAPSHOT",
   versionScheme := Some(sbt.VersionScheme.SemVerSpec),
-  version := "0.1.0",
-  licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
-  scalaVersion := "2.13.5",
   organization := "rocks.earlyeffect",
+  organizationName := "earlyeffect",
+  organizationHomepage := Some(url("http://www.earlyeffect.rocks")),
+  scmInfo := Some(
+    ScmInfo(
+      url("https://github.com/russwyte/Anode"),
+      "scm:git@github.com:early-effect/Anode.git",
+    )
+  ),
+  developers := List(
+    Developer(
+      id = "russwyte",
+      name = "Russ White",
+      email = "russ.white@earlyeffect.rocks",
+      url = url("http://www.earlyeffect.rocks"),
+    )
+  ),
+  description := "Anode - a library for creating web apps in Scala.js.",
+  licenses := List("Apache 2" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt")),
+  homepage := Some(url("http://www.earlyeffect.rocks")),
+  // Remove all additional repository other than Maven Central from POM
+  pomIncludeRepository := { _ => false },
+  publishTo := {
+    val nexus = "https://s01.oss.sonatype.org/"
+    if (isSnapshot.value) Some("snapshots".at(nexus + "content/repositories/snapshots"))
+    else Some("releases".at(nexus + "service/local/staging/deploy/maven2"))
+  },
+  publishMavenStyle := true,
+)
+
+val baseSettings = Seq(
+  scalaVersion := "2.13.5",
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
   libraryDependencies ++= Seq(
     "org.scala-js"  %%% "scalajs-dom" % "1.1.0",
-    "org.scalameta" %%% "munit" % "0.7.22" % Test,
+    "org.scalameta" %%% "munit"       % "0.7.22" % Test,
   ),
   testFrameworks += new TestFramework("munit.Framework"),
   installJsdom / version.withRank(KeyRanks.Invisible) := "16.4.0",
@@ -28,14 +57,13 @@ val baseSettings = Seq(
   webpack / version.withRank(KeyRanks.Invisible) := "4.46.0",
   webpackCliVersion.withRank(KeyRanks.Invisible) := "3.3.11",
   startWebpackDevServer / version.withRank(KeyRanks.Invisible) := "3.11.2",
-  publishTo := Some("GitHub Package Registry".at("https://maven.pkg.github.com/early-effect/Anode")),
-  credentials += Credentials("GitHub Package Registry", "maven.pkg.github.com", "early-effect", token),
 )
 
 lazy val anode = project
   .in(file("."))
   .aggregate(core, diodeSupport, demo, demoModel, demoWorker)
   .settings(
+    publish / skip := true,
     scalaVersion := "2.13.5",
     name := "anode",
     publish := {},
@@ -47,6 +75,7 @@ lazy val core = project
   .enablePlugins(ScalaJSBundlerPlugin)
   .settings(
     baseSettings,
+    publishSettings,
 //    crossScalaVersions := Seq("2.13.5","3.0.0-RC1"),
     name := "anode-core",
     Compile / fastOptJS / webpackEmitSourceMaps := true,
@@ -67,6 +96,7 @@ lazy val diodeSupport = project
   .enablePlugins(ScalaJSBundlerPlugin)
   .settings(
     baseSettings,
+    publishSettings,
     name := "anode-diode-support",
     libraryDependencies += "io.suzaku" %%% "diode" % diodeVersion,
     Compile / fastOptJS / webpackEmitSourceMaps := true,
