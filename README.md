@@ -1,11 +1,11 @@
-# [EarlyEffect](https://github.com/russwyte/EarlyEffect/)
-A Scala.JS facade for Preact with emphasis on stateless components.
+#[Anode](https://github.com/early-effect/Anode) an EarlyEffect project
+Anode is a Scala.JS facade for Preact with emphasis on stateless components.
 
 To run the demo:
 - `sbt demo`
-- then open [http://localhost:8080](http://localhost:8080)
+- then open [http://localhost:9000](http://localhost:9000)
 
-Copyright 2020 Russ White
+Copyright 2021 Russ White
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use the source code within repository except in compliance with the License.
