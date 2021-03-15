@@ -1,4 +1,4 @@
-#[Anode](https://github.com/early-effect/Anode) an EarlyEffect project
+# [Anode](https://github.com/early-effect/Anode) an EarlyEffect project
 Anode is a Scala.JS facade for Preact with emphasis on stateless components.
 
 To run the demo:
