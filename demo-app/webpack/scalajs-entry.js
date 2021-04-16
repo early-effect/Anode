@@ -12,7 +12,7 @@ if (process.env.NODE_ENV === "production") {
   fastOpt.main();
   module.exports = fastOpt;
   let e = window.document.documentElement.querySelector("script[src='hot/hot-update.js']");
-  window.document.head.removeChild(e)
+  if (e) window.document.head.removeChild(e)
   if (module.hot) {
     module.hot.accept();
   }
