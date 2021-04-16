@@ -1,5 +1,6 @@
 package todo
 
+import anode._
 import org.scalajs.dom.document
 
 import scala.scalajs.js.annotation.JSExportTopLevel
@@ -24,3 +25,4 @@ object Main {
     }
   }
 }
+

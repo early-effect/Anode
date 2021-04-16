@@ -48,7 +48,7 @@ val baseSettings = Seq(
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
   libraryDependencies ++= Seq(
     "org.scala-js"  %%% "scalajs-dom" % "1.1.0",
-    "org.scalameta" %%% "munit"       % "0.7.22" % Test,
+    "org.scalameta" %%% "munit"       % "0.7.23" % Test,
   ),
   testFrameworks += new TestFramework("munit.Framework"),
   installJsdom / version.withRank(KeyRanks.Invisible) := "16.4.0",
@@ -61,7 +61,7 @@ val baseSettings = Seq(
 
 lazy val anode = project
   .in(file("."))
-  .aggregate(core, diodeSupport, demo, demoModel, demoWorker)
+  .aggregate(core,formable, diodeSupport, demo, demoModel, demoWorker)
   .settings(
     publish / skip := true,
     scalaVersion := "2.13.5",
@@ -101,11 +101,19 @@ lazy val diodeSupport = project
     libraryDependencies += "io.suzaku" %%% "diode" % diodeVersion,
     Compile / fastOptJS / webpackEmitSourceMaps := true,
     Compile / fullOptJS / webpackEmitSourceMaps := false,
-    Compile / npmDependencies ++= Seq(
-      "preact"       -> "10.5.10",
-      "autoprefixer" -> "10.2.3",
-      "postcss"      -> "8.2.6",
-    ),
+  )
+lazy val formable = project
+  .in(file("formable"))
+  .dependsOn(core)
+  .enablePlugins(ScalaJSBundlerPlugin)
+  .settings(
+    baseSettings,
+    publishSettings,
+    name := "anode-diode-support",
+    libraryDependencies += "com.propensive" %%% "magnolia" % "0.17.0" ,
+    libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+    Compile / fastOptJS / webpackEmitSourceMaps := true,
+    Compile / fullOptJS / webpackEmitSourceMaps := false,
   )
 
 lazy val demoModel = project
@@ -154,7 +162,7 @@ lazy val demoWorker = project
 lazy val demo = project
   .in(file("demo-app"))
   .enablePlugins(ScalaJSBundlerPlugin)
-  .dependsOn(core, diodeSupport, demoModel % "test->test;compile->compile")
+  .dependsOn(core, formable, diodeSupport, demoModel % "test->test;compile->compile")
   .settings(
     baseSettings,
     name := "demo-app",
