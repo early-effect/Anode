@@ -11,7 +11,7 @@ val diodeVersion = "1.1.14"
 lazy val token = sys.env.getOrElse("GITHUB_TOKEN", "No Token")
 
 val publishSettings = Seq(
-  version := "0.2.0-SNAPSHOT",
+  version := "0.3.0-SNAPSHOT",
   versionScheme := Some(sbt.VersionScheme.SemVerSpec),
   organization := "rocks.earlyeffect",
   organizationName := "earlyeffect",
@@ -109,7 +109,7 @@ lazy val formable = project
   .settings(
     baseSettings,
     publishSettings,
-    name := "anode-diode-support",
+    name := "anode-formable",
     libraryDependencies += "com.propensive" %%% "magnolia" % "0.17.0" ,
     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     Compile / fastOptJS / webpackEmitSourceMaps := true,

@@ -1,8 +1,8 @@
 package todo
 
-import diode.ModelR
 import anode.dsl.css.CssClass
 import anode.{ClassSelector, E, S, VNode, fragment, when}
+import diode.ModelR
 import todo.model.{Root, TodoList}
 
 object App extends TodoComponent[Unit, TodoList] with ClassSelector {
@@ -59,6 +59,8 @@ object App extends TodoComponent[Unit, TodoList] with ClassSelector {
   }
 
   override def modelReader(p: Unit): ModelR[Root, TodoList] = zoom(_.todoList)
+  import anode.Formable
+  import Formable.defaultImplicits._
 
   override def render(props: Unit, l: TodoList): VNode =
     E.body(
