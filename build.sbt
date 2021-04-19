@@ -11,7 +11,7 @@ val diodeVersion = "1.1.14"
 lazy val token = sys.env.getOrElse("GITHUB_TOKEN", "No Token")
 
 val publishSettings = Seq(
-  version := "0.3.1",
+  version := "0.3.2-SNAPSHOT",
   versionScheme := Some(sbt.VersionScheme.SemVerSpec),
   organization := "rocks.earlyeffect",
   organizationName := "earlyeffect",

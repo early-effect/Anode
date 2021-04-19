@@ -60,10 +60,11 @@ object Formable {
 
   def dispatch[Product](sealedTrait: SealedTrait[Formable, Product]): Formable[Product] =
     Formable { props =>
-      sealedTrait.dispatch(props.field) { sub =>
-        sub.typeclass.apply(Formable[sub.SType,Product](props.label, sub.cast(props.field))((x:sub.SType) => {
-          props.update(x)
-          x
+      sealedTrait.dispatch(props.field) { subtype =>
+        type S = subtype.SType
+        subtype.typeclass.apply(Formable[S,Product](props.label, subtype.cast(props.field))((s:S) => {
+          props.update(s)
+          s
         }))
       }
     }

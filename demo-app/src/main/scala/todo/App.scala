@@ -63,7 +63,6 @@ object App extends TodoComponent[Unit, TodoList] with ClassSelector {
   import Formable.defaultImplicits._
   sealed trait Foo{
     def a:String
-    def b:String
   }
   case class Bar(a:String,b:String) extends Foo
   val f:Foo = Bar("Russ","White")
