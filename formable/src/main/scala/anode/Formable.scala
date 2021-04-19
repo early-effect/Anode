@@ -1,7 +1,7 @@
 package anode
 
 import anode.Formable._
-import magnolia.{CaseClass, Magnolia}
+import magnolia.{CaseClass, Magnolia, SealedTrait}
 import org.scalajs.dom
 
 import scala.language.experimental.macros
@@ -57,6 +57,17 @@ object Formable {
         productParam.typeclass(apply(productParam.label, productParam.dereference(props.field))(update))
       })
     }
+
+  def dispatch[Product](sealedTrait: SealedTrait[Formable, Product]): Formable[Product] =
+    Formable { props =>
+      sealedTrait.dispatch(props.field) { sub =>
+        sub.typeclass.apply(Formable[sub.SType,Product](props.label, sub.cast(props.field))((x:sub.SType) => {
+          props.update(x)
+          x
+        }))
+      }
+    }
+
   implicit def formable[A]: Formable[A] = macro Magnolia.gen[A]
 
   implicit def summonArgsFromProps[Field](props: Props[Field, _])(implicit formable: Formable[Field]): Args =

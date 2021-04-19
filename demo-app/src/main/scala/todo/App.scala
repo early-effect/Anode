@@ -1,7 +1,7 @@
 package todo
 
 import anode.dsl.css.CssClass
-import anode.{ClassSelector, E, S, VNode, fragment, when}
+import anode.{ClassSelector, E, S, VNode, fragment, log, when}
 import diode.ModelR
 import todo.model.{Root, TodoList}
 
@@ -61,9 +61,15 @@ object App extends TodoComponent[Unit, TodoList] with ClassSelector {
   override def modelReader(p: Unit): ModelR[Root, TodoList] = zoom(_.todoList)
   import anode.Formable
   import Formable.defaultImplicits._
-
+  sealed trait Foo{
+    def a:String
+    def b:String
+  }
+  case class Bar(a:String,b:String) extends Foo
+  val f:Foo = Bar("Russ","White")
   override def render(props: Unit, l: TodoList): VNode =
     E.body(
+//      Formable("",f)(f => log("f",f)),
       css.App,
       E.section(
         css.TodoApp,
