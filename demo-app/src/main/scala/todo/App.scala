@@ -1,9 +1,13 @@
 package todo
 
+import anode.dsl.Elements.div
 import anode.dsl.css.CssClass
-import anode.{ClassSelector, E, S, VNode, fragment, log, when}
+import anode.{A, Args, ClassSelector, E, S, VNode, args, fragment, log, when}
 import diode.ModelR
+import org.scalajs.dom
 import todo.model.{Root, TodoList}
+
+
 
 object App extends TodoComponent[Unit, TodoList] with ClassSelector {
 
@@ -64,11 +68,19 @@ object App extends TodoComponent[Unit, TodoList] with ClassSelector {
   sealed trait Foo{
     def a:String
   }
-  case class Bar(a:String,b:String) extends Foo
-  val f:Foo = Bar("Russ","White")
+  case class Bar(a:String,b:Map[String, String]) extends Foo
+  implicit val showMap:Formable[Map[String,String]] = Formable(formProps => {
+    implicit val tuple:Formable[(String,String)] = Formable(tupleProps =>{
+      args(E.div(tupleProps.field._1), E.input(tupleProps.field._2, A.onKeyUp(x => {
+        tupleProps.update(tupleProps.field._1, x.target.asInstanceOf[dom.html.Input].value)
+      })))
+    })
+    args(formProps.field.toSeq.map[Args](x => Formable("",x)(x => formProps.update(formProps.field + x))))
+  })
+  val f = Bar("Russ",Map("Foo" -> "Bar", "baz" -> "bonk"))
   override def render(props: Unit, l: TodoList): VNode =
     E.body(
-//      Formable("",f)(f => log("f",f)),
+      Formable("",f)(f => log("f",f)),
       css.App,
       E.section(
         css.TodoApp,
