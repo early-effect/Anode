@@ -11,7 +11,7 @@ val diodeVersion = "1.1.14"
 lazy val token = sys.env.getOrElse("GITHUB_TOKEN", "No Token")
 
 val publishSettings = Seq(
-  version := "0.3.0-SNAPSHOT",
+  version := "0.3.2-SNAPSHOT",
   versionScheme := Some(sbt.VersionScheme.SemVerSpec),
   organization := "rocks.earlyeffect",
   organizationName := "earlyeffect",
@@ -48,7 +48,7 @@ val baseSettings = Seq(
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
   libraryDependencies ++= Seq(
     "org.scala-js"  %%% "scalajs-dom" % "1.1.0",
-    "org.scalameta" %%% "munit"       % "0.7.23" % Test,
+    "org.scalameta" %%% "munit"       % "0.7.25" % Test,
   ),
   testFrameworks += new TestFramework("munit.Framework"),
   installJsdom / version.withRank(KeyRanks.Invisible) := "16.4.0",
@@ -89,6 +89,27 @@ lazy val core = project
       baseDirectory.value / "webpack" / "no-fs-config.js"
     ),
   )
+lazy val jsdocs = project
+  .enablePlugins(ScalaJSBundlerPlugin)
+  .dependsOn(core)
+  .settings(
+    webpackBundlingMode := BundlingMode.LibraryOnly(),
+    scalaJSUseMainModuleInitializer := true,
+    scalaVersion := "2.13.5",
+    libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "1.1.0"
+  )
+lazy val docs = project
+  .in(file("core-docs"))
+  .enablePlugins(MdocPlugin)
+  .dependsOn(core)
+  .settings(
+    publish / skip := true,
+    scalaVersion := "2.13.5",
+    mdocJS := Some(jsdocs),
+    mdocOut := file("mdoc-output"),
+    mdocJSLibraries := webpack.in(jsdocs, Compile, fullOptJS).value
+  )
+
 
 lazy val diodeSupport = project
   .in(file("diode-support"))
@@ -104,7 +125,7 @@ lazy val diodeSupport = project
   )
 lazy val formable = project
   .in(file("formable"))
-  .dependsOn(core)
+  .dependsOn(core % "compile->compile", core % "test->test")
   .enablePlugins(ScalaJSBundlerPlugin)
   .settings(
     baseSettings,
@@ -114,6 +135,7 @@ lazy val formable = project
     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     Compile / fastOptJS / webpackEmitSourceMaps := true,
     Compile / fullOptJS / webpackEmitSourceMaps := false,
+    Test / webpackConfigFile := (core / Test / webpackConfigFile).value
   )
 
 lazy val demoModel = project
