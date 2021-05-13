@@ -106,6 +106,7 @@ lazy val docs = project
     publish / skip := true,
     scalaVersion := "2.13.5",
     mdocJS := Some(jsdocs),
+    mdocOut := file("mdoc-output"),
     mdocJSLibraries := webpack.in(jsdocs, Compile, fullOptJS).value
   )
 
