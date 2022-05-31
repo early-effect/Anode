@@ -3,7 +3,6 @@ package anode.dsl
 import anode.{Attribute, Declaration}
 import org.scalajs.dom
 import org.scalajs.dom._
-import org.scalajs.dom.raw.Event
 
 import scala.language.implicitConversions
 import scala.scalajs.js

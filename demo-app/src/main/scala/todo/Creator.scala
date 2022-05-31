@@ -2,7 +2,7 @@ package todo
 
 import anode.S._
 import anode._
-import org.scalajs.dom.raw.HTMLInputElement
+import org.scalajs.dom.HTMLInputElement
 import todo.model.TodoList.actions.Add
 import todo.model.{Todo, TodosCircuit}
 

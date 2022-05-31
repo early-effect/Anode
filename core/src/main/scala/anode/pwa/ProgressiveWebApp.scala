@@ -1,8 +1,7 @@
 package anode.pwa
 
 import org.scalajs.dom
-import org.scalajs.dom.experimental.serviceworkers._
-import org.scalajs.dom.raw.VisibilityState
+import org.scalajs.dom._
 
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.scalajs.js
@@ -14,7 +13,7 @@ trait ProgressiveWebApp { self =>
   private var onlineState: Boolean             = dom.window.navigator.onLine
   private var timer: Option[SetIntervalHandle] = None
 
-  private val navigator: ServiceWorkerNavigator = dom.window.navigator
+  private val navigator: Navigator = dom.window.navigator
 
   def shouldRegister: Boolean = !(location.protocol == "https:" && location.hostname == "localhost")
 
@@ -34,7 +33,7 @@ trait ProgressiveWebApp { self =>
         .map { reg =>
           serviceWorkerRegistered(reg)
         }
-        .recover{case t:Throwable => handleRegistrationError(t)}
+        .recover { case t: Throwable => handleRegistrationError(t) }
     }
 
   if (shouldRegister) register()

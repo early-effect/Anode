@@ -1,7 +1,7 @@
 package todo
 
 import anode._
-import org.scalajs.dom.document
+import org.scalajs.dom.{DocumentReadyState, Event, document}
 
 import scala.scalajs.js.annotation.JSExportTopLevel
 
@@ -9,7 +9,7 @@ object Main {
 
   @JSExportTopLevel("main")
   def main(): Unit = {
-    if (document.readyState == "complete" || document.readyState == "interactive") {
+    if (document.readyState == DocumentReadyState.complete || document.readyState == DocumentReadyState.interactive) {
       start
     } else {
       document.addEventListener(
@@ -25,4 +25,3 @@ object Main {
     }
   }
 }
-

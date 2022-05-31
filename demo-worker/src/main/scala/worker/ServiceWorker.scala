@@ -1,12 +1,11 @@
 package worker
 
-import org.scalajs.dom.experimental.serviceworkers.ServiceWorkerGlobalScope.self
-import org.scalajs.dom.experimental.serviceworkers.{ExtendableEvent, FetchEvent}
-import org.scalajs.dom.experimental.{Fetch, RequestInfo, Response}
+import org.scalajs.dom.ServiceWorkerGlobalScope.{self => worker}
+import org.scalajs.dom.{ExtendableEvent, FetchEvent}
+import org.scalajs.dom.{Fetch, RequestInfo, Response}
 
 import scala.concurrent.Future
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-import scala.scalajs.js
 import scala.scalajs.js.JSConverters._
 import scala.scalajs.js.{Promise, |}
 
@@ -19,37 +18,39 @@ object ServiceWorker {
 
   def prepareCache: Future[Unit] = {
     println("preparing caches")
-    self.caches
+
+    (for {
+      cacheStorage <- worker.caches.toOption
+    } yield cacheStorage
       .delete(cacheKeys.App)
       .toFuture
-      .map(_ =>
-        self.caches.open(cacheKeys.App).toFuture.flatMap { cache =>
+      .flatMap(_ =>
+        cacheStorage.open(cacheKeys.App).toFuture.flatMap { cache =>
           cache.addAll(Details.cachedAssets.toJSArray.map(_.asInstanceOf[RequestInfo])).toFuture
         }
-      )
+      )).getOrElse(Future.failed(new Exception("cache storage not available")))
   }
 
-  def request(info: RequestInfo): js.Promise[Response] =
-    self.caches
-      .`match`(info)
-      .toFuture
-      .flatMap[Response] {
-        case r: Response =>
-          Future(r)
-        case _ =>
-          Fetch.fetch(info).toFuture
-      }
-      .toJSPromise
+  def request(info: RequestInfo): Future[Response] =
+    worker.caches
+      .map(
+        _.`match`(info).toFuture
+          .flatMap[Response] {
+            case r: Response => Future(r)
+            case _           => Fetch.fetch(info).toFuture
+          }
+      )
+      .getOrElse(Future.failed(new Exception("cache storage not available")))
 
   def main(args: Array[String]): Unit = {
 
-    self.addEventListener(
+    worker.addEventListener(
       "install",
       (e: ExtendableEvent) => {
-        self.skipWaiting()
+        worker.skipWaiting()
         e.waitUntil(prepareCache.toJSPromise)
       },
     )
-    self.addEventListener("fetch", (e: FetchEvent) => e.respondWith(request(e.request).asInstanceOf[Resp]))
+    worker.addEventListener("fetch", (e: FetchEvent) => e.respondWith(request(e.request).asInstanceOf[Resp]))
   }
 }
