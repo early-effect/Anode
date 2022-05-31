@@ -3,7 +3,7 @@ package todo
 import diode.ModelR
 import anode._
 import anode.dsl.css.CssClass
-import org.scalajs.dom.raw.HTMLInputElement
+import org.scalajs.dom.HTMLInputElement
 import todo.model.TodoList.actions.SetAll
 import todo.model.{Root, Todo, TodosCircuit}
 

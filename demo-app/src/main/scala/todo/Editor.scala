@@ -2,7 +2,7 @@ package todo
 
 import anode._
 import anode.dsl.css.CssClass
-import org.scalajs.dom.raw.HTMLInputElement
+import org.scalajs.dom.HTMLInputElement
 import todo.model.TodoList.actions.{CancelEditing, FinishEditing}
 import todo.model.{Todo, TodosCircuit}
 

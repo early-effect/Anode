@@ -44,11 +44,12 @@ val publishSettings = Seq(
 )
 
 val baseSettings = Seq(
-  scalaVersion := "2.13.5",
+  scalaVersion := "2.13.8",
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
   libraryDependencies ++= Seq(
-    "org.scala-js"  %%% "scalajs-dom" % "1.1.0",
-    "org.scalameta" %%% "munit"       % "0.7.23" % Test,
+    "org.scala-js"  %%% "scalajs-dom"                 % "2.2.0",
+    "org.scala-js"  %%% "scalajs-java-securerandom"   % "1.0.0",
+    "org.scalameta" %%% "munit"                       % "0.7.23" % Test,
   ),
   testFrameworks += new TestFramework("munit.Framework"),
   installJsdom / version.withRank(KeyRanks.Invisible) := "16.4.0",
@@ -61,10 +62,10 @@ val baseSettings = Seq(
 
 lazy val anode = project
   .in(file("."))
-  .aggregate(core,formable, diodeSupport, demo, demoModel, demoWorker)
+  .aggregate(core, formable, diodeSupport, demo, demoModel, demoWorker)
   .settings(
     publish / skip := true,
-    scalaVersion := "2.13.5",
+    scalaVersion := "2.13.8",
     name := "anode",
     publish := {},
     publishLocal := {},
@@ -81,9 +82,9 @@ lazy val core = project
     Compile / fastOptJS / webpackEmitSourceMaps := true,
     Compile / fullOptJS / webpackEmitSourceMaps := false,
     Compile / npmDependencies ++= Seq(
-      "preact"       -> "10.5.10",
-      "autoprefixer" -> "10.2.3",
-      "postcss"      -> "8.2.6",
+      "preact"       -> "10.7.2",
+      "autoprefixer" -> "10.4.7",
+      "postcss"      -> "8.4.14",
     ),
     Test / webpackConfigFile := Some(
       baseDirectory.value / "webpack" / "no-fs-config.js"
@@ -102,6 +103,7 @@ lazy val diodeSupport = project
     Compile / fastOptJS / webpackEmitSourceMaps := true,
     Compile / fullOptJS / webpackEmitSourceMaps := false,
   )
+
 lazy val formable = project
   .in(file("formable"))
   .dependsOn(core)
@@ -110,8 +112,8 @@ lazy val formable = project
     baseSettings,
     publishSettings,
     name := "anode-formable",
-    libraryDependencies += "com.propensive" %%% "magnolia" % "0.17.0" ,
-    libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+    libraryDependencies += "com.propensive" %%% "magnolia"      % "0.17.0",
+    libraryDependencies += "org.scala-lang"   % "scala-reflect" % scalaVersion.value,
     Compile / fastOptJS / webpackEmitSourceMaps := true,
     Compile / fullOptJS / webpackEmitSourceMaps := false,
   )
