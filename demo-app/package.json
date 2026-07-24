@@ -1,0 +1,20 @@
+{
+  "name": "anode-demo",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6.0.7",
+    "vite-plugin-scalajs-anode": "file:../vendor/vite-plugin-scalajs"
+  },
+  "dependencies": {
+    "autoprefixer": "10.2.3",
+    "postcss": "8.2.6",
+    "preact": "10.5.10"
+  }
+}

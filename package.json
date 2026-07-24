@@ -1,0 +1,13 @@
+{
+  "name": "anode",
+  "private": true,
+  "description": "Root Node deps for Anode Scala.js tests (jsdom) and @JSImport packages (preact/postcss).",
+  "dependencies": {
+    "autoprefixer": "10.2.3",
+    "postcss": "8.2.6",
+    "preact": "10.5.10"
+  },
+  "devDependencies": {
+    "jsdom": "^25.0.1"
+  }
+}

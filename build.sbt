@@ -1,211 +1,211 @@
-import java.nio.file.Files
+import scala.collection.immutable.ListMap
 
-enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
-
-val cachedAssets = taskKey[Seq[String]]("the list of files scala.js bundler produces via webpack")
-
-val copyWorker = taskKey[Unit]("Moves worker.js to public")
+import sbt.protocol.testing.TestResult
 
 val diodeVersion = "1.1.14"
+val scala213     = "2.13.18"
 
-lazy val token = sys.env.getOrElse("GITHUB_TOKEN", "No Token")
+// sbt 2.x scopes bare build.sbt settings to ThisBuild.
+scalaVersion         := scala213
+organization         := "rocks.earlyeffect"
+organizationName     := "Early Effect"
+organizationHomepage := Some(url("https://www.earlyeffect.rocks"))
+versionScheme        := Some("early-semver")
+version              := "0.3.0-SNAPSHOT"
+
+homepage := Some(url("https://github.com/early-effect/Anode"))
+licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt"))
+scmInfo := Some(
+  ScmInfo(
+    url("https://github.com/early-effect/Anode"),
+    "scm:git@github.com:early-effect/Anode.git",
+  )
+)
+developers := List(
+  Developer(
+    id = "russwyte",
+    name = "Russ White",
+    email = "356303+russwyte@users.noreply.github.com",
+    url = url("https://github.com/russwyte"),
+  )
+)
+
+description := "Anode - a Scala.js facade for Preact with emphasis on stateless components."
+
+// Sonatype Central Portal (sbt 2 localStaging / publishSigned / sonaRelease).
+publishTo := {
+  val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
+  if (isSnapshot.value) Some("central-snapshots" at centralSnapshots)
+  else localStaging.value
+}
+publishMavenStyle    := true
+pomIncludeRepository := { _ => false }
+
+// CI-only publishing: key hex from PGP_KEY_HEX (early-effect org secret).
+usePgpKeyHex(sys.env.getOrElse("PGP_KEY_HEX", "MISSING_KEY_HEX"))
+
+// zipx: Aggregate verify + Central publish + Scala Steward. Demo Pages stay in publish-demo-site.yml.
+zipxJavaVersion  := "25"
+zipxScalaSteward := true
+zipxCapabilities += Capability.once(
+  name = "fmt",
+  command = "scalafmtCheckAll",
+)
+zipxCapabilities += Capability.once(
+  name = "test",
+  command = "test",
+  needsCapabilities = List("fmt"),
+  extraSteps = _ =>
+    List(
+      Step(
+        name = Some("Set up Node"),
+        uses = Some("actions/setup-node@v4"),
+        `with` = ListMap(
+          "node-version" -> "24",
+          "cache"        -> "npm",
+        ),
+      ),
+      Step(
+        name = Some("Install Node dependencies (preact, jsdom)"),
+        run = Some("npm ci"),
+      ),
+    ),
+)
+zipxCapabilities += ZipxCentral.release
+
+val copyWorker   = taskKey[Unit]("Copy demoWorker fullLinkJS output into demo-app/public/worker.js")
+val cachedAssets = settingKey[Seq[String]]("Static demo assets the service worker may cache")
+
+/** jsdom-backed Test jsEnv. Requires root `npm ci` (jsdom). Vendored JSDOMNodeJSEnv for sbt 2. */
+val jsdomTestEnv = Def.settings(
+  Test / jsEnv := Def.uncached(new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv())
+)
 
 val publishSettings = Seq(
-  version := "0.3.0-SNAPSHOT",
-  versionScheme := Some(sbt.VersionScheme.SemVerSpec),
-  organization := "rocks.earlyeffect",
-  organizationName := "earlyeffect",
-  organizationHomepage := Some(url("http://www.earlyeffect.rocks")),
-  scmInfo := Some(
-    ScmInfo(
-      url("https://github.com/russwyte/Anode"),
-      "scm:git@github.com:early-effect/Anode.git",
-    )
-  ),
-  developers := List(
-    Developer(
-      id = "russwyte",
-      name = "Russ White",
-      email = "russ.white@earlyeffect.rocks",
-      url = url("http://www.earlyeffect.rocks"),
-    )
-  ),
-  description := "Anode - a library for creating web apps in Scala.js.",
-  licenses := List("Apache 2" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt")),
-  homepage := Some(url("http://www.earlyeffect.rocks")),
-  // Remove all additional repository other than Maven Central from POM
+  publishMavenStyle    := true,
   pomIncludeRepository := { _ => false },
-  publishTo := {
-    val nexus = "https://s01.oss.sonatype.org/"
-    if (isSnapshot.value) Some("snapshots".at(nexus + "content/repositories/snapshots"))
-    else Some("releases".at(nexus + "service/local/staging/deploy/maven2"))
-  },
-  publishMavenStyle := true,
 )
 
-val baseSettings = Seq(
-  scalaVersion := "2.13.5",
+/** Skip tests without overriding the TestResult return type. */
+val noTests = Seq(Test / sources := Nil)
+
+/** Shared Scala.js library settings. CommonJS so Node/jsdom tests can `require("preact")`.
+  * In sbt 2, `%%` is platform-aware (replaces sbt 1 `%%%` for JS).
+  */
+val libSettings = Seq(
+  scalaVersion := scala213,
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature"),
   libraryDependencies ++= Seq(
-    "org.scala-js"  %%% "scalajs-dom" % "1.1.0",
-    "org.scalameta" %%% "munit"       % "0.7.23" % Test,
+    "org.scala-js"  %% "scalajs-dom"              % "2.8.0",
+    "org.scala-js"  %% "scalajs-java-securerandom" % "1.0.0",
+    "org.scalameta" %% "munit"                    % "1.0.4" % Test,
   ),
   testFrameworks += new TestFramework("munit.Framework"),
-  installJsdom / version.withRank(KeyRanks.Invisible) := "16.4.0",
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
-  Test / requireJsDomEnv := true,
-  webpack / version.withRank(KeyRanks.Invisible) := "4.46.0",
-  webpackCliVersion.withRank(KeyRanks.Invisible) := "3.3.11",
-  startWebpackDevServer / version.withRank(KeyRanks.Invisible) := "3.11.2",
-)
+) ++ jsdomTestEnv
 
 lazy val anode = project
   .in(file("."))
-  .aggregate(core,formable, diodeSupport, demo, demoModel, demoWorker)
+  .aggregate(core, formable, diodeSupport, demo, demoModel, demoWorker)
   .settings(
+    name           := "anode",
     publish / skip := true,
-    scalaVersion := "2.13.5",
-    name := "anode",
-    publish := {},
-    publishLocal := {},
   )
 
 lazy val core = project
   .in(file("core"))
-  .enablePlugins(ScalaJSBundlerPlugin)
+  .enablePlugins(ScalaJSPlugin)
   .settings(
-    baseSettings,
+    libSettings,
     publishSettings,
-//    crossScalaVersions := Seq("2.13.5","3.0.0-RC1"),
     name := "anode-core",
-    Compile / fastOptJS / webpackEmitSourceMaps := true,
-    Compile / fullOptJS / webpackEmitSourceMaps := false,
-    Compile / npmDependencies ++= Seq(
-      "preact"       -> "10.5.10",
-      "autoprefixer" -> "10.2.3",
-      "postcss"      -> "8.2.6",
-    ),
-    Test / webpackConfigFile := Some(
-      baseDirectory.value / "webpack" / "no-fs-config.js"
-    ),
   )
 
 lazy val diodeSupport = project
   .in(file("diode-support"))
   .dependsOn(core)
-  .enablePlugins(ScalaJSBundlerPlugin)
+  .enablePlugins(ScalaJSPlugin)
   .settings(
-    baseSettings,
+    libSettings,
     publishSettings,
     name := "anode-diode-support",
-    libraryDependencies += "io.suzaku" %%% "diode" % diodeVersion,
-    Compile / fastOptJS / webpackEmitSourceMaps := true,
-    Compile / fullOptJS / webpackEmitSourceMaps := false,
+    libraryDependencies += "io.suzaku" %% "diode" % diodeVersion,
   )
+
 lazy val formable = project
   .in(file("formable"))
   .dependsOn(core)
-  .enablePlugins(ScalaJSBundlerPlugin)
+  .enablePlugins(ScalaJSPlugin)
   .settings(
-    baseSettings,
+    libSettings,
     publishSettings,
     name := "anode-formable",
-    libraryDependencies += "com.propensive" %%% "magnolia" % "0.17.0" ,
-    libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-    Compile / fastOptJS / webpackEmitSourceMaps := true,
-    Compile / fullOptJS / webpackEmitSourceMaps := false,
+    libraryDependencies += "com.propensive" %% "magnolia"       % "0.17.0",
+    libraryDependencies += "org.scala-lang" %  "scala-reflect" % scalaVersion.value,
   )
 
 lazy val demoModel = project
   .in(file("demo-model"))
   .enablePlugins(ScalaJSPlugin)
-  .disablePlugins(ScalaJSBundlerPlugin)
   .settings(
-    baseSettings,
-    name := "demo-model",
-    publish := {},
-    publishLocal := {},
+    libSettings,
+    noTests,
+    name           := "demo-model",
     publish / skip := true,
-    Test / scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
-    libraryDependencies += "io.suzaku" %%% "diode" % diodeVersion,
-    test := {},
+    libraryDependencies += "io.suzaku" %% "diode" % diodeVersion,
   )
 
 lazy val demoWorker = project
   .in(file("demo-worker"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
-  .disablePlugins(ScalaJSBundlerPlugin)
   .settings(
-    baseSettings,
-    name := "demo-worker",
-    publish := {},
-    publishLocal := {},
+    scalaVersion   := scala213,
+    name           := "demo-worker",
     publish / skip := true,
-    Test / scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
-    test := {},
-    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, demo / cachedAssets),
-    buildInfoPackage := "worker",
-    mainClass.withRank(KeyRanks.Invisible) := Some("worker.ServiceWorker"),
+    noTests,
+    libraryDependencies += "org.scala-js" %% "scalajs-dom" % "2.8.0",
+    // Vite-served public assets the service worker may cache (hashed Vite chunks are not listed).
+    cachedAssets := Seq(
+      "index.html",
+      "favicon.ico",
+      "images/boltface-192.png",
+      "images/boltface-512.png",
+      "worker.js",
+    ),
+    buildInfoKeys         := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, cachedAssets),
+    buildInfoPackage      := "worker",
     buildInfoOptions += BuildInfoOption.Traits("worker.Context"),
-    Compile / fullOptJS / artifactPath := {
-      (demo / Compile / webpack / fullOptJS / artifactPath).value.getParentFile / "dist/worker.js"
-    },
-    addCommandAlias("worker", "demoWorker/fullOptJS;demoWorker/copyWorker"),
-    copyWorker := {
-      val f    = (Compile / fullOptJS / artifactPath).value
-      val path = ((demo / baseDirectory).value / "public/worker.js").toPath
-      if (Files.exists(path)) Files.delete(path)
-      Files.copy(f.toPath, path)
+    Compile / mainClass             := Some("worker.ServiceWorker"),
+    scalaJSUseMainModuleInitializer := true,
+    scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.ESModule) },
+    copyWorker := Def.uncached {
+      (Compile / fullLinkJS).value
+      val outDir = (Compile / fullLinkJS / scalaJSLinkerOutputDirectory).value
+      val mainJs = outDir / "main.js"
+      val dest   = (demo / baseDirectory).value / "public" / "worker.js"
+      if (!mainJs.exists)
+        sys.error(s"Expected $mainJs after fullLinkJS")
+      IO.createDirectory(dest.getParentFile)
+      IO.copyFile(mainJs, dest)
+      streams.value.log.info(s"copyWorker: $mainJs → $dest")
     },
   )
 
 lazy val demo = project
   .in(file("demo-app"))
-  .enablePlugins(ScalaJSBundlerPlugin)
+  .enablePlugins(ScalaJSPlugin)
   .dependsOn(core, formable, diodeSupport, demoModel % "test->test;compile->compile")
   .settings(
-    baseSettings,
-    name := "demo-app",
-    // webpack stuff
-    Compile / npmDependencies ++= Seq(
-      "webpack-merge"       -> "4.1.2",
-      "html-webpack-plugin" -> "4.5.2",
-      "copy-webpack-plugin" -> "4.6.0",
-      "crypto-js"           -> "4.0.0",
-    ),
-    webpackResources := baseDirectory.value / "webpack" * "*",
-    fastOptJS / webpackBundlingMode := BundlingMode.LibraryOnly(),
-    fastOptJS / webpackConfigFile := Some(
-      baseDirectory.value / "webpack" / "webpack-fastopt.config.js"
-    ),
-    fullOptJS / webpackConfigFile := Some(
-      baseDirectory.value / "webpack" / "webpack-opt.config.js"
-    ),
-    Test / webpackConfigFile := Some(
-      baseDirectory.value / "webpack" / "webpack-core.config.js"
-    ),
-    fastOptJS / webpackDevServerExtraArgs := Seq("--inline", "--hot"),
-    Compile / fastOptJS / webpackEmitSourceMaps := true,
-    Compile / fullOptJS / webpackEmitSourceMaps := false,
-    addCommandAlias(
-      "demo",
-      "demo/Compile/fastOptJS/startWebpackDevSer" +
-        "ver;~demo/fastOptJS",
-    ),
-    addCommandAlias(
-      "demoFull",
-      "demo/Compile/fullOptJS/startWebpackDevServer;~demo/fullOptJS",
-    ),
-    test := {},
+    scalaVersion   := scala213,
+    name           := "demo-app",
     publish / skip := true,
-    publish := {},
-    publishLocal := {},
-    cachedAssets := {
-      val files = (Compile / fullOptJS / webpack).value
-      files
-        .filter(!_.data.isHidden)
-        .map { file =>
-          file.data.getPath.split("/main/dist/")(1)
-        }
-    },
+    noTests,
+    Compile / mainClass             := Some("todo.Main"),
+    scalaJSUseMainModuleInitializer := true,
+    // Vite consumes ES modules via the vendored vite-plugin-scalajs.
+    scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.ESModule) },
+    libraryDependencies += "org.scala-js" %% "scalajs-dom" % "2.8.0",
   )
+
+addCommandAlias("worker", "demoWorker/copyWorker")
+addCommandAlias("demoDev", "demo/fastLinkJS")

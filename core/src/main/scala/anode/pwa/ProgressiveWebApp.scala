@@ -1,8 +1,7 @@
 package anode.pwa
 
 import org.scalajs.dom
-import org.scalajs.dom.experimental.serviceworkers._
-import org.scalajs.dom.raw.VisibilityState
+import org.scalajs.dom.ServiceWorkerRegistration
 
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.scalajs.js
@@ -14,7 +13,7 @@ trait ProgressiveWebApp { self =>
   private var onlineState: Boolean             = dom.window.navigator.onLine
   private var timer: Option[SetIntervalHandle] = None
 
-  private val navigator: ServiceWorkerNavigator = dom.window.navigator
+  private val navigator = dom.window.navigator
 
   def shouldRegister: Boolean = !(location.protocol == "https:" && location.hostname == "localhost")
 
@@ -34,7 +33,7 @@ trait ProgressiveWebApp { self =>
         .map { reg =>
           serviceWorkerRegistered(reg)
         }
-        .recover{case t:Throwable => handleRegistrationError(t)}
+        .recover { case t: Throwable => handleRegistrationError(t) }
     }
 
   if (shouldRegister) register()
@@ -70,7 +69,7 @@ trait ProgressiveWebApp { self =>
   def serviceWorkerUpdated(): Unit
 
   def update(r: ServiceWorkerRegistration): Unit = {
-    r.onupdatefound = _ => {
+    r.onupdatefound = { _ =>
       Option(r.installing)
         .orElse(Option(r.waiting))
         .foreach(worker =>
@@ -98,8 +97,7 @@ trait ProgressiveWebApp { self =>
     dom.document.addEventListener(
       "visibilitychange",
       (_: dom.Event) => {
-        val s = dom.document.visibilityState.asInstanceOf[VisibilityState]
-        if (s != VisibilityState.hidden) {
+        if (dom.document.visibilityState != "hidden") {
           installTimer(r)
           update(r)
         }
